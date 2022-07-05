@@ -4,8 +4,8 @@
 package knx
 
 import (
-	"github.com/mobilarte/knx-go/knx/cemi"
-	"github.com/mobilarte/knx-go/knx/util"
+	"github.com/mobilarte/knx-exp/knx/cemi"
+	"github.com/mobilarte/knx-exp/knx/util"
 )
 
 // GroupCommand determines the meaning of a group event.
