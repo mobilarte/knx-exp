@@ -103,7 +103,7 @@ func NewGroupAddrString(addr string) (GroupAddr, error) {
 	for _, s := range numstrings {
 		i, err := strconv.Atoi(s)
 		if err != nil {
-			return 0, err
+			return 0, fmt.Errorf("invalid parsing %s", err)
 		}
 		nums = append(nums, i)
 	}
@@ -113,7 +113,7 @@ func NewGroupAddrString(addr string) (GroupAddr, error) {
 		if nums[0] < 0 || nums[0] > 31 ||
 			nums[1] < 0 || nums[1] > 7 ||
 			nums[2] < 0 || nums[2] > 255 {
-			return 0, errors.New("invalid main, middle group address")
+			return 0, fmt.Errorf("invalid main, middle group address in %s", addr)
 		}
 		if nums[0] == 0 && nums[1] == 0 && nums[2] == 0 {
 			return 0, errors.New("invalid group address 0/0/0")
