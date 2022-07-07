@@ -15,26 +15,30 @@ import (
 // ServiceID identifies the service that is contained in a packet.
 type ServiceID uint16
 
-// String generates a string representation.
+// String generates a string representation of the service.
 func (srv ServiceID) String() string {
 	return fmt.Sprintf("%#04x", uint16(srv))
 }
 
-// These are supported services.
+// Currently supported services.
 const (
-	SearchReqService    ServiceID = 0x0201
-	SearchResService    ServiceID = 0x0202
-	ConnReqService      ServiceID = 0x0205
-	ConnResService      ServiceID = 0x0206
-	ConnStateReqService ServiceID = 0x0207
-	ConnStateResService ServiceID = 0x0208
-	DiscReqService      ServiceID = 0x0209
-	DiscResService      ServiceID = 0x020a
-	TunnelReqService    ServiceID = 0x0420
-	TunnelResService    ServiceID = 0x0421
-	RoutingIndService   ServiceID = 0x0530
-	RoutingLostService  ServiceID = 0x0531
-	RoutingBusyService  ServiceID = 0x0532
+	SearchReqService     ServiceID = 0x0201
+	SearchResService     ServiceID = 0x0202
+	DescrReqService      ServiceID = 0x0203
+	DescrResService      ServiceID = 0x0204
+	ConnReqService       ServiceID = 0x0205
+	ConnResService       ServiceID = 0x0206
+	ConnStateReqService  ServiceID = 0x0207
+	ConnStateResService  ServiceID = 0x0208
+	DiscReqService       ServiceID = 0x0209
+	DiscResService       ServiceID = 0x020a
+	TunnelReqService     ServiceID = 0x0420
+	TunnelResService     ServiceID = 0x0421
+	RoutingIndService    ServiceID = 0x0530
+	RoutingLostService   ServiceID = 0x0531
+	RoutingBusyService   ServiceID = 0x0532
+	DiagnosticReqService ServiceID = 0x0740
+	DiagnosticResService ServiceID = 0x0741
 )
 
 // Service describes a KNXnet/IP service.
@@ -80,7 +84,8 @@ func Size(service ServicePackable) uint {
 	return 6 + service.Size()
 }
 
-// Pack generates a KNXnet/IP packet. Utilize Size() to determine the required size of the buffer.
+// Pack generates a KNXnet/IP packet. Utilizes Size() to determine
+// the required size of the buffer.
 func Pack(buffer []byte, srv ServicePackable) {
 	buffer[0] = 6
 	buffer[1] = 16
@@ -96,10 +101,10 @@ func AllocAndPack(srv ServicePackable) []byte {
 	return buffer
 }
 
-// These are errors that might occur during unpacking.
+// These are errors that might occur during unpacking of the header.
 var (
-	ErrHeaderLength  = errors.New("header length is not 6")
-	ErrHeaderVersion = errors.New("protocol version is not 16")
+	ErrHeaderLength  = errors.New("header length is not 0x6")
+	ErrHeaderVersion = errors.New("protocol version is not 0x10")
 )
 
 type serviceUnpackable interface {
@@ -139,11 +144,11 @@ func Unpack(data []byte, srv *Service) (uint, error) {
 		return n, err
 	}
 
-	if headerLen != 6 {
+	if headerLen != 0x6 {
 		return n, ErrHeaderLength
 	}
 
-	if version != 16 {
+	if version != 0x10 {
 		return n, ErrHeaderVersion
 	}
 
@@ -154,6 +159,12 @@ func Unpack(data []byte, srv *Service) (uint, error) {
 
 	case SearchResService:
 		body = &SearchRes{}
+
+	case DescrReqService:
+		body = &DescriptionReq{}
+
+	case DescrResService:
+		body = &DescriptionRes{}
 
 	case ConnReqService:
 		body = &ConnReq{}
@@ -187,6 +198,12 @@ func Unpack(data []byte, srv *Service) (uint, error) {
 
 	case RoutingBusyService:
 		body = &RoutingBusy{}
+
+	case DiagnosticReqService:
+		body = &DiagnosticReq{}
+
+	case DiagnosticResService:
+		body = &DiagnosticRes{}
 
 	default:
 		body = &UnknownService{service: srvID}

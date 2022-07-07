@@ -9,7 +9,7 @@ import (
 	"github.com/mobilarte/knx-exp/knx/knxnet"
 )
 
-// Discover all KNXnet/IP Server
+// Discover all KNXnet/IP Servers.
 func Discover(multicastDiscoveryAddress string, searchTimeout time.Duration) ([]*knxnet.SearchRes, error) {
 	return DiscoverOnInterface(nil, multicastDiscoveryAddress, searchTimeout)
 }

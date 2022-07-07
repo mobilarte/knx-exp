@@ -4,6 +4,7 @@
 package knxnet
 
 import (
+	"fmt"
 	"net"
 	"time"
 
@@ -24,12 +25,16 @@ type TunnelSocket struct {
 	inbound <-chan Service
 }
 
-// DialTunnel creates a new Socket which can used to exchange KNXnet/IP packets with a single
-// endpoint.
+// DialTunnel creates a new Socket which can used to exchange KNXnet/IP
+// packets with a single endpoint.
 func DialTunnel(address string) (*TunnelSocket, error) {
 	addr, err := net.ResolveUDPAddr("udp4", address)
 	if err != nil {
 		return nil, err
+	}
+
+	if addr.IP.IsMulticast() {
+		return nil, fmt.Errorf("cannot tunnel to multicast address")
 	}
 
 	conn, err := net.DialUDP("udp4", nil, addr)
@@ -50,7 +55,7 @@ func (sock *TunnelSocket) Send(payload ServicePackable) error {
 	buffer := make([]byte, Size(payload))
 	Pack(buffer, payload)
 
-	// Transmission of the buffer contents
+	// Transmission of the buffer contents.
 	_, err := sock.conn.Write(buffer)
 	return err
 }
@@ -78,8 +83,8 @@ type RouterSocket struct {
 	inbound <-chan Service
 }
 
-// ListenRouter creates a new Socket which can be used to exchange KNXnet/IP packets with
-// multiple endpoints.
+// ListenRouter creates a new Socket which can be used to exchange
+// KNXnet/IP packets with multiple endpoints.
 func ListenRouter(multicastAddress string) (*RouterSocket, error) {
 	return ListenRouterOnInterface(nil, multicastAddress)
 }
@@ -106,7 +111,7 @@ func ListenRouterOnInterface(ifi *net.Interface, multicastAddress string) (*Rout
 	return &RouterSocket{conn, addr, inbound}, nil
 }
 
-// Addr returns the multicast destination address
+// Addr returns the multicast destination address.
 func (sock *RouterSocket) Addr() *net.UDPAddr {
 	return sock.addr
 }
@@ -148,25 +153,26 @@ func serveUDPSocket(conn *net.UDPConn, addr *net.UDPAddr, inbound chan<- Service
 	buffer := [1024]byte{}
 
 	for {
-		len, sender, err := conn.ReadFromUDP(buffer[:])
+		length, sender, err := conn.ReadFromUDP(buffer[:])
 		if err != nil {
 			util.Log(conn, "Error during ReadFromUDP: %v", err)
 			return
 		}
 
-		// discard empty frames
-		if len == 0 {
+		// Discard frames shorter than a KNXnet/IP header.
+		if length < 10 {
+			util.Log(conn, "Short frame discarded")
 			continue
 		}
 
-		// Validate sender origin if necessary
+		// Validate sender origin if necessary.
 		if addr != nil && (!addr.IP.Equal(sender.IP) || addr.Port != sender.Port) {
 			util.Log(conn, "Origin validation failed: %v != %v", addr, sender)
 			continue
 		}
 
 		var payload Service
-		_, err = Unpack(buffer[:len], &payload)
+		_, err = Unpack(buffer[:length], &payload)
 		if err != nil {
 			util.Log(conn, "Error during Unpack: %v", err)
 			continue
