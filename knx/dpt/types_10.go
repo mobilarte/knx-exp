@@ -1,4 +1,5 @@
 // Copyright 2017 Ole Krüger.
+// Copyright 2022 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package dpt
@@ -7,7 +8,7 @@ import (
 	"fmt"
 )
 
-// DPT_10001 represents DPT 10.001 / TimeOfDay p. 34.
+// DPT_10001 represents DPT 10.001 (G) / DPT_TimeOfDay.
 // Weekday is NOT a golang Weekday, but a KNX Day [0,...,7].
 // It may be 0, indicating "no day" was provided.
 type DPT_10001 struct {
@@ -38,7 +39,7 @@ func (d *DPT_10001) Unpack(data []byte) error {
 	d.Seconds = uint8(data[3] & 0x3F)
 
 	if !d.IsValid() {
-		return fmt.Errorf("payload is out of range")
+		return ErrOutOfRange
 	}
 
 	return nil

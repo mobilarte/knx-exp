@@ -1,4 +1,5 @@
 // Copyright 2017 Ole Krüger.
+// Copyright 2022 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package dpt
@@ -40,12 +41,10 @@ func TestDPT_11001(t *testing.T) {
 					tm, _ := time.Parse("2006-01-02", dst.String())
 					r := tm.Format("2006-01-02")
 					if src.String() != dst.String() || dst.String() != r {
-						t.Errorf("Value \"%s\" is not a time of day! Original value was \"%s\".", dst, src)
+						t.Errorf("Value [%s] is not a valid date. Original value was [%s].", dst, src)
 					}
 				}
 			}
 		}
-
 	}
-
 }

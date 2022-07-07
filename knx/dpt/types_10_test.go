@@ -1,4 +1,5 @@
 // Copyright 2017 Ole Krüger.
+// Copyright 2022 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package dpt
@@ -25,7 +26,7 @@ func TestDPT_10001(t *testing.T) {
 				buf := src.Pack()
 				dst.Unpack(buf)
 				if dst.String() != src.String() {
-					t.Errorf("Value \"%s\" is not a time of day! Original value was \"%s\".", dst, src)
+					t.Errorf("Value [%s] is not a time of day. Original value was [%s].", dst, src)
 				}
 			}
 		}
@@ -42,7 +43,7 @@ func TestDPT_10001(t *testing.T) {
 		dst.Unpack(buf)
 		r := fmt.Sprintf("%s %02d:%02d:%02d", weekday[src.Weekday], src.Hour, src.Minutes, src.Seconds)
 		if dst.String() != r {
-			t.Errorf("Value \"%s\" is not a time of day! Original value was \"%s\".", dst, r)
+			t.Errorf("Value [%s] is not a time of day. Original value was [%s].", dst, r)
 		}
 	}
 }

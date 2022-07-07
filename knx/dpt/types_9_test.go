@@ -4,591 +4,66 @@
 package dpt
 
 import (
+	"fmt"
 	"testing"
-
-	"math"
-	"math/rand"
 )
 
-// Test DPT 9.001 (Temperature) with values within range
+// Test DPT 9.00x (F16)
 func TestDPT_9001(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9001
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760 - -273
-		value += -273
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9001(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9001! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
+	type DPT9 struct {
+		Dpv       DatapointValue
+		Min       float64
+		MinStr    string
+		Middle    float64
+		MiddleStr string
+		Max       float64
+		MaxStr    string
 	}
-}
-
-// Test DPT 9.002 (Temperature) with values within range
-func TestDPT_9002(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9002
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760 - -670760
-		value += -670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9002(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9002! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
+	var types_9 = []DPT9{
+		{new(DPT_9001), -273, "-273.00 °C", 0, "0.00 °C", 670433.28, "670433.28 °C"},
+		{new(DPT_9002), -671088.64, "-671088.64 K", 0, "0.00 K", 670433.28, "670433.28 K"},
+		{new(DPT_9003), -671088.64, "-671088.64 K/h", 0, "0.00 K/h", 670433.28, "670433.28 K/h"},
+		{new(DPT_9004), 0, "0.00 lux", 0, "0.00 lux", 670433.28, "670433.28 lux"},
+		{new(DPT_9005), 0, "0.00 m/s", 0, "0.00 m/s", 670433.28, "670433.28 m/s"},
+		{new(DPT_9006), 0, "0.00 Pa", 0, "0.00 Pa", 670433.28, "670433.28 Pa"},
+		{new(DPT_9007), 0, "0.00 %", 0, "0.00 %", 670433.28, "670433.28 %"},
+		{new(DPT_9008), 0, "0.00 ppm", 0, "0.00 ppm", 670433.28, "670433.28 ppm"},
+		{new(DPT_9009), 0, "0.00 m³/h", 0, "0.00 m³/h", 670433.28, "670433.28 m³/h"},
+		{new(DPT_9010), -671088.64, "-671088.64 s", 0, "0.00 s", 670433.28, "670433.28 s"},
+		{new(DPT_9011), -671088.64, "-671088.64 ms", 0, "0.00 ms", 670433.28, "670433.28 ms"},
+		{new(DPT_9020), -671088.64, "-671088.64 mV", 0, "0.00 mV", 670433.28, "670433.28 mV"},
+		{new(DPT_9021), -671088.64, "-671088.64 mA", 0, "0.00 mA", 670433.28, "670433.28 mA"},
+		{new(DPT_9022), -671088.64, "-671088.64 W/m²", 0, "0.00 W/m²", 670433.28, "670433.28 W/m²"},
+		{new(DPT_9023), -671088.64, "-671088.64 K/%", 0, "0.00 K/%", 670433.28, "670433.28 K/%"},
+		{new(DPT_9024), -671088.64, "-671088.64 kW", 0, "0.00 kW", 670433.28, "670433.28 kW"},
+		{new(DPT_9025), -671088.64, "-671088.64 l/h", 0, "0.00 l/h", 670433.28, "670433.28 l/h"},
+		{new(DPT_9026), -671088.64, "-671088.64 l/m²", 0, "0.00 l/m²", 670433.28, "670433.28 l/m²"},
+		{new(DPT_9027), -459.6, "-459.60 °F", 0, "0.00 °F", 670433.28, "670433.28 °F"},
+		{new(DPT_9028), 0, "0.00 km/h", 0, "0.00 km/h", 670433.28, "670433.28 km/h"},
+		{new(DPT_9029), 0, "0.00 g/m³", 0, "0.00 g/m³", 670433.28, "670433.28 g/m³"},
+		{new(DPT_9030), 0, "0.00 μg/m³", 0, "0.00 μg/m³", 670433.28, "670433.28 μg/m³"},
 	}
-}
 
-// Test DPT 9.003 (Temperature) with values within range
-func TestDPT_9003(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9003
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760 - -670760
-		value += -670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9003(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9003! Has value \"%s\".", value, src)
+	for _, e := range types_9 {
+		src := e.Dpv
+		if fmt.Sprintf("%s", src) != e.MiddleStr {
+			t.Errorf("%#v has wrong default (0) value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MiddleStr)
 		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
+
+		err := e.Dpv.Unpack(packF16(e.Min))
+		if err != nil {
+			t.Errorf("%v", err)
 		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
+		if fmt.Sprintf("%s", e.Dpv) != e.MinStr {
+			t.Errorf("%#v has wrong smallest value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MinStr)
 		}
-	}
-}
 
-// Test DPT 9.004 (Illumination) with values within range
-func TestDPT_9004(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9004
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9004(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9004! Has value \"%s\".", value, src)
+		err = e.Dpv.Unpack(packF16(e.Max))
+		if err != nil {
+			t.Errorf("%v", err)
 		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.005 (Wind Speed) with values within range
-func TestDPT_9005(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9005
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9005(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9005! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.006 (Pressure) with values within range
-func TestDPT_9006(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9006
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9006(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9006! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.007 (Humidity) with values within range
-func TestDPT_9007(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9007
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9007(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9007! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.008 (Air quality) with values within range
-func TestDPT_9008(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9008
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9008(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9008! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.010 (Time) with values within range
-func TestDPT_9010(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9010
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760 - -670760
-		value += -670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9010(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9010! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.011 (Time) with values within range
-func TestDPT_9011(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9011
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760 - -670760
-		value += -670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9011(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9011! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.020 (Volt) with values within range
-func TestDPT_9020(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9020
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760 - -670760
-		value += -670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9020(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9020! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.021 (Current) with values within range
-func TestDPT_9021(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9021
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760 - -670760
-		value += -670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9021(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9021! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.022 (Power Density) with values within range
-func TestDPT_9022(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9022
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760 - -670760
-		value += -670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9022(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9022! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.023 (Kelvin per Percent) with values within range
-func TestDPT_9023(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9023
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760 - -670760
-		value += -670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9023(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9023! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.024 (Power) with values within range
-func TestDPT_9024(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9024
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760 - -670760
-		value += -670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9024(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9024! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.025 (Volume Flow) with values within range
-func TestDPT_9025(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9025
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760 - -670760
-		value += -670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9025(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9025! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.026 (Rain amount) with values within range
-func TestDPT_9026(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9026
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760 - -670760
-		value += -670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9026(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9026! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.027 (Temperature) with values within range
-func TestDPT_9027(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9027
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760 - -459.6
-		value += -459.6
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9027(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9027! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
-		}
-	}
-}
-
-// Test DPT 9.028 (Wind Speed) with values within range
-func TestDPT_9028(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_9028
-
-	for i := 1; i <= 10; i++ {
-		value := rand.Float32()
-
-		// Scale the random number to the given range
-		value *= 670760
-
-		// Calculate the quantization error we expect
-		Q := get_float_quantization_error(value, 0.01, 2047)
-
-		// Pack and unpack to test value
-		src = DPT_9028(value)
-		if abs(float32(src)-value) > epsilon {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_9028! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if math.IsNaN(float64(dst)) {
-			t.Errorf("Value \"%s\" is not a valid number! Original value was \"%v\".", dst, value)
-		}
-		if abs(float32(dst)-value) > (Q + epsilon) {
-			t.Errorf("Value \"%s\" after pack/unpack above quantization noise! Original value was \"%v\", noise is \"%f\"", dst, value, Q)
+		if fmt.Sprintf("%s", e.Dpv) != e.MaxStr {
+			t.Errorf("%#v has wrong largest value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MaxStr)
 		}
 	}
 }

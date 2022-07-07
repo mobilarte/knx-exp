@@ -1,501 +1,56 @@
 // Copyright 2017 Ole Krüger.
+// Copyright 2022 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package dpt
 
 import (
+	"fmt"
 	"testing"
-
-	"math"
-	"math/rand"
 )
 
-// Test DPT 13.001 (counter value (pulses))
-func TestDPT_13001(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_13001
-
-	// Corner cases
-	for _, value := range []int32{math.MinInt32, math.MaxInt32} {
-		src = DPT_13001(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
+// Test DPT 13.xxx (V32)
+func TestDPT_13(t *testing.T) {
+	type DPT13 struct {
+		Dpv       DatapointValue
+		Min       int32
+		MinStr    string
+		Middle    int32
+		MiddleStr string
+		Max       int32
+		MaxStr    string
 	}
-
-	// Positive
-	for i := 1; i <= 10; i++ {
-		value := rand.Int31()
-
-		src = DPT_13001(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
+	var types_13 = []DPT13{
+		{new(DPT_13001), -2147483648, "-2147483648 counter pulses", 0, "0 counter pulses", 2147483647, "2147483647 counter pulses"},
+		{new(DPT_13002), -2147483648, "-2147483648 m³/h", 0, "0 m³/h", 2147483647, "2147483647 m³/h"},
+		{new(DPT_13010), -2147483648, "-2147483648 Wh", 0, "0 Wh", 2147483647, "2147483647 Wh"},
+		{new(DPT_13011), -2147483648, "-2147483648 VAh", 0, "0 VAh", 2147483647, "2147483647 VAh"},
+		{new(DPT_13012), -2147483648, "-2147483648 VARh", 0, "0 VARh", 2147483647, "2147483647 VARh"},
+		{new(DPT_13013), -2147483648, "-2147483648 kWh", 0, "0 kWh", 2147483647, "2147483647 kWh"},
+		{new(DPT_13014), -2147483648, "-2147483648 kVAh", 0, "0 kVAh", 2147483647, "2147483647 kVAh"},
+		{new(DPT_13015), -2147483648, "-2147483648 kVARh", 0, "0 kVARh", 2147483647, "2147483647 kVARh"},
+		{new(DPT_13016), -2147483648, "-2147483648 MWh", 0, "0 MWh", 2147483647, "2147483647 MWh"},
 	}
-
-	// Negative
-	for i := 1; i <= 10; i++ {
-		value := -rand.Int31()
-
-		src = DPT_13001(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
+	for _, e := range types_13 {
+		src := e.Dpv
+		if fmt.Sprintf("%s", src) != e.MiddleStr {
+			t.Errorf("%#v has wrong default (0) value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MiddleStr)
 		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-}
 
-// Test DPT 13.002 (flow rate (m^3/h))
-func TestDPT_13002(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_13002
-
-	// Corner cases
-	for _, value := range []int32{math.MinInt32, math.MaxInt32} {
-		src = DPT_13002(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
+		err := e.Dpv.Unpack(packV32(e.Min))
+		if err != nil {
+			t.Errorf("%v", err)
 		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
+		if fmt.Sprintf("%s", e.Dpv) != e.MinStr {
+			t.Errorf("%#v has wrong smallest value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MinStr)
 		}
-	}
 
-	// Positive
-	for i := 1; i <= 10; i++ {
-		value := rand.Int31()
-
-		src = DPT_13002(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
+		err = e.Dpv.Unpack(packV32(e.Max))
+		if err != nil {
+			t.Errorf("%v", err)
 		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Negative
-	for i := 1; i <= 10; i++ {
-		value := -rand.Int31()
-
-		src = DPT_13002(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-}
-
-// Test DPT 13.010 (active energy (Wh))
-func TestDPT_13010(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_13010
-
-	// Corner cases
-	for _, value := range []int32{math.MinInt32, math.MaxInt32} {
-		src = DPT_13010(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Positive
-	for i := 1; i <= 10; i++ {
-		value := rand.Int31()
-
-		src = DPT_13010(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Negative
-	for i := 1; i <= 10; i++ {
-		value := -rand.Int31()
-
-		src = DPT_13010(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-}
-
-// Test DPT 13.011 (apparant energy (VAh))
-func TestDPT_13011(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_13011
-
-	// Corner cases
-	for _, value := range []int32{math.MinInt32, math.MaxInt32} {
-		src = DPT_13011(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Positive
-	for i := 1; i <= 10; i++ {
-		value := rand.Int31()
-
-		src = DPT_13011(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Negative
-	for i := 1; i <= 10; i++ {
-		value := -rand.Int31()
-
-		src = DPT_13011(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-}
-
-// Test DPT 13.012 (reactive energy (VARh))
-func TestDPT_13012(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_13012
-
-	// Corner cases
-	for _, value := range []int32{math.MinInt32, math.MaxInt32} {
-		src = DPT_13012(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Positive
-	for i := 1; i <= 10; i++ {
-		value := rand.Int31()
-
-		src = DPT_13012(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Negative
-	for i := 1; i <= 10; i++ {
-		value := -rand.Int31()
-
-		src = DPT_13012(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-}
-
-// Test DPT 13.013 (active energy (kWh))
-func TestDPT_13013(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_13013
-
-	// Corner cases
-	for _, value := range []int32{math.MinInt32, math.MaxInt32} {
-		src = DPT_13013(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Positive
-	for i := 1; i <= 10; i++ {
-		value := rand.Int31()
-
-		src = DPT_13013(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Negative
-	for i := 1; i <= 10; i++ {
-		value := -rand.Int31()
-
-		src = DPT_13013(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-}
-
-// Test DPT 13.014 (apparant energy (kVAh))
-func TestDPT_13014(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_13014
-
-	// Corner cases
-	for _, value := range []int32{math.MinInt32, math.MaxInt32} {
-		src = DPT_13014(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Positive
-	for i := 1; i <= 10; i++ {
-		value := rand.Int31()
-
-		src = DPT_13014(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Negative
-	for i := 1; i <= 10; i++ {
-		value := -rand.Int31()
-
-		src = DPT_13014(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-}
-
-// Test DPT 13.015 (reactive energy (kVARh))
-func TestDPT_13015(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_13015
-
-	// Corner cases
-	for _, value := range []int32{math.MinInt32, math.MaxInt32} {
-		src = DPT_13015(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Positive
-	for i := 1; i <= 10; i++ {
-		value := rand.Int31()
-
-		src = DPT_13015(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Negative
-	for i := 1; i <= 10; i++ {
-		value := -rand.Int31()
-
-		src = DPT_13015(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-}
-
-// Test DPT 13.016 (apparant energy (MWh))
-func TestDPT_13016(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_13016
-
-	// Corner cases
-	for _, value := range []int32{math.MinInt32, math.MaxInt32} {
-		src = DPT_13016(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Positive
-	for i := 1; i <= 10; i++ {
-		value := rand.Int31()
-
-		src = DPT_13016(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Negative
-	for i := 1; i <= 10; i++ {
-		value := -rand.Int31()
-
-		src = DPT_13016(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-}
-
-// Test DPT 13.100 (delta time (s))
-func TestDPT_13100(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_13100
-
-	// Corner cases
-	for _, value := range []int32{math.MinInt32, math.MaxInt32} {
-		src = DPT_13100(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Positive
-	for i := 1; i <= 10; i++ {
-		value := rand.Int31()
-
-		src = DPT_13100(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
-		}
-	}
-
-	// Negative
-	for i := 1; i <= 10; i++ {
-		value := -rand.Int31()
-
-		src = DPT_13100(value)
-		if int32(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if int32(dst) != value {
-			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, value)
+		if fmt.Sprintf("%s", e.Dpv) != e.MaxStr {
+			t.Errorf("%#v has wrong largest value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MaxStr)
 		}
 	}
 }

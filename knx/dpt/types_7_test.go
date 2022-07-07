@@ -4,239 +4,75 @@
 package dpt
 
 import (
+	"fmt"
 	"testing"
-
-	"math"
-	"math/rand"
 )
 
-// Test DPT 7.001 (pulses) with values within range
-func TestDPT_7001(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_7001
+// Test DPT 7.xxx (U16)
+func TestDPT_7(t *testing.T) {
+	type DPT7 struct {
+		Dpv    DatapointValue
+		Min    uint16
+		MinStr string
+		Max    uint16
+		MaxStr string
+	}
 
-	for i := 1; i <= 10; i++ {
-		value := uint16(rand.Uint32() % math.MaxUint16)
-
-		// Pack and unpack to test value
-		src = DPT_7001(value)
-		if uint16(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_7001! Has value \"%s\".", value, src)
+	var types_7 = []DPT7{
+		{new(DPT_7001), 0, "0 pulses", 65535, "65535 pulses"},
+		{new(DPT_7002), 0, "0 ms", 65535, "65535 ms"},
+		{new(DPT_7005), 0, "0 s", 65535, "65535 s"},
+		{new(DPT_7006), 0, "0 min", 65535, "65535 min"},
+		{new(DPT_7007), 0, "0 h", 65535, "65535 h"},
+		{new(DPT_7010), 0, "0", 65535, "65535"},
+		{new(DPT_7011), 0, "0 mm", 65535, "65535 mm"},
+		{new(DPT_7012), 0, "0", 65535, "65535 mA"},
+		{new(DPT_7013), 0, "0 lux", 65535, "65535 lux"},
+		{new(DPT_7600), 0, "0 K", 65535, "65535 K"},
+	}
+	for _, e := range types_7 {
+		src := e.Dpv
+		if fmt.Sprintf("%s", src) != e.MinStr {
+			t.Errorf("%#v has wrong default value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MinStr)
 		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if uint16(dst) != value {
-			t.Errorf("Value \"%s\" after pack/unpack different from Original value. Was \"%v\"", dst, value)
+
+		err := e.Dpv.Unpack(packU16(e.Max))
+		if err != nil {
+			if fmt.Sprintf("%v", err) != "payload is not valid" {
+				t.Errorf("%v", err)
+			}
+		}
+		if fmt.Sprintf("%s", e.Dpv) != e.MaxStr {
+			t.Errorf("%#v has wrong true value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MaxStr)
 		}
 	}
-}
 
-// Test DPT 7.002 (ms) with values within range
-func TestDPT_7002(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_7002
-
-	for i := 1; i <= 10; i++ {
-		value := uint16(rand.Uint32() % math.MaxUint16)
-
-		// Pack and unpack to test value
-		src = DPT_7002(value)
-		if uint16(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_7002! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if uint16(dst) != value {
-			t.Errorf("Value \"%s\" after pack/unpack different from Original value. Was \"%v\"", dst, value)
-		}
+	type DPT7SP struct {
+		Dpv    DatapointValue
+		Min    float32
+		MinStr string
+		Max    float32
+		MaxStr string
 	}
-}
 
-// Test DPT 7.003 (s) with values within range
-func TestDPT_7003(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_7003
-
-	for i := 1; i <= 10; i++ {
-		value := uint16(rand.Uint32() % math.MaxUint16)
-
-		// Pack and unpack to test value
-		src = DPT_7003(value)
-		if uint16(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_7003! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if uint16(dst) != value {
-			t.Errorf("Value \"%s\" after pack/unpack different from Original value. Was \"%v\"", dst, value)
-		}
+	var types_7sp = []DPT7SP{
+		{new(DPT_7003), 0, "0 ms", 655.35, "655350 ms"},
+		{new(DPT_7004), 0, "0 ms", 6553.5, "6553500 ms"},
 	}
-}
 
-// Test DPT 7.004 (s) with values within range
-func TestDPT_7004(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_7004
-
-	for i := 1; i <= 10; i++ {
-		value := uint16(rand.Uint32() % math.MaxUint16)
-
-		// Pack and unpack to test value
-		src = DPT_7004(value)
-		if uint16(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_7004! Has value \"%s\".", value, src)
+	for _, e := range types_7sp {
+		src := e.Dpv
+		if fmt.Sprintf("%s", src) != e.MinStr {
+			t.Errorf("%#v has wrong default value \"%v\"! Should be \"%s\".", e.Dpv, e.Dpv, e.MinStr)
 		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if uint16(dst) != value {
-			t.Errorf("Value \"%s\" after pack/unpack different from Original value. Was \"%v\"", dst, value)
+
+		// Pack the largest number, then unpack it
+		err := e.Dpv.Unpack(DPT_7001(65535).Pack())
+		if err != nil {
+			t.Errorf("%v", err)
 		}
-	}
-}
-
-// Test DPT 7.005 (s) with values within range
-func TestDPT_7005(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_7005
-
-	for i := 1; i <= 10; i++ {
-		value := uint16(rand.Uint32() % math.MaxUint16)
-
-		// Pack and unpack to test value
-		src = DPT_7005(value)
-		if uint16(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_7005! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if uint16(dst) != value {
-			t.Errorf("Value \"%s\" after pack/unpack different from Original value. Was \"%v\"", dst, value)
-		}
-	}
-}
-
-// Test DPT 7.006 (m) with values within range
-func TestDPT_7006(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_7006
-
-	for i := 1; i <= 10; i++ {
-		value := uint16(rand.Uint32() % math.MaxUint16)
-
-		// Pack and unpack to test value
-		src = DPT_7006(value)
-		if uint16(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_7006! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if uint16(dst) != value {
-			t.Errorf("Value \"%s\" after pack/unpack different from Original value. Was \"%v\"", dst, value)
-		}
-	}
-}
-
-// Test DPT 7.007 (h) with values within range
-func TestDPT_7007(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_7007
-
-	for i := 1; i <= 10; i++ {
-		value := uint16(rand.Uint32() % math.MaxUint16)
-
-		// Pack and unpack to test value
-		src = DPT_7007(value)
-		if uint16(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_7007! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if uint16(dst) != value {
-			t.Errorf("Value \"%s\" after pack/unpack different from Original value. Was \"%v\"", dst, value)
-		}
-	}
-}
-
-// Test DPT 7.010 with values within range
-func TestDPT_7010(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_7010
-
-	for i := 1; i <= 10; i++ {
-		value := uint16(rand.Uint32() % math.MaxUint16)
-
-		// Pack and unpack to test value
-		src = DPT_7010(value)
-		if uint16(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_7010! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if uint16(dst) != value {
-			t.Errorf("Value \"%s\" after pack/unpack different from Original value. Was \"%v\"", dst, value)
-		}
-	}
-}
-
-// Test DPT 7.011 (mm) with values within range
-func TestDPT_7011(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_7011
-
-	for i := 1; i <= 10; i++ {
-		value := uint16(rand.Uint32() % math.MaxUint16)
-
-		// Pack and unpack to test value
-		src = DPT_7011(value)
-		if uint16(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_7011! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if uint16(dst) != value {
-			t.Errorf("Value \"%s\" after pack/unpack different from Original value. Was \"%v\"", dst, value)
-		}
-	}
-}
-
-// Test DPT 7.012 (mA) with values within range
-func TestDPT_7012(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_7012
-
-	for i := 1; i <= 10; i++ {
-		value := uint16(rand.Uint32() % math.MaxUint16)
-
-		// Pack and unpack to test value
-		src = DPT_7012(value)
-		if uint16(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_7012! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if uint16(dst) != value {
-			t.Errorf("Value \"%s\" after pack/unpack different from Original value. Was \"%v\"", dst, value)
-		}
-	}
-}
-
-// Test DPT 7.013 (lux) with values within range
-func TestDPT_7013(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_7013
-
-	for i := 1; i <= 10; i++ {
-		value := uint16(rand.Uint32() % math.MaxUint16)
-
-		// Pack and unpack to test value
-		src = DPT_7013(value)
-		if uint16(src) != value {
-			t.Errorf("Assignment of value \"%v\" failed for source of type DPT_7013! Has value \"%s\".", value, src)
-		}
-		buf = src.Pack()
-		dst.Unpack(buf)
-		if uint16(dst) != value {
-			t.Errorf("Value \"%s\" after pack/unpack different from Original value. Was \"%v\"", dst, value)
+		if fmt.Sprintf("%s", e.Dpv) != e.MaxStr {
+			t.Errorf("%#v has wrong true value \"%v\"! Should be \"%s\".", e.Dpv, e.Dpv, e.MaxStr)
 		}
 	}
 }

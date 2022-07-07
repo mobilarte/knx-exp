@@ -1,4 +1,5 @@
 // Copyright 2017 Ole Krüger.
+// Copyright 2022 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package dpt
@@ -7,7 +8,7 @@ import (
 	"unicode"
 )
 
-// DPT_16000 represents DPT 16.000 / String ASCII.
+// DPT_16000 represents DPT 16.000 (G) / DPT_String_ASCII.
 // The string should be ASCII and contain at most 14 chars.
 // A string longer than 14 chars will be silently truncated.
 // Non-ASCII chars will be replaced with a space = 0x20.
@@ -63,7 +64,7 @@ func (d DPT_16000) String() string {
 	return string(d)
 }
 
-// DPT_16001 represents DPT 16.001 / String 8859-1.
+// DPT_16001 represents DPT 16.001 (G) / DPT_String_8859_1.
 // The string must be ISO-8859-1 and contain at most 14 chars.
 // A string longer than 14 chars will be silently truncated.
 // Non-ISO-8859-1 chars will be replaced with a space = 0x20.

@@ -1,4 +1,5 @@
 // Copyright 2017 Ole Krüger.
+// Copyright 2022 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package dpt
@@ -8,7 +9,7 @@ import (
 	"time"
 )
 
-// DPT_11001 represents DPT 11.001 / Date p 34.
+// DPT_11001 represents DPT 11.001 (G) / DPT_Date.
 // Valid years are limited to 1990 - 2089 for the Year field.
 type DPT_11001 struct {
 	Year  uint16
@@ -45,7 +46,7 @@ func (d *DPT_11001) Unpack(data []byte) error {
 	d.Year = uint16(data[3] & 0x7F)
 
 	if d.Year > 99 {
-		return fmt.Errorf("payload is out of range")
+		return ErrOutOfRange
 	}
 
 	if d.Year == 0 && d.Month == 0 && d.Day == 0 {
@@ -61,7 +62,7 @@ func (d *DPT_11001) Unpack(data []byte) error {
 	}
 
 	if !d.IsValid() {
-		return fmt.Errorf("payload is out of range")
+		return ErrOutOfRange
 	}
 
 	return nil

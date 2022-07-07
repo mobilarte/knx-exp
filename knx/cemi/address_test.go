@@ -42,6 +42,7 @@ func Test_IndividualAddress(t *testing.T) {
 	}
 }
 
+// Test Group Address
 func Test_GroupAddress(t *testing.T) {
 	type Addr struct {
 		Src   string

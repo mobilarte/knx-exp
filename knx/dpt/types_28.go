@@ -3,11 +3,12 @@
 
 package dpt
 
-// DPT_28001 represents DPT 28.001 / Var String UTF-8.
+// DPT_28001 represents DPT 28.001 (G) / DPT_UTF-8.
+// String longer than 254 chars will be truncated.
 type DPT_28001 string
 
 func (d DPT_28001) Pack() []byte {
-	// len(d) is gives us the number of bytes in d
+	// len(d) gives us the number of bytes in d
 	var buf = make([]byte, 1, len(d)+2)
 
 	buf = append(buf, d...)

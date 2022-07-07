@@ -4,7 +4,8 @@ import (
 	"fmt"
 )
 
-// DPT_251600 represents DPT 251.600 / Colour RGBW - RGBW value 4x(0..100%) / U8 U8 U8 U8 r8 r4B4
+// DPT_251600 represents DPT 251.600 (FB) / DPT_Colour_RGBW.
+// Colour RGBW - RGBW value 4x(0..100%) / U8 U8 U8 U8 r8 r4B4
 type DPT_251600 struct {
 	Red        uint8
 	Green      uint8
@@ -18,7 +19,7 @@ type DPT_251600 struct {
 
 func (d DPT_251600) Pack() []byte {
 
-	validBits := packB4([4]bool{d.WhiteValid, d.BlueValid, d.GreenValid, d.RedValid})
+	validBits := packB4(d.RedValid, d.GreenValid, d.BlueValid, d.WhiteValid)
 
 	return []byte{0, d.Red, d.Green, d.Blue, d.White, uint8(0), validBits}
 }
@@ -31,7 +32,7 @@ func (d *DPT_251600) Unpack(data []byte) error {
 
 	var redValid, greenValid, blueValid, whiteValid bool
 
-	err := unpackB4(data[6], &whiteValid, &blueValid, &greenValid, &redValid)
+	err := unpackB4(data[6], &redValid, &greenValid, &blueValid, &whiteValid)
 
 	if err != nil {
 		return ErrInvalidLength
@@ -55,5 +56,18 @@ func (d DPT_251600) Unit() string {
 }
 
 func (d DPT_251600) String() string {
-	return fmt.Sprintf("Red: %d Green: %d Blue: %d White: %d RedValid: %t, GreenValid: %t, BlueValid: %t, WhiteValid: %t", d.Red, d.Green, d.Blue, d.White, d.RedValid, d.GreenValid, d.BlueValid, d.WhiteValid)
+	var valid uint8
+	if d.RedValid {
+		valid |= 0x8
+	}
+	if d.GreenValid {
+		valid |= 0x4
+	}
+	if d.BlueValid {
+		valid |= 0x2
+	}
+	if d.WhiteValid {
+		valid |= 0x1
+	}
+	return fmt.Sprintf("%d %d %d %d | %04b", d.Red, d.Green, d.Blue, d.White, valid)
 }

@@ -31,16 +31,16 @@ func TestDPT_1(t *testing.T) {
 		{new(DPT_1012), "Not inverted", "Inverted"},
 		{new(DPT_1013), "Start/stop", "Cyclically"},
 		{new(DPT_1014), "Fixed", "Calculated"},
-		{new(DPT_1015), "no action", "reset command"},
-		{new(DPT_1016), "no action", "acknowledge command"},
-		{new(DPT_1017), "trigger", "trigger"},
-		{new(DPT_1018), "not occupied", "occupied"},
-		{new(DPT_1019), "closed", "open"},
+		{new(DPT_1015), "No action", "Reset command"},
+		{new(DPT_1016), "No action", "Acknowledge"},
+		{new(DPT_1017), "Trigger", "Trigger"},
+		{new(DPT_1018), "Not occupied", "Occupied"},
+		{new(DPT_1019), "Closed", "Open"},
 		{new(DPT_1021), "OR", "AND"},
-		{new(DPT_1022), "scene A", "scene B"},
-		{new(DPT_1023), "only move Up/Down mode", "move Up/Down + StepStop mode"},
+		{new(DPT_1022), "Scene A", "Scene B"},
+		{new(DPT_1023), "Only move Up/Down mode", "Move Up/Down + StepStop mode"},
 		{new(DPT_1024), "Day", "Night"},
-		{new(DPT_1100), "cooling", "heating"}}
+		{new(DPT_1100), "Cooling", "Heating"}}
 
 	for _, e := range types_1 {
 		src := e.Dpv

@@ -12,7 +12,6 @@ func TestDPT_251600(t *testing.T) {
 	sources := []DPT_251600{
 		{Red: 255, Green: 96, Blue: 0, White: 18, RedValid: true, GreenValid: true, BlueValid: true, WhiteValid: true},
 		{Red: 255, Green: 96, Blue: 0, White: 18, RedValid: false, GreenValid: false, BlueValid: false, WhiteValid: false},
-
 		{Red: 255, Green: 96, Blue: 0, White: 18, RedValid: false, GreenValid: true, BlueValid: true, WhiteValid: true},
 		{Red: 255, Green: 96, Blue: 0, White: 18, RedValid: true, GreenValid: false, BlueValid: true, WhiteValid: true},
 		{Red: 255, Green: 96, Blue: 0, White: 18, RedValid: true, GreenValid: true, BlueValid: false, WhiteValid: true},
@@ -26,7 +25,7 @@ func TestDPT_251600(t *testing.T) {
 		if !reflect.DeepEqual(src, dst) {
 			fmt.Printf("%+v\n", src)
 			fmt.Printf("%+v\n", dst)
-			t.Errorf("Value \"%s\" after pack/unpack for DPT_251600 differs. Original value was \"%v\"!", dst, src)
+			t.Errorf("Value [%s] after pack/unpack for DPT_251600 differs. Original value was [%v].", dst, src)
 		}
 	}
 }

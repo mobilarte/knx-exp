@@ -7,11 +7,11 @@ package dpt
 type DPT_1001 bool
 
 func (d DPT_1001) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1001) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1001) Unit() string {
@@ -30,11 +30,11 @@ func (d DPT_1001) String() string {
 type DPT_1002 bool
 
 func (d DPT_1002) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1002) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1002) Unit() string {
@@ -53,11 +53,11 @@ func (d DPT_1002) String() string {
 type DPT_1003 bool
 
 func (d DPT_1003) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1003) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1003) Unit() string {
@@ -76,11 +76,11 @@ func (d DPT_1003) String() string {
 type DPT_1004 bool
 
 func (d DPT_1004) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1004) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1004) Unit() string {
@@ -99,11 +99,11 @@ func (d DPT_1004) String() string {
 type DPT_1005 bool
 
 func (d DPT_1005) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1005) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1005) Unit() string {
@@ -122,11 +122,11 @@ func (d DPT_1005) String() string {
 type DPT_1006 bool
 
 func (d DPT_1006) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1006) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1006) Unit() string {
@@ -145,11 +145,11 @@ func (d DPT_1006) String() string {
 type DPT_1007 bool
 
 func (d DPT_1007) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1007) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1007) Unit() string {
@@ -168,11 +168,11 @@ func (d DPT_1007) String() string {
 type DPT_1008 bool
 
 func (d DPT_1008) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1008) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1008) Unit() string {
@@ -191,11 +191,11 @@ func (d DPT_1008) String() string {
 type DPT_1009 bool
 
 func (d DPT_1009) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1009) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1009) Unit() string {
@@ -214,11 +214,11 @@ func (d DPT_1009) String() string {
 type DPT_1010 bool
 
 func (d DPT_1010) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1010) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1010) Unit() string {
@@ -237,11 +237,11 @@ func (d DPT_1010) String() string {
 type DPT_1011 bool
 
 func (d DPT_1011) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1011) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1011) Unit() string {
@@ -260,11 +260,11 @@ func (d DPT_1011) String() string {
 type DPT_1012 bool
 
 func (d DPT_1012) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1012) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1012) Unit() string {
@@ -283,11 +283,11 @@ func (d DPT_1012) String() string {
 type DPT_1013 bool
 
 func (d DPT_1013) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1013) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1013) Unit() string {
@@ -306,11 +306,11 @@ func (d DPT_1013) String() string {
 type DPT_1014 bool
 
 func (d DPT_1014) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1014) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1014) Unit() string {
@@ -329,11 +329,11 @@ func (d DPT_1014) String() string {
 type DPT_1015 bool
 
 func (d DPT_1015) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1015) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1015) Unit() string {
@@ -342,9 +342,9 @@ func (d DPT_1015) Unit() string {
 
 func (d DPT_1015) String() string {
 	if d {
-		return "reset command"
+		return "Reset command"
 	} else {
-		return "no action"
+		return "No action"
 	}
 }
 
@@ -352,11 +352,11 @@ func (d DPT_1015) String() string {
 type DPT_1016 bool
 
 func (d DPT_1016) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1016) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1016) Unit() string {
@@ -365,9 +365,9 @@ func (d DPT_1016) Unit() string {
 
 func (d DPT_1016) String() string {
 	if d {
-		return "acknowledge command"
+		return "Acknowledge"
 	} else {
-		return "no action"
+		return "No action"
 	}
 }
 
@@ -375,11 +375,11 @@ func (d DPT_1016) String() string {
 type DPT_1017 bool
 
 func (d DPT_1017) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1017) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1017) Unit() string {
@@ -388,9 +388,9 @@ func (d DPT_1017) Unit() string {
 
 func (d DPT_1017) String() string {
 	if d {
-		return "trigger"
+		return "Trigger"
 	} else {
-		return "trigger"
+		return "Trigger"
 	}
 }
 
@@ -398,11 +398,11 @@ func (d DPT_1017) String() string {
 type DPT_1018 bool
 
 func (d DPT_1018) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1018) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1018) Unit() string {
@@ -411,9 +411,9 @@ func (d DPT_1018) Unit() string {
 
 func (d DPT_1018) String() string {
 	if d {
-		return "occupied"
+		return "Occupied"
 	} else {
-		return "not occupied"
+		return "Not occupied"
 	}
 }
 
@@ -421,11 +421,11 @@ func (d DPT_1018) String() string {
 type DPT_1019 bool
 
 func (d DPT_1019) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1019) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1019) Unit() string {
@@ -434,9 +434,9 @@ func (d DPT_1019) Unit() string {
 
 func (d DPT_1019) String() string {
 	if d {
-		return "open"
+		return "Open"
 	} else {
-		return "closed"
+		return "Closed"
 	}
 }
 
@@ -444,11 +444,11 @@ func (d DPT_1019) String() string {
 type DPT_1021 bool
 
 func (d DPT_1021) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1021) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1021) Unit() string {
@@ -467,11 +467,11 @@ func (d DPT_1021) String() string {
 type DPT_1022 bool
 
 func (d DPT_1022) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1022) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1022) Unit() string {
@@ -480,9 +480,9 @@ func (d DPT_1022) Unit() string {
 
 func (d DPT_1022) String() string {
 	if d {
-		return "scene B"
+		return "Scene B"
 	} else {
-		return "scene A"
+		return "Scene A"
 	}
 }
 
@@ -490,11 +490,11 @@ func (d DPT_1022) String() string {
 type DPT_1023 bool
 
 func (d DPT_1023) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1023) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1023) Unit() string {
@@ -503,9 +503,9 @@ func (d DPT_1023) Unit() string {
 
 func (d DPT_1023) String() string {
 	if d {
-		return "move Up/Down + StepStop mode"
+		return "Move Up/Down + StepStop mode"
 	} else {
-		return "only move Up/Down mode"
+		return "Only move Up/Down mode"
 	}
 }
 
@@ -513,11 +513,11 @@ func (d DPT_1023) String() string {
 type DPT_1024 bool
 
 func (d DPT_1024) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1024) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1024) Unit() string {
@@ -536,11 +536,11 @@ func (d DPT_1024) String() string {
 type DPT_1100 bool
 
 func (d DPT_1100) Pack() []byte {
-	return packB1(bool(d))
+	return packB1(d)
 }
 
 func (d *DPT_1100) Unpack(data []byte) error {
-	return unpackB1(data, (*bool)(d))
+	return unpackB1(data, d)
 }
 
 func (d DPT_1100) Unit() string {
@@ -549,8 +549,8 @@ func (d DPT_1100) Unit() string {
 
 func (d DPT_1100) String() string {
 	if d {
-		return "heating"
+		return "Heating"
 	} else {
-		return "cooling"
+		return "Cooling"
 	}
 }
