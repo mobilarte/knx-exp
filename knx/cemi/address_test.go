@@ -1,4 +1,4 @@
-// Copyright (c) 2022 mobilarte
+// Copyright (c) 2022 mobilarte.
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package cemi
@@ -37,7 +37,7 @@ func Test_IndividualAddress(t *testing.T) {
 	for _, a := range addrs {
 		_, err := NewIndividualAddrString(a.Src)
 		if err != nil && a.Valid {
-			t.Errorf("%#v has error.", a.Src)
+			t.Errorf("%#v has error %s.", a.Src, err)
 		}
 	}
 }
