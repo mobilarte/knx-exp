@@ -43,19 +43,22 @@ jobs:
             exit 1
           fi
   Staticchek:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["windows-latest", "ubuntu-latest"]
+        go: ["1.18.2"]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
+      - uses: WillAbides/setup-go-faster@v1.7.0
+        with:
+          go-version: ${{ matrix.go }}
+      - run: "go vet ./..."
       - uses: dominikh/staticcheck-action@v1.2.0
         with:
+          install-go: false
           version: "2022.1.1"
-  Vet:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "^1.18.2"
-      - run: go vet ./...
+          cache-key: ""
