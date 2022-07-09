@@ -17,5 +17,5 @@ The package structure is the same as in the original repository.
  **knx/dpt**       | Datapoint types
  **knx/cemi**      | cEMI-encoded frames
 
-Packages work only with `Go ^1.18.x`, because **Type Parameters** are used in `dpt\formats.go`.
+Packages are only tested with `Go ^1.18.3` (see Actions), because **Type Parameters** are used in `dpt\formats.go`.
 
