@@ -8,33 +8,41 @@ on:
     - cron: "15 6 1,15 * *"
 jobs:
   Build:
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        go:
-          - "^1.18.2"
-        stable:
-          - true
+        os: ["ubuntu-latest"]
+        go: ["1.18.3"]
         may-fail:
           - false
+    runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.may-fail }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
         with:
-          go-version: "${{ matrix.go }}"
-          stable: ${{ matrix.stable }}
+          fetch-depth: 1
+      - uses: WillAbides/setup-go-faster@v1.7.0
+        with:
+          go-version: ${{ matrix.go }}
       - run: go version
       - run: go build -v ./...
       - run: go test -race -parallel 4 -timeout 30s -v ./...
   Format:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest"]
+        go: ["1.18.3"]
+        may-fail:
+          - false
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
         with:
-          go-version: "^1.18.2"
+          fetch-depth: 1
+      - uses: WillAbides/setup-go-faster@v1.7.0
+        with:
+          go-version: ${{ matrix.go }}
       - run: |
           unformatted=$(gofmt -l .)
           if [[ ! -z "$unformatted" ]]; then
@@ -42,12 +50,12 @@ jobs:
             echo $unformatted
             exit 1
           fi
-  Staticchek:
+  Staticcheck:
     strategy:
       fail-fast: false
       matrix:
         os: ["windows-latest", "ubuntu-latest"]
-        go: ["1.18.2"]
+        go: ["1.18.3"]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
