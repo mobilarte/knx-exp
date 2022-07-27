@@ -159,9 +159,9 @@ func serveUDPSocket(conn *net.UDPConn, addr *net.UDPAddr, inbound chan<- Service
 			return
 		}
 
-		// Discard frames shorter than a KNXnet/IP header.
-		if length < 10 {
-			util.Log(conn, "Short frame discarded")
+		// Discard empty frames, but log.
+		if length == 0 {
+			util.Log(conn, "Empty frame discarded")
 			continue
 		}
 
