@@ -151,7 +151,7 @@ func (d DPT_9004) Unit() string {
 }
 
 func (d DPT_9004) String() string {
-	return fmt.Sprintf("%.2f lux", float64(d))
+	return fmt.Sprintf("%.2f lx", float64(d))
 }
 
 // DPT_9005 represents DPT 9.005 (G) / DPT_Value_Wsp.

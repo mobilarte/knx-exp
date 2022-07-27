@@ -232,11 +232,11 @@ func (d *DPT_7013) Unpack(data []byte) error {
 }
 
 func (d DPT_7013) Unit() string {
-	return "lux"
+	return "lx"
 }
 
 func (d DPT_7013) String() string {
-	return fmt.Sprintf("%d lux", uint16(d))
+	return fmt.Sprintf("%d lx", uint16(d))
 }
 
 // DPT_7600 represents DPT 7.600 (FB) / DPT_Absolute_Colour_Temperature.
