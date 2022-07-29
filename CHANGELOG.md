@@ -15,11 +15,13 @@ This log file describes briefly the changes made to code as of 2022-07-01 in chr
     * Rewrote all DPT tests, added many new DPTs, fixed ranges according to [03_07_02-Datapoint-Types-v02.02.01-AS.pdf](https://www.knx.org/wAssets/docs/downloads/Certification/Interworking-Datapoint-types/03_07_02-Datapoint-Types-v02.02.01-AS.pdf).
 
     * Rewrote `dpt/types_registry.go`, no need for `setup()`.
+
+    * Rewrote github actions.
  
  
 * Major changes [To be added shortly]
 
-    * MulticastLoopback option to routing. Investigate how Go handels multicast, some strange behaviour like multicast is forwarded to all interfaces.
+    * MulticastLoopback option to routing. Investigate how Go handles multicast, some strange behaviour like multicast is forwarded to all interfaces on Windows.
 
     * TCP connections for tunnelling.
 
