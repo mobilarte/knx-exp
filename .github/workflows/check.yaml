@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        go: ["1.18.3"]
+        go: ["1.19"]
         may-fail:
           - false
     runs-on: ${{ matrix.os }}
@@ -32,7 +32,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        go: ["1.18.3"]
+        go: ["1.19"]
         may-fail:
           - false
     runs-on: ${{ matrix.os }}
@@ -47,7 +47,8 @@ jobs:
           unformatted=$(gofmt -l .)
           if [[ ! -z "$unformatted" ]]; then
             echo "Files need formatting!"
-            echo $unformatted
+            gofmt -w .
+            git diff
             exit 1
           fi
   Staticcheck:
@@ -55,7 +56,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["windows-latest", "ubuntu-latest"]
-        go: ["1.18.3"]
+        go: ["1.19"]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
