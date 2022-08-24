@@ -41,11 +41,12 @@ func Test_IndividualAddresses(t *testing.T) {
 
 	for _, a := range addrs {
 		ia, err := NewIndividualAddrString(a.Src)
-		if err != nil && a.Valid {
-			t.Errorf("%#v has error %s.", a.Src, err)
-		}
-		if ia.String() != a.Printed {
-			t.Errorf("%#v wrongly parsed.", a.Src)
+		if a.Valid {
+			if err != nil {
+				t.Errorf("%#v has error %s.", a.Src, err)
+			} else if ia.String() != a.Printed {
+				t.Errorf("%#v wrongly parsed.", a.Src)
+			}
 		}
 	}
 }
@@ -72,11 +73,12 @@ func Test_GroupAddresses(t *testing.T) {
 
 	for _, a := range addrs {
 		ga, err := NewGroupAddrString(a.Src)
-		if a.Valid && err != nil {
-			t.Errorf("%#v has error %s.", a.Src, err)
-		}
-		if ga.String() != a.Printed {
-			t.Errorf("%#v wrongly parsed.", a.Src)
+		if a.Valid {
+			if err != nil {
+				t.Errorf("%#v has error %s.", a.Src, err)
+			} else if ga.String() != a.Printed {
+				t.Errorf("%#v wrongly parsed.", a.Src)
+			}
 		}
 	}
 }
