@@ -3,6 +3,14 @@ package dpt
 // DPT_20102 represents DPT 20.102 (HVAC) / DPT_HVACMode.
 type DPT_20102 uint8
 
+const (
+	Auto               DPT_20102 = 0
+	Comfort            DPT_20102 = 1
+	Standby            DPT_20102 = 2
+	Economy            DPT_20102 = 3
+	BuildingProtection DPT_20102 = 4
+)
+
 func (d DPT_20102) Pack() []byte {
 	return packU8(uint8(d))
 }
@@ -16,22 +24,22 @@ func (d DPT_20102) Unit() string {
 }
 
 func (d DPT_20102) IsValid() bool {
-	return uint8(d) <= 4
+	return d <= BuildingProtection
 }
 
 func (d DPT_20102) String() string {
 	switch d {
-	case 0:
+	case Auto:
 		return "Auto"
-	case 1:
+	case Comfort:
 		return "Comfort"
-	case 2:
+	case Standby:
 		return "Standby"
-	case 3:
+	case Economy:
 		return "Economy"
-	case 4:
+	case BuildingProtection:
 		return "Building Protection"
 	default:
-		return ""
+		return "reserved"
 	}
 }
