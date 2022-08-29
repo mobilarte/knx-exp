@@ -26,14 +26,14 @@ func DiagnosticInProgMode(multicastDiscoveryAddress string, searchTimeout time.D
 // interface is nil, the system-assigned multicast interface is used.
 func DiagnosticOnInterface(ifi *net.Interface, multicastDiscoveryAddress string, macAddr net.HardwareAddr,
 	progMode bool, searchTimeout time.Duration) ([]*knxnet.DiagnosticRes, error) {
-	socket, err := knxnet.ListenRouterOnInterface(ifi, multicastDiscoveryAddress)
+	socket, err := knxnet.ListenRouterOnInterface(ifi, multicastDiscoveryAddress, false)
 
 	if err != nil {
 		return nil, err
 	}
 	defer socket.Close()
 
-	addr, _ := socket.LocalAddr()
+	addr := socket.LocalAddr()
 
 	req, err := knxnet.NewDiagnosticReq(addr)
 

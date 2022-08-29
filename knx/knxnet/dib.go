@@ -30,7 +30,7 @@ const (
 	// DescriptionTypeIPCurrentConfig describes current IP configuration.
 	DescriptionTypeIPCurrentConfig DescriptionType = 0x04
 
-	// DescriptionTypeKNXAddresses describes a KNX addresses.
+	// DescriptionTypeKNXAddresses describes KNX addresses.
 	DescriptionTypeKNXAddresses DescriptionType = 0x05
 
 	// DescriptionTypeManufacturerData describes a DIB structure for further data defined by device manufacturer.

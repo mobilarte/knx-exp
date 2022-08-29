@@ -55,9 +55,5 @@ func (res *SearchRes) Pack(buffer []byte) {
 
 // Unpack parses the given service payload in order to initialize the Search Response structure.
 func (res *SearchRes) Unpack(data []byte) (n uint, err error) {
-	n, err = res.Control.Unpack(data[0:res.Control.Size()])
-	if err != nil {
-		return
-	}
-	return (*DescriptionBlock)(&res.DescriptionB).Unpack(data[res.Control.Size():])
+	return util.UnpackSome(data, &res.Control, &res.DescriptionB.DeviceHardware, &res.DescriptionB.SupportedServices)
 }
