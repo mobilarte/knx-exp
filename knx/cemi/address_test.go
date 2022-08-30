@@ -32,7 +32,7 @@ func Test_IndividualAddresses(t *testing.T) {
 		{"1.3.450", false, ""},
 		{"1.450", false, ""},
 		{"-2", false, ""},
-		{"400", false, ""},
+		{".400", false, ""},
 		{"-11.0.0", false, ""},
 		{"0.0.0", false, ""},
 		{"0.0", false, ""},
@@ -47,6 +47,8 @@ func Test_IndividualAddresses(t *testing.T) {
 			} else if ia.String() != a.Printed {
 				t.Errorf("%#v wrongly parsed.", a.Src)
 			}
+		} else if err == nil {
+			t.Errorf("%#v invalid parsed.", a.Src)
 		}
 	}
 }
@@ -69,6 +71,7 @@ func Test_GroupAddresses(t *testing.T) {
 		{"31/2060", false, ""},
 		{"0/0/0", false, ""},
 		{"0/0", false, ""},
+		{"0", false, ""},
 	}
 
 	for _, a := range addrs {
@@ -79,6 +82,8 @@ func Test_GroupAddresses(t *testing.T) {
 			} else if ga.String() != a.Printed {
 				t.Errorf("%#v wrongly parsed.", a.Src)
 			}
+		} else if err == nil {
+			t.Errorf("%#v invalid parsed.", a.Src)
 		}
 	}
 }

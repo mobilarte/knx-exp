@@ -69,7 +69,7 @@ func NewIndividualAddrString(addr string) (IndividualAddr, error) {
 		}
 		return NewIndividualAddr2(uint8(nums[0]), uint8(nums[1])), nil
 	case 1:
-		if nums[0] < 0 || nums[0] > 65535 {
+		if nums[0] <= 0 || nums[0] > 65535 {
 			return 0, fmt.Errorf("invalid raw individual address in %s", addr)
 		}
 		return IndividualAddr(nums[0]), nil
@@ -142,7 +142,7 @@ func NewGroupAddrString(addr string) (GroupAddr, error) {
 		}
 		return NewGroupAddr2(uint8(nums[0]), uint16(nums[1])), nil
 	case 1:
-		if nums[0] < 0 || nums[0] > 65535 {
+		if nums[0] <= 0 || nums[0] > 65535 {
 			return 0, fmt.Errorf("invalid raw group address in %s", addr)
 		}
 		return GroupAddr(nums[0]), nil
