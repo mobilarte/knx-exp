@@ -1,4 +1,7 @@
+// Copyright 2017 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
+
+// Described in 03_08_07 KNXnetIP Remote Configuration and Diagnosis v01.01.02 AS.pdf
 
 package knx
 
@@ -9,11 +12,6 @@ import (
 	"github.com/mobilarte/knx-exp/knx/knxnet"
 )
 
-// Diagnostic all KNXnet/IP servers.
-func Diagnostic(multicastDiscoveryAddress string, searchTimeout time.Duration) ([]*knxnet.DiagnosticRes, error) {
-	return DiagnosticOnInterface(nil, multicastDiscoveryAddress, nil, false, searchTimeout)
-}
-
 func DiagnosticWithMAC(multicastDiscoveryAddress string, macAddr net.HardwareAddr, searchTimeout time.Duration) ([]*knxnet.DiagnosticRes, error) {
 	return DiagnosticOnInterface(nil, multicastDiscoveryAddress, macAddr, false, searchTimeout)
 }
@@ -22,7 +20,7 @@ func DiagnosticInProgMode(multicastDiscoveryAddress string, searchTimeout time.D
 	return DiagnosticOnInterface(nil, multicastDiscoveryAddress, nil, true, searchTimeout)
 }
 
-// DiscoverOnInterface discovers all KNXnet/IP Server on a specific interface. If the
+// DiagnosticOnInterface sends the diagnostic request on a specified interface. If the
 // interface is nil, the system-assigned multicast interface is used.
 func DiagnosticOnInterface(ifi *net.Interface, multicastDiscoveryAddress string, macAddr net.HardwareAddr,
 	progMode bool, searchTimeout time.Duration) ([]*knxnet.DiagnosticRes, error) {
@@ -33,9 +31,7 @@ func DiagnosticOnInterface(ifi *net.Interface, multicastDiscoveryAddress string,
 	}
 	defer socket.Close()
 
-	addr := socket.LocalAddr()
-
-	req, err := knxnet.NewDiagnosticReq(addr)
+	req, err := knxnet.NewDiagnosticReq(socket.LocalAddr())
 
 	if err != nil {
 		return nil, err

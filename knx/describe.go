@@ -1,4 +1,4 @@
-// Copyright (c) 2022 mobilarte.
+// Copyright 2022 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package knx
@@ -11,16 +11,13 @@ import (
 
 // Describe a single KNXnet/IP server. Uses unicast UDP, address format is "ip:port".
 func DescribeTunnel(address string, searchTimeout time.Duration) (*knxnet.DescriptionRes, error) {
-	// Uses a UDP socket.
 	socket, err := knxnet.DialTunnelUDP(address)
 	if err != nil {
 		return nil, err
 	}
 	defer socket.Close()
 
-	addr := socket.LocalAddr()
-
-	req, err := knxnet.NewDescriptionReq(addr)
+	req, err := knxnet.NewDescriptionReq(socket.LocalAddr())
 	if err != nil {
 		return nil, err
 	}

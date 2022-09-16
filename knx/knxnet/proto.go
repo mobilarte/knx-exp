@@ -22,23 +22,25 @@ func (srv ServiceID) String() string {
 
 // Currently supported services.
 const (
-	SearchReqService     ServiceID = 0x0201
-	SearchResService     ServiceID = 0x0202
-	DescrReqService      ServiceID = 0x0203
-	DescrResService      ServiceID = 0x0204
-	ConnReqService       ServiceID = 0x0205
-	ConnResService       ServiceID = 0x0206
-	ConnStateReqService  ServiceID = 0x0207
-	ConnStateResService  ServiceID = 0x0208
-	DiscReqService       ServiceID = 0x0209
-	DiscResService       ServiceID = 0x020a
-	TunnelReqService     ServiceID = 0x0420
-	TunnelResService     ServiceID = 0x0421
-	RoutingIndService    ServiceID = 0x0530
-	RoutingLostService   ServiceID = 0x0531
-	RoutingBusyService   ServiceID = 0x0532
-	DiagnosticReqService ServiceID = 0x0740
-	DiagnosticResService ServiceID = 0x0741
+	SearchReqService      ServiceID = 0x0201
+	SearchResService      ServiceID = 0x0202
+	DescrReqService       ServiceID = 0x0203
+	DescrResService       ServiceID = 0x0204
+	ConnReqService        ServiceID = 0x0205
+	ConnResService        ServiceID = 0x0206
+	ConnStateReqService   ServiceID = 0x0207
+	ConnStateResService   ServiceID = 0x0208
+	DiscReqService        ServiceID = 0x0209
+	DiscResService        ServiceID = 0x020a
+	TunnelReqService      ServiceID = 0x0420
+	TunnelResService      ServiceID = 0x0421
+	RoutingIndService     ServiceID = 0x0530
+	RoutingLostService    ServiceID = 0x0531
+	RoutingBusyService    ServiceID = 0x0532
+	DiagnosticReqService  ServiceID = 0x0740
+	DiagnosticResService  ServiceID = 0x0741
+	BasicConfReqService   ServiceID = 0x0742
+	BasicConfResetService ServiceID = 0x0743
 )
 
 // Service describes a KNXnet/IP service.
@@ -215,6 +217,9 @@ func Unpack(data []byte, srv *Service) (uint, error) {
 
 	case DiagnosticResService:
 		body = &DiagnosticRes{}
+
+	case BasicConfReqService:
+		body = &BasicConfigurationReq{}
 
 	default:
 		body = &UnknownService{service: srvID}

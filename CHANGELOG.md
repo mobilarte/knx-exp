@@ -17,18 +17,17 @@ This log file describes briefly the changes made to code as of 2022-07-01 in chr
     * Rewrote `dpt/types_registry.go`, no need for `setup()`.
 
     * Rewrote github actions.
- 
- 
+
+    * MulticastLoopback option to routing (backported to knx-go). A program listening for messages will not see the messages sent by another program on the same machine unless MulticastLoopback is enabled in the listening program.
+
+    * TCP connections for tunnelling (from `knx-go`)
+    * Adding SendTimer to avoid flooding a KNXnet/IP server.
+    * Reworking RoutingBusy by adding random timer and memory to WaitTime.
+    * Diagnostics
+
 * Major changes [To be added shortly]
 
-    * MulticastLoopback option to routing. Investigate how Go handles multicast, some strange behaviour like multicast is forwarded to all interfaces on Windows.
-
-    * TCP connections for tunnelling.
-
-    * Adding SendTimer to avoid flooding a KNXnet/IP server.
-
-    * Reworking RoutingBusy by adding random timer and memory to WaitTime.
-
+    *  Investigate how Go handles multicast, some strange behaviour like multicast is forwarded to all interfaces on Windows
 
 # Future
 

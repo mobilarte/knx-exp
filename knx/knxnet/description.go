@@ -1,4 +1,4 @@
-// Copyright (c) 2022 mobilarte.
+// Copyright 2022 Martin Müller
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package knxnet
@@ -10,15 +10,14 @@ import (
 )
 
 // NewDescriptionReq creates a new Description Request, addr defines where
-// KNXnet/IP server should send the response to.
-func NewDescriptionReq(addr net.Addr) (*DescriptionReq, error) {
-	req := &DescriptionReq{}
+// the KNXnet/IP server should send the response to.
+func NewDescriptionReq(addr net.Addr) (req *DescriptionReq, err error) {
+	req = &DescriptionReq{}
 
-	hostinfo, err := HostInfoFromAddress(addr)
+	req.HostInfo, err = HostInfoFromAddress(addr)
 	if err != nil {
 		return nil, err
 	}
-	req.HostInfo = hostinfo
 
 	return req, nil
 }
@@ -36,7 +35,7 @@ func (DescriptionReq) Service() ServiceID {
 // A DescriptionRes is a Description Response from a KNXnet/IP server.
 type DescriptionRes DescriptionBlock
 
-// Service returns the service identifier for Description Response.
+// Service returns the service identifier for a Description Response.
 func (DescriptionRes) Service() ServiceID {
 	return DescrResService
 }
