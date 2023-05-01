@@ -11,38 +11,31 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest"]
-        go: ["1.19"]
+        os: ["windows-latest", "ubuntu-latest"]
+        go:
+          - stable
+          - "~1.20.0"
+          - "~1.19.0"
         may-fail:
           - false
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.may-fail }}
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-go@v3
         with:
-          fetch-depth: 1
-      - uses: WillAbides/setup-go-faster@v1.7.0
-        with:
-          go-version: ${{ matrix.go }}
+          go-version: "${{ matrix.go }}"
+          check-latest: true
       - run: go version
       - run: go build -v ./...
       - run: go test -race -parallel 4 -timeout 30s -v ./...
   Format:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["ubuntu-latest"]
-        go: ["1.19"]
-        may-fail:
-          - false
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-go@v3
         with:
-          fetch-depth: 1
-      - uses: WillAbides/setup-go-faster@v1.7.0
-        with:
-          go-version: ${{ matrix.go }}
+          go-version: stable
       - run: |
           unformatted=$(gofmt -l .)
           if [[ ! -z "$unformatted" ]]; then
@@ -52,22 +45,20 @@ jobs:
             exit 1
           fi
   Staticcheck:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["windows-latest", "ubuntu-latest"]
-        go: ["1.19"]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
-      - uses: WillAbides/setup-go-faster@v1.7.0
-        with:
-          go-version: ${{ matrix.go }}
       - run: "go vet ./..."
       - uses: dominikh/staticcheck-action@v1.2.0
         with:
-          install-go: false
           version: "2022.1.1"
-          cache-key: ""
+  Vet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v3
+        with:
+          go-version: stable
+      - run: go vet ./...
