@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-// DPT_29010 represents DPT 20.010 (G) / DPT_ActiveEnergy_V64.
+// DPT_29010 represents DPT 29.010 (G) / DPT_ActiveEnergy_V64.
 type DPT_29010 int64
 
 func (d DPT_29010) Pack() []byte {
@@ -26,7 +26,7 @@ func (d DPT_29010) String() string {
 	return fmt.Sprintf("%d Wh", int64(d))
 }
 
-// DPT_29011 represents DPT 20.011 (G) / DPT_ApparantEnergy_V64.
+// DPT_29011 represents DPT 29.011 (G) / DPT_ApparantEnergy_V64.
 type DPT_29011 int64
 
 func (d DPT_29011) Pack() []byte {
@@ -45,7 +45,7 @@ func (d DPT_29011) String() string {
 	return fmt.Sprintf("%d VAh", int64(d))
 }
 
-// DPT_29012 represents DPT 20.012 (G) / DPT_ReactiveEnergy_V64.
+// DPT_29012 represents DPT 29.012 (G) / DPT_ReactiveEnergy_V64.
 type DPT_29012 int64
 
 func (d DPT_29012) Pack() []byte {

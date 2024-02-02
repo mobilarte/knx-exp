@@ -44,7 +44,7 @@ func (d DPT_20102) String() string {
 	}
 }
 
-// DPT_20102 represents DPT 20.105 (HVAC) / DPT_HVACContrMode.
+// DPT_20105 represents DPT 20.105 (HVAC) / DPT_HVACContrMode.
 type DPT_20105 uint8
 
 const (
