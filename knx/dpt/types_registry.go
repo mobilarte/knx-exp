@@ -255,10 +255,11 @@ func ListSupportedTypes() []string {
 	return keys
 }
 
-// Produce returns an uninitialized instance of the given datapoint name e.g. "1.001".
+// Produce returns an uninitialized instance of the given datapoint name, e.g. "1.001".
 func Produce(name string) (d Datapoint, ok bool) {
-	// Lookup the given type and return a datapoint of the given type.
-	if x, ok := dptTypes[name]; ok {
+	// Lookup the given type and return a datapoint of that type.
+	x, ok := dptTypes[name]
+	if ok {
 		d_type := reflect.TypeOf(x).Elem()
 		d = reflect.New(d_type).Interface().(Datapoint)
 	}
