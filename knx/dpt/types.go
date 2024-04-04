@@ -17,7 +17,7 @@ type DatapointValue interface {
 	Unpack(data []byte) error
 }
 
-// DatapointMeta gives meta information about a datapoint type.
+// DatapointMeta gives meta information about a datapoint.
 type DatapointMeta interface {
 	// Unit returns the unit of this datapoint type or empty string if it doesn't have a unit.
 	Unit() string

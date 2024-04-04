@@ -1,5 +1,5 @@
 // Copyright 2020 Sven Rebhan.
-// Copyright 2022 Martin Müller.
+// Copyright 2024 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package dpt
@@ -29,6 +29,9 @@ var dptTypes = map[string]Datapoint{
 	"1.017": new(DPT_1017),
 	"1.018": new(DPT_1018),
 	"1.019": new(DPT_1019),
+	"1.021": new(DPT_1021),
+	"1.022": new(DPT_1022),
+	"1.023": new(DPT_1023),
 	"1.024": new(DPT_1024),
 	"1.100": new(DPT_1100),
 
@@ -255,10 +258,12 @@ func ListSupportedTypes() []string {
 	return keys
 }
 
-// Produce returns an uninitialized instance of the given datapoint name, e.g. "1.001".
+// Produce returns an uninitialized instance, given the exact datapoint name.
+// It returns a DPT_1001 for "1.001".
 func Produce(name string) (d Datapoint, ok bool) {
 	// Lookup the given type and return a datapoint of that type.
 	x, ok := dptTypes[name]
+
 	if ok {
 		d_type := reflect.TypeOf(x).Elem()
 		d = reflect.New(d_type).Interface().(Datapoint)
