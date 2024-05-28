@@ -52,7 +52,7 @@ func makeRandBuffer(size int) []byte {
 
 func TestHostInfo_Unpack(t *testing.T) {
 	for i := 0; i < 100; i++ {
-		proto := byte(1 + (rand.Int() % 2))
+		proto := byte(1 + (util.Randint64() % 2))
 		data := append([]byte{8, proto}, makeRandBuffer(6)...)
 
 		var hi HostInfo
@@ -87,8 +87,8 @@ func TestHostInfo_Unpack(t *testing.T) {
 func TestHostInfo_Pack(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		hi := HostInfo{
-			Protocol: Protocol(1 + (rand.Int() % 2)),
-			Port:     Port(rand.Int()),
+			Protocol: Protocol(1 + (util.Randint64() % 2)),
+			Port:     Port(util.Randint64()),
 		}
 		copy(hi.Address[:], makeRandBuffer(4))
 

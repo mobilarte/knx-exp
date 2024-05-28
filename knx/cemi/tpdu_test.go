@@ -5,7 +5,7 @@ package cemi
 
 import (
 	"bytes"
-	"math/rand"
+	"crypto/rand"
 	"testing"
 
 	"github.com/mobilarte/knx-exp/knx/util"
@@ -14,10 +14,10 @@ import (
 func TestAppData_Pack(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		app := AppData{
-			Numbered:  rand.Int()%2 == 0,
-			SeqNumber: uint8(rand.Int()) % 15,
-			Command:   APCI(rand.Int()) % 15,
-			Data:      makeRandBuffer(rand.Int() % 300),
+			Numbered:  util.Randint64()%2 == 0,
+			SeqNumber: uint8(util.Randint64()) % 15,
+			Command:   APCI(util.Randint64()) % 15,
+			Data:      makeRandBuffer(int(util.Randint64() % 300)),
 		}
 
 		if len(app.Data) > 0 {
@@ -70,9 +70,9 @@ func TestAppData_Pack(t *testing.T) {
 func TestControlData_Pack(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		control := ControlData{
-			Numbered:  rand.Int()%2 == 0,
-			SeqNumber: uint8(rand.Int()) % 15,
-			Command:   uint8(rand.Int()) % 3,
+			Numbered:  util.Randint64()%2 == 0,
+			SeqNumber: uint8(util.Randint64()) % 15,
+			Command:   uint8(util.Randint64()) % 3,
 		}
 
 		data := util.AllocAndPack(&control)
@@ -107,7 +107,7 @@ func TestControlData_Pack(t *testing.T) {
 func TestUnpackTransportUnit(t *testing.T) {
 	t.Run("Control", func(t *testing.T) {
 		for i := 0; i < 100; i++ {
-			data := []byte{0, byte(rand.Int())}
+			data := []byte{0, byte(util.Randint64())}
 			data[1] |= 1 << 7
 
 			var unit TransportUnit
@@ -145,7 +145,7 @@ func TestUnpackTransportUnit(t *testing.T) {
 
 	t.Run("App", func(t *testing.T) {
 		for i := 0; i < 100; i++ {
-			data := make([]byte, 3+rand.Int()%255)
+			data := make([]byte, 3+util.Randint64()%255)
 			rand.Read(data[1:])
 
 			data[0] = byte(len(data) - 2)

@@ -5,8 +5,8 @@ package cemi
 
 import (
 	"bytes"
+	"crypto/rand"
 	"encoding/binary"
-	"math/rand"
 	"testing"
 )
 
@@ -19,7 +19,7 @@ func makeRandBuffer(n int) []byte {
 /* unused!
 
 func makeRandTPDUSegment() []byte {
-	n := rand.Int() % 256
+	n := util.Randint64() % 256
 
 	buffer := make([]byte, n+2)
 	buffer[0] = byte(n)

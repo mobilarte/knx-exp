@@ -5,12 +5,14 @@ package cemi
 
 import (
 	"bytes"
-	"math/rand"
+	"crypto/rand"
 	"testing"
+
+	"github.com/mobilarte/knx-exp/knx/util"
 )
 
 func makeRandInfoSegment() []byte {
-	n := rand.Int() % 256
+	n := util.Randint64() % 256
 
 	buffer := make([]byte, n+1)
 	buffer[0] = byte(n)
@@ -45,7 +47,7 @@ func TestUnpack(t *testing.T) {
 	ldataCodes := []MessageCode{LDataReqCode, LDataConCode, LDataIndCode}
 
 	for i := 0; i < 100; i++ {
-		code := ldataCodes[rand.Int()%3]
+		code := ldataCodes[util.Randint64()%3]
 		data := append([]byte{byte(code)}, makeRandLData()...)
 
 		var msg Message
