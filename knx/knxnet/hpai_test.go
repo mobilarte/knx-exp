@@ -5,8 +5,8 @@ package knxnet
 
 import (
 	"bytes"
+	"crypto/rand"
 	"fmt"
-	"math/rand"
 	"net"
 	"testing"
 
