@@ -15,12 +15,13 @@ jobs:
         go:
           - stable
           - "~1.22.0"
+          - "~1.23.0"
         may-fail:
           - false
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.may-fail }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v3
         with:
           go-version: "${{ matrix.go }}"
@@ -31,8 +32,8 @@ jobs:
   Format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
         with:
           go-version: stable
       - run: |
@@ -46,7 +47,7 @@ jobs:
   Staticcheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - uses: dominikh/staticcheck-action@v1
@@ -55,8 +56,8 @@ jobs:
   Vet:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
         with:
           go-version: stable
       - run: go vet ./...
