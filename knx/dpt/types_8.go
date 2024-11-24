@@ -1,4 +1,4 @@
-// Copyright 2022 Martin Müller.
+// Copyright 2024 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package dpt
@@ -49,6 +49,65 @@ func (d DPT_8002) String() string {
 	return fmt.Sprintf("%d ms", d)
 }
 
+// DPT_8003 represents DPT 8.002 (G) / DPT_DeltaTime10Msec.
+type DPT_8003 float32
+
+func (d DPT_8003) Pack() []byte {
+	return packV16(int16(d * 100))
+}
+
+func (d *DPT_8003) Unpack(data []byte) error {
+	var value int16
+
+	if err := unpackV16(data, &value); err != nil {
+		return err
+	}
+
+	*d = DPT_8003(float32(value) / 100)
+
+	return nil
+}
+
+func (d DPT_8003) Unit() string {
+	return "ms"
+}
+
+func (d DPT_8003) IsValid() bool {
+	// TBD
+	return true
+}
+
+func (d DPT_8003) String() string {
+	return fmt.Sprintf("%f ms", d)
+}
+
+// DPT_8004 represents DPT 8.004 (G) / DPT_DeltaTime100Msec.
+type DPT_8004 float32
+
+func (d DPT_8004) Pack() []byte {
+	return packV16(int16(d * 10))
+}
+
+func (d *DPT_8004) Unpack(data []byte) error {
+	var value int16
+
+	if err := unpackV16(data, &value); err != nil {
+		return err
+	}
+
+	*d = DPT_8004(float32(value) / 10)
+
+	return nil
+}
+
+func (d DPT_8004) Unit() string {
+	return "ms"
+}
+
+func (d DPT_8004) String() string {
+	return fmt.Sprintf("%f ms", d)
+}
+
 // DPT_8005 represents DPT 8.005 (G) / DPT_DeltaTimeSec.
 type DPT_8005 int16
 
@@ -66,6 +125,25 @@ func (d DPT_8005) Unit() string {
 
 func (d DPT_8005) String() string {
 	return fmt.Sprintf("%d s", d)
+}
+
+// DPT_8006 represents DPT 8.005 (G) / DPT_DeltaTimeMin.
+type DPT_8006 int16
+
+func (d DPT_8006) Pack() []byte {
+	return packV16(d)
+}
+
+func (d *DPT_8006) Unpack(data []byte) error {
+	return unpackV16(data, d)
+}
+
+func (d DPT_8006) Unit() string {
+	return "min"
+}
+
+func (d DPT_8006) String() string {
+	return fmt.Sprintf("%d min", d)
 }
 
 // DPT_8007 represents DPT 8.007 (G) / DPT_DeltaTimeHour.
@@ -123,6 +201,25 @@ func (d DPT_8010) IsValid() bool {
 
 func (d DPT_8010) String() string {
 	return fmt.Sprintf("%.2f %%", d)
+}
+
+// DPT_8011 represents DPT 8.011 (FB) / DPT_Rotation_Angle.
+type DPT_8011 int16
+
+func (d DPT_8011) Pack() []byte {
+	return packV16(int16(d))
+}
+
+func (d *DPT_8011) Unpack(data []byte) error {
+	return unpackV16(data, (*int16)(d))
+}
+
+func (d DPT_8011) Unit() string {
+	return "°"
+}
+
+func (d DPT_8011) String() string {
+	return fmt.Sprintf("%d°", int16(d))
 }
 
 // DPT_8012 represents DPT 8.012 (FB) / DPT_Length_m.

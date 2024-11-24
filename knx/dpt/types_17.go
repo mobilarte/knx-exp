@@ -11,10 +11,10 @@ import (
 type DPT_17001 uint8
 
 func (d DPT_17001) Pack() []byte {
-	if d > 63 {
-		return packU8(uint8(63))
+	if d.IsValid() {
+		return packU8(d)
 	} else {
-		return packU8(uint8(d))
+		return packU8(uint8(63))
 	}
 }
 
@@ -36,6 +36,10 @@ func (d *DPT_17001) Unpack(data []byte) error {
 
 func (d DPT_17001) Unit() string {
 	return ""
+}
+
+func (d DPT_17001) IsValid() bool {
+	return d <= 0x3F
 }
 
 func (d DPT_17001) String() string {

@@ -1,5 +1,5 @@
 // Copyright 2017 Ole Krüger.
-// Copyright 2022 Martin Müller.
+// Copyright 2024 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package dpt
