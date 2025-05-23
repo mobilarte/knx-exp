@@ -1,4 +1,4 @@
-// Copyright 2022 Martin Müller
+// Copyright 2025 Martin Müller
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package knxnet
