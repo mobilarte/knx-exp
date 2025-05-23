@@ -1,4 +1,4 @@
-// Copyright 2017 Martin Müller.
+// Copyright 2025 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package knxnet
@@ -64,12 +64,12 @@ func (DiagnosticReq) Service() ServiceID {
 }
 
 func (req *DiagnosticReq) SetSelector(progMode bool, macAddr net.HardwareAddr) {
-	req.Selector.Set(progMode, macAddr)
+	req.Set(progMode, macAddr)
 }
 
 // Size returns the size of HostInfo plus the variable size of the selector.
 func (req DiagnosticReq) Size() uint {
-	return req.HostInfo.Size() + uint(req.Selector.Length)
+	return req.Size() + uint(req.Length)
 }
 
 // Pack copies the DiagnosticReq structure to the buffer.
@@ -77,22 +77,22 @@ func (req DiagnosticReq) Pack(buffer []byte) {
 	util.PackSome(
 		buffer,
 		byte(8),
-		uint8(req.HostInfo.Protocol),
-		req.HostInfo.Address[:],
-		uint16(req.HostInfo.Port))
+		uint8(req.Protocol),
+		req.Address[:],
+		uint16(req.Port))
 
 	if req.SelectorType == PrgModeSelector {
 		util.PackSome(
 			buffer[8:],
-			req.Selector.Length,
-			uint8(req.Selector.SelectorType),
+			req.Length,
+			uint8(req.SelectorType),
 		)
 	} else {
 		util.PackSome(
 			buffer[8:],
-			req.Selector.Length,
-			uint8(req.Selector.SelectorType),
-			req.Selector.MACAddress,
+			req.Length,
+			uint8(req.SelectorType),
+			req.MACAddress,
 		)
 	}
 }
@@ -111,7 +111,7 @@ func (DiagnosticRes) Service() ServiceID {
 
 // Size returns the packed size of a Diagnostic Response.
 func (res DiagnosticRes) Size() uint {
-	return res.HostInfo.Size() + uint(res.Selector.Length)
+	return res.Size() + uint(res.Length)
 }
 
 // Pack assembles the Diagnostic Response structure in the given buffer.
@@ -135,7 +135,7 @@ func (BasicConfigurationReq) Service() ServiceID {
 }
 
 func (req *BasicConfigurationReq) SetSelector(progMode bool, macAddr net.HardwareAddr) {
-	req.Selector.Set(progMode, macAddr)
+	req.Set(progMode, macAddr)
 }
 
 func NewBasicConfigReq(addr net.Addr) (*BasicConfigurationReq, error) {
