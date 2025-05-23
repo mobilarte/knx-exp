@@ -9,7 +9,7 @@ import (
 	"github.com/mobilarte/knx-exp/knx/knxnet"
 )
 
-// Describe a single KNXnet/IP server. Uses unicast UDP, address format is "ip:port".
+// DescribeTunnel describes a single KNXnet/IP server. Uses unicast UDP, address format is "ip:port".
 func DescribeTunnel(address string, searchTimeout time.Duration) (*knxnet.DescriptionRes, error) {
 	socket, err := knxnet.DialTunnelUDP(address)
 	if err != nil {
