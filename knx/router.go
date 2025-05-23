@@ -131,10 +131,7 @@ func (router *Router) serve() {
 			router.sendMu.Lock()
 
 			// Cap wait time.
-			waitTime := msg.WaitTime + trandom
-			if waitTime > maxWaitTime {
-				waitTime = maxWaitTime
-			}
+			waitTime := min(msg.WaitTime+trandom, maxWaitTime)
 
 			time.AfterFunc(waitTime, router.sendMu.Unlock)
 
