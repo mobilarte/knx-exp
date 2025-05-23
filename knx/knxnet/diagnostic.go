@@ -52,7 +52,8 @@ func (sel *Selector) Set(progMode bool, macAddr net.HardwareAddr) {
 	}
 }
 
-// A Diagnostic requests a diagnostic from a particular KNXnet/IP Server via multicast or broadcast.
+// DiagnosticReq describes a diagnostic request from a particular
+// KNXnet/IP Server via multicast or broadcast.
 type DiagnosticReq struct {
 	HostInfo
 	Selector
@@ -69,7 +70,8 @@ func (req *DiagnosticReq) SetSelector(progMode bool, macAddr net.HardwareAddr) {
 
 // Size returns the size of HostInfo plus the variable size of the selector.
 func (req DiagnosticReq) Size() uint {
-	return req.Size() + uint(req.Length)
+	// TBD may be wrong!
+	return req.HostInfo.Size() + uint(req.Selector.Length)
 }
 
 // Pack copies the DiagnosticReq structure to the buffer.
@@ -111,7 +113,8 @@ func (DiagnosticRes) Service() ServiceID {
 
 // Size returns the packed size of a Diagnostic Response.
 func (res DiagnosticRes) Size() uint {
-	return res.Size() + uint(res.Length)
+	// TBD may be wrong!
+	return res.HostInfo.Size() + uint(res.Selector.Length)
 }
 
 // Pack assembles the Diagnostic Response structure in the given buffer.
@@ -156,7 +159,7 @@ func (req *BasicConfigurationReq) Pack(buffer []byte) {
 	util.PackSome(buffer, req.HostInfo, req.Selector)
 }
 
-func (res *BasicConfigurationReq) Unpack(data []byte) (n uint, err error) {
+func (req *BasicConfigurationReq) Unpack(data []byte) (n uint, err error) {
 	//return (*DescriptionBlock)(&res.DescriptionBlock).Unpack(data)
 	return
 }

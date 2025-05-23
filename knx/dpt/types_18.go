@@ -1,5 +1,5 @@
 // Copyright 2017 Ole Krüger.
-// Copyright 2024 Martin Müller.
+// Copyright 2025 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
 
 package dpt
@@ -38,6 +38,7 @@ func (d DPT_18001) IsValid() bool {
 	return d <= 0x3F || (d >= 0x80 && d <= 0xBF)
 }
 
+// String returns a string description.
 // KNX Association recommends to display the scene numbers [1..64].
 // Displaying value like ETS.
 // See note 6 of the KNX Specifications v2.1.

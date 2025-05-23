@@ -1,3 +1,4 @@
+// Copyright 2025 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
 // Described in 03_08_07 KNXnetIP Remote Configuration and Diagnosis v01.01.02 AS.pdf
 
@@ -190,7 +191,7 @@ func (sdib *SupportedServicesDIB) Unpack(data []byte) (n uint, err error) {
 type IpAssignment uint8
 type IpCapabilities uint8
 
-// IpConfig contains information about the IP configuration.
+// IpConfigDIB contains information about the IP configuration.
 type IpConfigDIB struct {
 	Type           DescriptionType
 	IpAddress      Address
@@ -287,7 +288,7 @@ func (curconf *CurConfigDIB) Unpack(data []byte) (n uint, err error) {
 	return
 }
 
-// KNXAddrDIB contains information about the current IP configuration.
+// KnxAddrDIB contains information about the current IP configuration.
 type KnxAddrDIB struct {
 	Type         DescriptionType
 	KNXAddresses []cemi.IndividualAddr
