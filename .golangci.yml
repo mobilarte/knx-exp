@@ -4,3 +4,8 @@ run:
 linters:
   disable:
     - errcheck
+  settings:
+    staticcheck:
+      checks:
+        - all
+        - "-QF1008" # exclude 'could remove embedded field "<field>" from selector'
