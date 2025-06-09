@@ -9,6 +9,11 @@ import (
 	"github.com/mobilarte/knx-exp/knx/util"
 )
 
+// A DescriptionReq requests a description from a particular KNXnet/IP server via unicast.
+type DescriptionReq struct {
+	HostInfo
+}
+
 // NewDescriptionReq creates a new Description Request, addr defines where
 // the KNXnet/IP server should send the response to.
 func NewDescriptionReq(addr net.Addr) (req *DescriptionReq, err error) {
@@ -20,11 +25,6 @@ func NewDescriptionReq(addr net.Addr) (req *DescriptionReq, err error) {
 	}
 
 	return req, nil
-}
-
-// A DescriptionReq requests a description from a particular KNXnet/IP server via unicast.
-type DescriptionReq struct {
-	HostInfo
 }
 
 // Service returns the service identifier for a Description Request.

@@ -8,6 +8,11 @@ import (
 	"github.com/mobilarte/knx-exp/knx/util"
 )
 
+// A SearchReq requests a description from all KNXnet/IP servers via multicast.
+type SearchReq struct {
+	HostInfo
+}
+
 // NewSearchReq creates a new SearchReq, addr defines where
 // KNXnet/IP server should send the response to.
 func NewSearchReq(addr net.Addr) (*SearchReq, error) {
@@ -20,11 +25,6 @@ func NewSearchReq(addr net.Addr) (*SearchReq, error) {
 	req.HostInfo = hostinfo
 
 	return req, nil
-}
-
-// A SearchReq requests a description from all KNXnet/IP servers via multicast.
-type SearchReq struct {
-	HostInfo
 }
 
 // Service returns the service identifier for Search Request.

@@ -18,21 +18,6 @@ const (
 	MACSelector DiagnosticSelector = 0x02
 )
 
-// NewDiagnosticReq creates a new Diagnostic Request, addr defines where
-// KNXnet/IP server should send the response to.
-func NewDiagnosticReq(addr net.Addr) (*DiagnosticReq, error) {
-	req := &DiagnosticReq{}
-
-	var err error
-
-	req.HostInfo, err = HostInfoFromAddress(addr)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
 type Selector struct {
 	Length       uint8
 	SelectorType DiagnosticSelector
@@ -57,6 +42,21 @@ func (sel *Selector) Set(progMode bool, macAddr net.HardwareAddr) {
 type DiagnosticReq struct {
 	HostInfo
 	Selector
+}
+
+// NewDiagnosticReq creates a new Diagnostic Request, addr defines where
+// KNXnet/IP server should send the response to.
+func NewDiagnosticReq(addr net.Addr) (*DiagnosticReq, error) {
+	req := &DiagnosticReq{}
+
+	var err error
+
+	req.HostInfo, err = HostInfoFromAddress(addr)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
 }
 
 // Service returns the service identifier for a Diagnostic Request.
