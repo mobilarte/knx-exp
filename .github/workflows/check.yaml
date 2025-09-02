@@ -6,6 +6,9 @@ on:
       - main
   schedule:
     - cron: "15 6 1,15 * *"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_name != 'main' }}
 jobs:
   Build:
     strategy:
