@@ -1,14 +1,59 @@
+# simply run 
+# golangci-lint run
+# from this directory
+# list of linters: https://golangci-lint.run/usage/linters/
+
 version: "2"
 run:
   timeout: 5m
 linters:
+  default: none
   disable:
-    - errcheck
+    - godox # TODO/BUG/FIXME
+    - cyclop
+    - depguard
+    - err113 # do not define dynamic errors, use wrapped static errors instead
+    - exhaustruct # knx.GroupEvent is missing fields Source, Data
+    - forbidigo
+    - forcetypeassert # type assertion must be checked 
+    - goconst
+    - godot
+    - funlen
+    - gosec
+    - interfacebloat
+    - gosmopolitan
+    - ireturn # return of interface
+    - mnd # magic number
+    - nestif
+    - nlreturn
+    - noctx
+    - prealloc
+    - unconvert
+    - varnamelen
+    - gochecknoglobals
+    - wrapcheck # https://github.com/tomarrell/wrapcheck
+    - gomoddirectives # only using replace in dev
+    - gocognit
+
+  enable:
+    - wsl_v5 # empty lines
+    - staticcheck
+    - errcheck # check errors
+    - govet # suspicious constructs
+    - ineffassign
+    - funcorder # function order
+    - lll # long lines
+    - bodyclose
+    - copyloopvar
+    - misspell
+    - revive # important for comments
+    - whitespace
+
   settings:
-    staticcheck:
-      checks:
-        - all
-        - "-QF1008" # exclude 'could remove embedded field "<field>" from selector'
-        - "-ST1000" # exclude 'at least one file in a package should have a package comment'
-        - "-ST1003" # exclude 'should not use ALL_CAPS in Go names; use CamelCase instead'
-                    # to be fixed 'should not use underscores in Go names'
+    wsl_v5:
+      allow-first-in-block: true
+      allow-whole-block: true
+      branch-max-lines: 2
+    errcheck:
+      exclude-functions:
+        - (*os.File).Close
