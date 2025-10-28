@@ -256,7 +256,6 @@ func (CurConfigDIB) Size() uint {
 
 // Pack assembles the device information structure in the given buffer.
 func (curconf *CurConfigDIB) Pack(buffer []byte) {
-
 	util.PackSome(
 		buffer,
 		uint8(curconf.Size()), uint8(curconf.Type),

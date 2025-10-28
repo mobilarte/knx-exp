@@ -104,10 +104,9 @@ func (conn *Tunnel) hostInfo() (knxnet.HostInfo, error) {
 }
 
 // requestConn repeatedly sends a connection request through the socket until the configured
-// reponse timeout is reached or a response is received. A response that renders the gateway as busy
+// response timeout is reached or a response is received. A response that renders the gateway as busy
 // will not stop requestConn.
 func (conn *Tunnel) requestConn() (err error) {
-
 	hostInfo, err := conn.hostInfo()
 	if err != nil {
 		return err
@@ -157,7 +156,7 @@ func (conn *Tunnel) requestConn() (err error) {
 			// We're only interested in connection responses.
 			if res, ok := msg.(*knxnet.ConnRes); ok {
 				switch res.Status {
-				// Conection has been established.
+				// Connection has been established.
 				case knxnet.NoError:
 					conn.channel = res.Channel
 

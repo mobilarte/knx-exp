@@ -26,7 +26,7 @@ func (d DPT_29010) String() string {
 	return fmt.Sprintf("%d Wh", int64(d))
 }
 
-// DPT_29011 represents DPT 29.011 (G) / DPT_ApparantEnergy_V64.
+// DPT_29011 represents DPT 29.011 (G) / DPT_ApparentEnergy_V64.
 type DPT_29011 int64
 
 func (d DPT_29011) Pack() []byte {

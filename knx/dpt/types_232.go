@@ -13,12 +13,10 @@ type DPT_232600 struct {
 }
 
 func (d DPT_232600) Pack() []byte {
-
 	return pack3U8(d.Red, d.Green, d.Blue)
 }
 
 func (d *DPT_232600) Unpack(data []byte) error {
-
 	if len(data) != 4 {
 		return ErrInvalidLength
 	}

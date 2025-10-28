@@ -197,5 +197,4 @@ func TestUnpackString(t *testing.T) {
 			assert.Equal(t, testCase.Expected, output, "Unpacked string not equal")
 		}
 	}
-
 }

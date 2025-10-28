@@ -33,7 +33,6 @@ func packB1U3(c bool, v uint8) []byte {
 	}
 
 	return []byte{v & 0x7}
-
 }
 
 func unpackB1U3(data []byte, c *bool, v *uint8) error {
@@ -95,7 +94,6 @@ func packB4(b3 bool, b2 bool, b1 bool, b0 bool) byte {
 }
 
 func unpackB4(data byte, b3 *bool, b2 *bool, b1 *bool, b0 *bool) error {
-
 	if uint8(data) > 15 {
 		return ErrBadReservedBits
 	}

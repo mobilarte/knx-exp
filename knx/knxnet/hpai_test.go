@@ -138,5 +138,4 @@ func TestHostInfoFromAddress(t *testing.T) {
 			t.Fatal("Should not succeed")
 		}
 	})
-
 }

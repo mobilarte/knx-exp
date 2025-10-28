@@ -38,7 +38,7 @@ func (d DPT_21001) String() string {
 	// Print the rightmost 5 bits
 	// b0 - OutOfService
 	// b1 - Fault
-	// b2 - Overriden
+	// b2 - Overridden
 	// b3 - InAlarm
 	// b4 - AlarmUnAck
 	return fmt.Sprintf("%05b", d)

@@ -23,7 +23,7 @@ func TestDPT_19001(t *testing.T) {
 		t.Errorf("Unexpected unpacking. Expected [%s], received [%s].", src.Date.Format("2006/01/02 15:04:05"), dst.String())
 	}
 
-	// A non-existant date, which golang will fix!
+	// A non-existent date, which golang will fix!
 	src.Date = time.Date(2022, 2, 30, 24, 0, 1, 0, time.UTC)
 	buf = src.Pack()
 	err = dst.Unpack(buf)

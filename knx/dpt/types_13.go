@@ -64,7 +64,7 @@ func (d DPT_13010) String() string {
 	return fmt.Sprintf("%d Wh", int32(d))
 }
 
-// DPT_13011 represents DPT 13.011 (G) / DPT_ApparantEnergy.
+// DPT_13011 represents DPT 13.011 (G) / DPT_ApparentEnergy.
 type DPT_13011 int32
 
 func (d DPT_13011) Pack() []byte {
@@ -121,7 +121,7 @@ func (d DPT_13013) String() string {
 	return fmt.Sprintf("%d kWh", int32(d))
 }
 
-// DPT_13014 represents DPT 13.014 (G) / DPT_Apparant_Energy_kVAh.
+// DPT_13014 represents DPT 13.014 (G) / DPT_Apparent_Energy_kVAh.
 type DPT_13014 int32
 
 func (d DPT_13014) Pack() []byte {

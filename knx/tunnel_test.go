@@ -168,7 +168,6 @@ func TestTunnelConn_requestConn(t *testing.T) {
 
 			msg := <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.ConnReq); ok {
-
 				expectedHostInfo := knxnet.HostInfo{
 					Protocol: knxnet.UDP4,
 				}
@@ -215,7 +214,6 @@ func TestTunnelConn_requestConn(t *testing.T) {
 
 			msg := <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.ConnReq); ok {
-
 				expectedHostInfo := knxnet.HostInfo{
 					Protocol: knxnet.UDP4,
 					Address:  [4]byte{192, 168, 1, 82},

@@ -71,7 +71,7 @@ func (req *DiagnosticReq) SetSelector(progMode bool, macAddr net.HardwareAddr) {
 // Size returns the size of HostInfo plus the variable size of the selector.
 func (req DiagnosticReq) Size() uint {
 	// TBD may be wrong!
-	return req.HostInfo.Size() + uint(req.Selector.Length)
+	return req.HostInfo.Size() + uint(req.Length)
 }
 
 // Pack copies the DiagnosticReq structure to the buffer.
@@ -114,7 +114,7 @@ func (DiagnosticRes) Service() ServiceID {
 // Size returns the packed size of a Diagnostic Response.
 func (res DiagnosticRes) Size() uint {
 	// TBD may be wrong!
-	return res.HostInfo.Size() + uint(res.Selector.Length)
+	return res.HostInfo.Size() + uint(res.Length)
 }
 
 // Pack assembles the Diagnostic Response structure in the given buffer.

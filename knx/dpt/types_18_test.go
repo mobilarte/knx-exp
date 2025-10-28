@@ -39,7 +39,6 @@ func TestDPT_18(t *testing.T) {
 			if dst.String() != src.String() {
 				t.Errorf("%#v not identical after unpacking [%s]. Should be [%s]", e.Dpv, dst.String(), src.String())
 			}
-
 		} else if e.Out != "not valid" {
 			t.Errorf("%#v not recognized as invalid [%d].", e.Dpv, e.Value)
 		}

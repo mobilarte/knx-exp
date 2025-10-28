@@ -1878,7 +1878,6 @@ func (d DPT_141200) Pack() []byte {
 }
 
 func (d *DPT_141200) Unpack(data []byte) error {
-
 	if err := unpackF32(data, d); err != nil {
 		return err
 	}

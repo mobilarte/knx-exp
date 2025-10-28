@@ -34,5 +34,4 @@ func TestPackString(t *testing.T) {
 			assert.Equal(t, testCase.Expected, buffer, "Packed burffer not equal")
 		}
 	}
-
 }

@@ -18,14 +18,12 @@ type DPT_251600 struct {
 }
 
 func (d DPT_251600) Pack() []byte {
-
 	validBits := packB4(d.RedValid, d.GreenValid, d.BlueValid, d.WhiteValid)
 
 	return []byte{0, d.Red, d.Green, d.Blue, d.White, uint8(0), validBits}
 }
 
 func (d *DPT_251600) Unpack(data []byte) error {
-
 	if len(data) != 7 {
 		return ErrInvalidLength
 	}
