@@ -12,7 +12,7 @@ import (
 
 func makeRandBuffer(n int) []byte {
 	buffer := make([]byte, n)
-	rand.Read(buffer)
+	_, _ = rand.Read(buffer)
 	return buffer
 }
 
@@ -25,7 +25,7 @@ func makeRandLData() []byte {
 }
 
 func TestLData_Unpack(t *testing.T) {
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		data := makeRandLData()
 		ldata := LData{}
 

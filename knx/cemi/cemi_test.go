@@ -16,13 +16,13 @@ func makeRandInfoSegment() []byte {
 
 	buffer := make([]byte, n+1)
 	buffer[0] = byte(n)
-	rand.Read(buffer[1:])
+	_, _ = rand.Read(buffer[1:])
 
 	return buffer
 }
 
 func TestInfo_Unpack(t *testing.T) {
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		data := makeRandInfoSegment()
 		info := Info{}
 
@@ -46,7 +46,7 @@ func TestInfo_Unpack(t *testing.T) {
 func TestUnpack(t *testing.T) {
 	ldataCodes := []MessageCode{LDataReqCode, LDataConCode, LDataIndCode}
 
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		code := ldataCodes[util.Randint64()%3]
 		data := append([]byte{byte(code)}, makeRandLData()...)
 

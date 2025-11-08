@@ -12,7 +12,7 @@ import (
 )
 
 func TestAppData_Pack(t *testing.T) {
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		app := AppData{
 			Numbered:  util.Randint64()%2 == 0,
 			SeqNumber: uint8(util.Randint64()) % 15,
@@ -68,7 +68,7 @@ func TestAppData_Pack(t *testing.T) {
 }
 
 func TestControlData_Pack(t *testing.T) {
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		control := ControlData{
 			Numbered:  util.Randint64()%2 == 0,
 			SeqNumber: uint8(util.Randint64()) % 15,
@@ -106,7 +106,7 @@ func TestControlData_Pack(t *testing.T) {
 
 func TestUnpackTransportUnit(t *testing.T) {
 	t.Run("Control", func(t *testing.T) {
-		for i := 0; i < 100; i++ {
+		for range 100 {
 			data := []byte{0, byte(util.Randint64())}
 			data[1] |= 1 << 7
 
@@ -144,9 +144,9 @@ func TestUnpackTransportUnit(t *testing.T) {
 	})
 
 	t.Run("App", func(t *testing.T) {
-		for i := 0; i < 100; i++ {
+		for range 100 {
 			data := make([]byte, 3+util.Randint64()%255)
-			rand.Read(data[1:])
+			_, _ = rand.Read(data[1:])
 
 			data[0] = byte(len(data) - 2)
 			data[1] &= ^(byte(1) << 7)
