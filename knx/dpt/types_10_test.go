@@ -18,13 +18,13 @@ func TestDPT_10001(t *testing.T) {
 	// Test all weekdays, all hours, all minutes and seconds.
 	for w := 0; w <= 7; w++ {
 		src.Weekday = uint8(w)
-		for m := 0; m < 24; m++ {
+		for m := range 24 {
 			src.Hour = uint8(m)
-			for s := 0; s < 60; s++ {
+			for s := range 60 {
 				src.Minutes = uint8(s)
 				src.Seconds = uint8(s)
 				buf := src.Pack()
-				dst.Unpack(buf)
+				_ = dst.Unpack(buf)
 				if dst.String() != src.String() {
 					t.Errorf("Value [%s] is not a time of day. Original value was [%s].", dst, src)
 				}
@@ -40,7 +40,7 @@ func TestDPT_10001(t *testing.T) {
 	for w := 1; w <= 7; w++ {
 		src.Weekday = uint8(w)
 		buf := src.Pack()
-		dst.Unpack(buf)
+		_ = dst.Unpack(buf)
 		r := fmt.Sprintf("%s %02d:%02d:%02d", weekday[src.Weekday], src.Hour, src.Minutes, src.Seconds)
 		if dst.String() != r {
 			t.Errorf("Value [%s] is not a time of day. Original value was [%s].", dst, r)

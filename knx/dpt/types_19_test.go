@@ -88,7 +88,11 @@ func TestDPT_19001(t *testing.T) {
 	src.Date = time.Now()
 	src.SP24 = true
 	buf = src.Pack()
-	dst.Unpack(buf)
+	err = dst.Unpack(buf)
+	if err != nil {
+		t.Errorf("Unpacking error")
+	}
+
 	if dst.String() != "24:00:00" {
 		t.Errorf("Error in special time 24:00:00")
 	}
@@ -100,7 +104,11 @@ func TestDPT_19001(t *testing.T) {
 	src.ND = true
 	src.NDOW = true
 	buf = src.Pack()
-	dst.Unpack(buf)
+	err = dst.Unpack(buf)
+	if err != nil {
+		t.Errorf("Unpacking error")
+	}
+
 	if dst.String() != "00:00:00" {
 		t.Errorf("Error in special time 00:00:00")
 	}

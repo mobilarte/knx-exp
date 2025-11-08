@@ -53,7 +53,11 @@ func TestDPT_5(t *testing.T) {
 
 		var dst DPT_5003
 
-		dst.Unpack(buf)
+		err := dst.Unpack(buf)
+		if err != nil {
+			t.Errorf("Unpacking error")
+		}
+
 		if math.IsNaN(float64(dst)) {
 			t.Errorf("Value [%s] is not a valid number. Original value was [%v].", dst, i)
 		}
@@ -64,7 +68,11 @@ func TestDPT_5(t *testing.T) {
 
 	src := DPT_5003(320)
 	var dst DPT_5003
-	dst.Unpack(src.Pack())
+	err := dst.Unpack(src.Pack())
+	if err != nil {
+		t.Errorf("Unpacking error")
+	}
+
 	if dst.String() != "319°" {
 		t.Errorf("Unpacked value is [%v]. Should be [319°].", dst)
 	}

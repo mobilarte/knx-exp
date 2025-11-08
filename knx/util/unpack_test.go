@@ -76,7 +76,7 @@ func TestUnpack(t *testing.T) {
 			length: 10,
 			extractor: func(data []byte) interface{} {
 				var r unpackableTester
-				r.Unpack(data)
+				_, _ = r.Unpack(data)
 				return r
 			},
 		},
@@ -107,9 +107,9 @@ func TestUnpack(t *testing.T) {
 
 			buffer := make([]byte, testCase.length)
 
-			for i := 0; i < 100; i++ {
+			for i := range 100 {
 				if i > 0 {
-					rand.Read(buffer)
+					_, _ = rand.Read(buffer)
 				}
 
 				num, err := Unpack(buffer, ptr)
@@ -153,8 +153,8 @@ func TestUnpackSome(t *testing.T) {
 
 	buffer := make([]byte, 25)
 
-	for i := 0; i < 100; i++ {
-		rand.Read(buffer)
+	for range 100 {
+		_, _ = rand.Read(buffer)
 
 		var a uint8
 		var b uint16

@@ -33,7 +33,7 @@ func TestDPT_2(t *testing.T) {
 			t.Errorf("%#v has wrong default value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.OnPrint)
 		}
 
-		e.Dpv.Unpack(packB2(e.Control, e.Value))
+		_ = e.Dpv.Unpack(packB2(e.Control, e.Value))
 		if fmt.Sprintf("%s", e.Dpv) != e.OnPrint {
 			t.Errorf("%#v has wrong value [%v] after unpack. Should be [%s].", e.Dpv, e.Dpv, e.OnPrint)
 		}

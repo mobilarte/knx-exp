@@ -31,12 +31,12 @@ func TestDPT_6(t *testing.T) {
 			t.Errorf("%#v has wrong default value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MiddleStr)
 		}
 
-		e.Dpv.Unpack(packV8(e.Min))
+		_ = e.Dpv.Unpack(packV8(e.Min))
 		if fmt.Sprintf("%s", src) != e.MinStr {
 			t.Errorf("%#v has wrong min value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MinStr)
 		}
 
-		e.Dpv.Unpack(packV8(e.Max))
+		_ = e.Dpv.Unpack(packV8(e.Max))
 		if fmt.Sprintf("%s", e.Dpv) != e.MaxStr {
 			t.Errorf("%#v has wrong max value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MaxStr)
 		}

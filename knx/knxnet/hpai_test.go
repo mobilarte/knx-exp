@@ -17,7 +17,7 @@ func TestAddress_String(t *testing.T) {
 	t.Run("Ok", func(t *testing.T) {
 		for range 100 {
 			buffer := [4]byte{}
-			rand.Read(buffer[:])
+			_, _ = rand.Read(buffer[:])
 
 			addr := Address(buffer)
 			result := addr.String()
@@ -46,7 +46,7 @@ func TestAddress_String(t *testing.T) {
 
 func makeRandBuffer(size int) []byte {
 	buffer := make([]byte, size)
-	rand.Read(buffer)
+	_, _ = rand.Read(buffer)
 	return buffer
 }
 

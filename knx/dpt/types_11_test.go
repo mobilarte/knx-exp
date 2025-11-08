@@ -37,7 +37,7 @@ func TestDPT_11001(t *testing.T) {
 				src.Day = uint8(d)
 				if src.IsValid() {
 					buf := src.Pack()
-					dst.Unpack(buf)
+					_ = dst.Unpack(buf)
 					tm, _ := time.Parse("2006-01-02", dst.String())
 					r := tm.Format("2006-01-02")
 					if src.String() != dst.String() || dst.String() != r {

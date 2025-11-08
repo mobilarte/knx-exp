@@ -16,7 +16,11 @@ func TestDPT_17001(t *testing.T) {
 		value := uint8(i)
 		src = DPT_17001(value)
 		buf = src.Pack()
-		dst.Unpack(buf)
+		err := dst.Unpack(buf)
+		if err != nil {
+			t.Errorf("Unpacking error")
+		}
+
 		if value <= 63 && uint8(dst) != value {
 			t.Errorf("Wrong value \"%s\" after pack/unpack! Original value was \"%v\".", dst, src)
 		} else if value > 63 && uint8(dst) != 63 {
