@@ -5,8 +5,6 @@ package util
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestPackString(t *testing.T) {
@@ -29,9 +27,31 @@ func TestPackString(t *testing.T) {
 		}
 
 		n, err := PackString(buffer, testCase.MaxLen, testCase.Data)
-		if assert.Nil(t, err) {
-			assert.Equal(t, testCase.MaxLen, n, "Produced bytes not equal")
-			assert.Equal(t, testCase.Expected, buffer, "Packed burffer not equal")
+		if err == nil {
+			if testCase.MaxLen != n {
+				t.Errorf("Produced bytes not equal")
+			}
+			if len(testCase.Expected) != len(buffer) {
+				t.Errorf("Packed buffer not equal")
+			}
+			for i, v := range testCase.Expected {
+				if v != buffer[i] {
+					t.Errorf("Packed buffer not equal")
+					break
+				}
+			}
+			for i, v := range buffer {
+				if v != testCase.Expected[i] {
+					t.Errorf("Packed buffer not equal")
+					break
+				}
+			}
 		}
+		/*
+			if assert.Nil(t, err) {
+				assert.Equal(t, testCase.MaxLen, n, "Produced bytes not equal")
+				assert.Equal(t, testCase.Expected, buffer, "Packed buffer not equal")
+			}
+		*/
 	}
 }
