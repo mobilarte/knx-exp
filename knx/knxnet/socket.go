@@ -45,7 +45,10 @@ func DialTunnelUDP(address string) (*TunnelSocket, error) {
 		return nil, err
 	}
 
-	conn.SetDeadline(time.Time{})
+	err = conn.SetDeadline(time.Time{})
+	if err != nil {
+		return nil, err
+	}
 
 	inbound := make(chan Service)
 	go serveUDPSocket(conn, addr, inbound)
@@ -70,7 +73,10 @@ func DialTunnelTCP(address string) (*TunnelSocket, error) {
 		return nil, err
 	}
 
-	conn.SetDeadline(time.Time{})
+	err = conn.SetDeadline(time.Time{})
+	if err != nil {
+		return nil, err
+	}
 
 	inbound := make(chan Service)
 	go serveTCPSocket(conn, addr, inbound)
@@ -146,7 +152,7 @@ func ListenRouterOnInterface(ifi *net.Interface, multicastAddress string, multic
 		util.Log(conn, "MulticastLoopbackEnabled: %t", multicastLoopbackEnabled)
 	}
 
-	conn.SetDeadline(time.Time{})
+	_ = conn.SetDeadline(time.Time{})
 
 	inbound := make(chan Service)
 	go serveUDPSocket(conn, nil, inbound)

@@ -337,7 +337,7 @@ func (conn *Tunnel) handleDiscReq(req *knxnet.DiscReq) error {
 	}
 
 	// We don't need to check if this errors or not. It doesn't matter.
-	conn.sock.Send(&knxnet.DiscRes{Channel: req.Channel, Status: 0})
+	_ = conn.sock.Send(&knxnet.DiscRes{Channel: req.Channel, Status: 0})
 
 	return nil
 }
@@ -617,7 +617,7 @@ func NewTunnel(gatewayAddr string, layer knxnet.TunnelLayer, config TunnelConfig
 	// Connect to the gateway.
 	err = client.requestConn()
 	if err != nil {
-		sock.Close()
+		_ = sock.Close()
 		return nil, err
 	}
 
@@ -631,12 +631,12 @@ func NewTunnel(gatewayAddr string, layer knxnet.TunnelLayer, config TunnelConfig
 // disconnect request is sent, it does not wait for a disconnect response.
 func (conn *Tunnel) Close() {
 	conn.once.Do(func() {
-		conn.requestDisc()
+		_ = conn.requestDisc()
 
 		close(conn.done)
 		conn.wait.Wait()
 
-		conn.sock.Close()
+		_ = conn.sock.Close()
 	})
 }
 

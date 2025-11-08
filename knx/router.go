@@ -62,7 +62,10 @@ type Router struct {
 // sendMultiple sends each message from the slice. Doesn't matter if one fails, all will be tried.
 func (router *Router) sendMultiple(messages []cemi.Message) {
 	for _, message := range messages {
-		router.Send(message)
+		err := router.Send(message)
+		if err != nil {
+			util.Log(router, "Error sendMultiple: %v", err)
+		}
 	}
 }
 

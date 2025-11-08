@@ -84,7 +84,7 @@ func (DeviceInformationBlock) Size() uint {
 // Pack assembles the device information structure in the given buffer.
 func (dib *DeviceInformationBlock) Pack(buffer []byte) {
 	buf := make([]byte, friendlyNameMaxLen)
-	util.PackString(buf, friendlyNameMaxLen, dib.FriendlyName)
+	_, _ = util.PackString(buf, friendlyNameMaxLen, dib.FriendlyName)
 
 	util.PackSome(
 		buffer,

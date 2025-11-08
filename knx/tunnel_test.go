@@ -31,7 +31,7 @@ func TestTunnelConn_requestConn(t *testing.T) {
 		client, gateway := newDummySockets()
 		defer gateway.Close()
 
-		client.Close()
+		_ = client.Close()
 
 		conn := Tunnel{
 			sock:   client,
@@ -73,8 +73,8 @@ func TestTunnelConn_requestConn(t *testing.T) {
 
 			<-gateway.Inbound()
 
-			client.Close()
-			gateway.Close()
+			_ = client.Close()
+			_ = gateway.Close()
 		})
 
 		t.Run("Client", func(t *testing.T) {
@@ -108,7 +108,7 @@ func TestTunnelConn_requestConn(t *testing.T) {
 
 			msg := <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.ConnReq); ok {
-				gateway.sendAny(&knxnet.ConnRes{
+				_ = gateway.sendAny(&knxnet.ConnRes{
 					Channel: 1,
 					Status:  knxnet.NoError,
 					Control: req.Control,
@@ -176,7 +176,7 @@ func TestTunnelConn_requestConn(t *testing.T) {
 					t.Fatalf("Unexpected host for request: %+v", req)
 				}
 
-				gateway.sendAny(&knxnet.ConnRes{
+				_ = gateway.sendAny(&knxnet.ConnRes{
 					Channel: 1,
 					Status:  knxnet.NoError,
 					Control: req.Control,
@@ -224,7 +224,7 @@ func TestTunnelConn_requestConn(t *testing.T) {
 					t.Fatalf("Unexpected host for request: %+v", req)
 				}
 
-				gateway.sendAny(&knxnet.ConnRes{
+				_ = gateway.sendAny(&knxnet.ConnRes{
 					Channel: 1,
 					Status:  knxnet.NoError,
 					Control: req.Control,
@@ -267,7 +267,7 @@ func TestTunnelConn_requestConn(t *testing.T) {
 
 			msg := <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.ConnReq); ok {
-				gateway.sendAny(&knxnet.ConnRes{
+				_ = gateway.sendAny(&knxnet.ConnRes{
 					Channel: 0,
 					Status:  knxnet.ErrNoMoreConnections,
 					Control: req.Control,
@@ -278,7 +278,7 @@ func TestTunnelConn_requestConn(t *testing.T) {
 
 			msg = <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.ConnReq); ok {
-				gateway.sendAny(&knxnet.ConnRes{
+				_ = gateway.sendAny(&knxnet.ConnRes{
 					Channel: 1,
 					Status:  knxnet.NoError,
 					Control: req.Control,
@@ -319,7 +319,7 @@ func TestTunnelConn_requestConn(t *testing.T) {
 
 			msg := <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.ConnReq); ok {
-				gateway.sendAny(&knxnet.ConnRes{
+				_ = gateway.sendAny(&knxnet.ConnRes{
 					Channel: 0,
 					Status:  knxnet.ErrConnectionType,
 					Control: req.Control,
