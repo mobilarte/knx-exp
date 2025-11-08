@@ -133,14 +133,6 @@ type BasicConfigurationReq struct {
 	IPConfig IpConfigDIB
 }
 
-func (BasicConfigurationReq) Service() ServiceID {
-	return BasicConfReqService
-}
-
-func (req *BasicConfigurationReq) SetSelector(progMode bool, macAddr net.HardwareAddr) {
-	req.Set(progMode, macAddr)
-}
-
 func NewBasicConfigReq(addr net.Addr) (*BasicConfigurationReq, error) {
 	req := &BasicConfigurationReq{}
 	req.IPConfig.DefaultGateway = Address{192, 168, 1, 2}
@@ -153,6 +145,14 @@ func NewBasicConfigReq(addr net.Addr) (*BasicConfigurationReq, error) {
 	}
 
 	return req, nil
+}
+
+func (BasicConfigurationReq) Service() ServiceID {
+	return BasicConfReqService
+}
+
+func (req *BasicConfigurationReq) SetSelector(progMode bool, macAddr net.HardwareAddr) {
+	req.Set(progMode, macAddr)
 }
 
 func (req *BasicConfigurationReq) Pack(buffer []byte) {
