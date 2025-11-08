@@ -140,8 +140,8 @@ func TestTunnelConn_requestConn(t *testing.T) {
 
 	// Inbound channel is closed.
 	t.Run("InboundClosed", func(t *testing.T) {
-		client, gatway := newDummySockets()
-		defer gatway.Close()
+		client, gateway := newDummySockets()
+		defer gateway.Close()
 		defer client.Close()
 
 		client.closeIn()
