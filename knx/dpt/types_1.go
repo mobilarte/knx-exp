@@ -3,6 +3,9 @@
 
 package dpt
 
+// 03_07_02 Datapoint Types v01.08.02 AS.pdf
+// 03_07_02 Datapoint Types v02.02.01 AS.pdf
+
 // DPT_1001 represents DPT 1.001 (G) / DPT_Switch.
 type DPT_1001 bool
 
@@ -552,5 +555,51 @@ func (d DPT_1100) String() string {
 		return "Heating"
 	} else {
 		return "Cooling"
+	}
+}
+
+// DPT_11200 represents DPT 1.2100 (FB) / DPT_ConsumerProducer.
+type DPT_11200 bool
+
+func (d DPT_11200) Pack() []byte {
+	return packB1(d)
+}
+
+func (d *DPT_11200) Unpack(data []byte) error {
+	return unpackB1(data, d)
+}
+
+func (d DPT_11200) Unit() string {
+	return ""
+}
+
+func (d DPT_11200) String() string {
+	if d {
+		return "Consumer"
+	} else {
+		return "Producer"
+	}
+}
+
+// DPT_11201 represents DPT 1.2100 (FB) / DPT_Energy/Direction.
+type DPT_11201 bool
+
+func (d DPT_11201) Pack() []byte {
+	return packB1(d)
+}
+
+func (d *DPT_11201) Unpack(data []byte) error {
+	return unpackB1(data, d)
+}
+
+func (d DPT_11201) Unit() string {
+	return ""
+}
+
+func (d DPT_11201) String() string {
+	if d {
+		return "Positive"
+	} else {
+		return "Negative"
 	}
 }
