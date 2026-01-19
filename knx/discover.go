@@ -3,6 +3,7 @@
 package knx
 
 import (
+	"log"
 	"net"
 	"time"
 
@@ -21,7 +22,12 @@ func DiscoverOnInterface(ifi *net.Interface, multicastDiscoveryAddress string, s
 	if err != nil {
 		return nil, err
 	}
-	defer socket.Close()
+	defer func() {
+		err := socket.Close()
+		if err != nil {
+			log.Fatal()
+		}
+	}()
 
 	req, err := knxnet.NewSearchReq(socket.Addr())
 	if err != nil {

@@ -6,6 +6,7 @@ package knx
 import (
 	"errors"
 	"fmt"
+	"log"
 	"sync"
 	"time"
 
@@ -363,7 +364,11 @@ func (conn *Tunnel) pushInbound(msg cemi.Message) {
 			// Since this goroutine decouples from the server goroutine, it might try to send when
 			// the server closed the inbound channel. Sending to a closed channel will panic. But we
 			// don't care, because cool guys don't look at explosions.
-			defer func() { recover() }()
+			defer func() {
+				if r := recover(); r != nil {
+					log.Fatal(r)
+				}
+			}()
 			conn.inbound <- msg
 		}()
 	}
@@ -433,7 +438,11 @@ func (conn *Tunnel) handleTunnelRes(res *knxnet.TunnelRes) error {
 	go func() {
 		// Ack channel might be closed, but we don't care. Just catch the panic that occurs when
 		// writing to a closed channel here, and be done with it.
-		defer func() { recover() }()
+		defer func() {
+			if r := recover(); r != nil {
+				log.Fatal(r)
+			}
+		}()
 
 		select {
 		case <-conn.done:
@@ -460,7 +469,11 @@ func (conn *Tunnel) handleConnStateRes(
 	go func() {
 		// Heartbeat channel might be closed, but we don't care. Just catch the panic that occurs
 		// when writing to a closed channel here, and be done with it.
-		defer func() { recover() }()
+		defer func() {
+			if r := recover(); r != nil {
+				log.Fatal(r)
+			}
+		}()
 
 		select {
 		case <-conn.done:

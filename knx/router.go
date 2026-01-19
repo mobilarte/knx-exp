@@ -6,6 +6,7 @@ package knx
 import (
 	"container/list"
 	"errors"
+	"log"
 	"math/rand"
 	"net"
 	"sync"
@@ -101,7 +102,11 @@ func (router *Router) pushInbound(msg cemi.Message) {
 			// Since this goroutine decouples from the server goroutine, it might try to send when
 			// the server closed the inbound channel. Sending to a closed channel will panic. But we
 			// don't care, because cool guys don't look at explosions.
-			defer func() { recover() }()
+			defer func() {
+				if r := recover(); r != nil {
+					log.Fatal(r)
+				}
+			}()
 			router.inbound <- msg
 		}()
 	}
@@ -213,7 +218,10 @@ func (router *Router) Inbound() <-chan cemi.Message {
 
 // Close closes the underlying socket and terminates the Router thereby.
 func (router *Router) Close() {
-	router.sock.Close()
+	err := router.sock.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // GroupRouter is a Router that provides only a group communication interface.

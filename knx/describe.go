@@ -4,6 +4,7 @@
 package knx
 
 import (
+	"log"
 	"time"
 
 	"github.com/mobilarte/knx-exp/knx/knxnet"
@@ -15,7 +16,12 @@ func DescribeTunnel(address string, searchTimeout time.Duration) (*knxnet.Descri
 	if err != nil {
 		return nil, err
 	}
-	defer socket.Close()
+	defer func() {
+		err := socket.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	req, err := knxnet.NewDescriptionReq(socket.LocalAddr())
 	if err != nil {

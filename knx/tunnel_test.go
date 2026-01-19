@@ -4,6 +4,7 @@
 package knx
 
 import (
+	"log"
 	"testing"
 	"time"
 
@@ -29,16 +30,24 @@ func TestTunnelConn_requestConn(t *testing.T) {
 	// Socket was closed before anything could be done.
 	t.Run("SendFails", func(t *testing.T) {
 		client, gateway := newDummySockets()
-		defer gateway.Close()
+		defer func() {
+			err := gateway.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
-		_ = client.Close()
+		err := client.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		conn := Tunnel{
 			sock:   client,
 			config: DefaultTunnelConfig,
 		}
 
-		err := conn.requestConn()
+		err = conn.requestConn()
 		if err == nil {
 			t.Fatal("Should not succeed")
 		}
@@ -47,8 +56,19 @@ func TestTunnelConn_requestConn(t *testing.T) {
 	// Context is done.
 	t.Run("Timeout", func(t *testing.T) {
 		client, gateway := newDummySockets()
-		defer client.Close()
-		defer gateway.Close()
+		defer func() {
+			err := client.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
+
+		defer func() {
+			err := gateway.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
 		config := DefaultTunnelConfig
 		config.ResponseTimeout = 1
@@ -102,7 +122,12 @@ func TestTunnelConn_requestConn(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			<-gateway.Inbound()
 
@@ -121,7 +146,12 @@ func TestTunnelConn_requestConn(t *testing.T) {
 		t.Run("Client", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			config := DefaultTunnelConfig
 			config.ResendInterval = 1
@@ -141,8 +171,20 @@ func TestTunnelConn_requestConn(t *testing.T) {
 	// Inbound channel is closed.
 	t.Run("InboundClosed", func(t *testing.T) {
 		client, gateway := newDummySockets()
-		defer gateway.Close()
-		defer client.Close()
+
+		defer func() {
+			err := gateway.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
+
+		defer func() {
+			err := client.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
 		client.closeIn()
 
@@ -164,7 +206,12 @@ func TestTunnelConn_requestConn(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			msg := <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.ConnReq); ok {
@@ -189,7 +236,12 @@ func TestTunnelConn_requestConn(t *testing.T) {
 		t.Run("Client", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			conn := Tunnel{
 				sock:   client,
@@ -210,7 +262,12 @@ func TestTunnelConn_requestConn(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			msg := <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.ConnReq); ok {
@@ -237,8 +294,12 @@ func TestTunnelConn_requestConn(t *testing.T) {
 		t.Run("Client", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
-
+			defer func() {
+				err := client.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 			conn := Tunnel{
 				sock: client,
 				config: TunnelConfig{
@@ -263,7 +324,12 @@ func TestTunnelConn_requestConn(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			msg := <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.ConnReq); ok {
@@ -291,7 +357,12 @@ func TestTunnelConn_requestConn(t *testing.T) {
 		t.Run("Client", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
+			defer func() {
+				err := client.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			config := DefaultTunnelConfig
 			config.ResendInterval = 1
@@ -315,7 +386,12 @@ func TestTunnelConn_requestConn(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			msg := <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.ConnReq); ok {
@@ -332,7 +408,12 @@ func TestTunnelConn_requestConn(t *testing.T) {
 		t.Run("Client", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
+			defer func() {
+				err := client.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			conn := Tunnel{
 				sock:   client,
@@ -350,9 +431,14 @@ func TestTunnelConn_requestConn(t *testing.T) {
 func TestTunnelConn_requestState(t *testing.T) {
 	t.Run("SendFails", func(t *testing.T) {
 		client, gateway := newDummySockets()
-		defer gateway.Close()
+		defer func() {
+			err := gateway.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
-		client.Close()
+		_ = client.Close()
 
 		conn := makeTunnelConn(client, DefaultTunnelConfig, 1)
 
@@ -364,8 +450,19 @@ func TestTunnelConn_requestState(t *testing.T) {
 
 	t.Run("CancelledContext", func(t *testing.T) {
 		client, gateway := newDummySockets()
-		defer client.Close()
-		defer gateway.Close()
+		defer func() {
+			err := client.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
+
+		defer func() {
+			err := gateway.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
 		config := DefaultTunnelConfig
 		config.ResponseTimeout = 1
@@ -384,7 +481,12 @@ func TestTunnelConn_requestState(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			<-gateway.Inbound()
 			client.closeOut()
@@ -393,7 +495,12 @@ func TestTunnelConn_requestState(t *testing.T) {
 		t.Run("Client", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
+			defer func() {
+				err := client.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			config := DefaultTunnelConfig
 			config.ResendInterval = 1
@@ -416,7 +523,12 @@ func TestTunnelConn_requestState(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			<-gateway.Inbound()
 
@@ -439,7 +551,12 @@ func TestTunnelConn_requestState(t *testing.T) {
 		t.Run("Client", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
+			defer func() {
+				err := client.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			config := DefaultTunnelConfig
 			config.ResendInterval = 1
@@ -460,8 +577,18 @@ func TestTunnelConn_requestState(t *testing.T) {
 
 	t.Run("InboundClosed", func(t *testing.T) {
 		client, gateway := newDummySockets()
-		defer client.Close()
-		defer gateway.Close()
+		defer func() {
+			err := client.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
+		defer func() {
+			err := gateway.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
 		heartbeat := make(chan knxnet.ErrCode)
 		close(heartbeat)
@@ -483,7 +610,12 @@ func TestTunnelConn_requestState(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			msg := <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.ConnStateReq); ok {
@@ -504,7 +636,12 @@ func TestTunnelConn_requestState(t *testing.T) {
 		t.Run("Client", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
+			defer func() {
+				err := client.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			conn := makeTunnelConn(client, DefaultTunnelConfig, channel)
 
@@ -529,7 +666,12 @@ func TestTunnelConn_requestState(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			msg := <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.ConnStateReq); ok {
@@ -550,7 +692,12 @@ func TestTunnelConn_requestState(t *testing.T) {
 		t.Run("Client", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
+			defer func() {
+				err := client.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			conn := makeTunnelConn(client, DefaultTunnelConfig, channel)
 
@@ -570,9 +717,14 @@ func TestTunnelConn_requestState(t *testing.T) {
 func TestTunnelConn_requestTunnel(t *testing.T) {
 	t.Run("SendFails", func(t *testing.T) {
 		client, gateway := newDummySockets()
-		defer gateway.Close()
+		defer func() {
+			err := gateway.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
-		client.Close()
+		_ = client.Close()
 
 		conn := makeTunnelConn(client, DefaultTunnelConfig, 1)
 
@@ -584,8 +736,18 @@ func TestTunnelConn_requestTunnel(t *testing.T) {
 
 	t.Run("Timeout", func(t *testing.T) {
 		client, gateway := newDummySockets()
-		defer client.Close()
-		defer gateway.Close()
+		defer func() {
+			err := client.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
+		defer func() {
+			err := gateway.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
 		config := DefaultTunnelConfig
 		config.ResponseTimeout = 1
@@ -604,7 +766,12 @@ func TestTunnelConn_requestTunnel(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			<-gateway.Inbound()
 			client.closeOut()
@@ -613,7 +780,12 @@ func TestTunnelConn_requestTunnel(t *testing.T) {
 		t.Run("Client", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
+			defer func() {
+				err := client.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			config := DefaultTunnelConfig
 			config.ResendInterval = 1
@@ -636,7 +808,12 @@ func TestTunnelConn_requestTunnel(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			<-gateway.Inbound()
 
@@ -659,7 +836,12 @@ func TestTunnelConn_requestTunnel(t *testing.T) {
 		t.Run("Client", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
+			defer func() {
+				err := client.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			config := DefaultTunnelConfig
 			config.ResendInterval = 1
@@ -676,8 +858,18 @@ func TestTunnelConn_requestTunnel(t *testing.T) {
 
 	t.Run("ClosedAckChannel", func(t *testing.T) {
 		client, gateway := newDummySockets()
-		defer client.Close()
-		defer gateway.Close()
+		defer func() {
+			err := client.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
+		defer func() {
+			err := gateway.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
 		conn := makeTunnelConn(client, DefaultTunnelConfig, 1)
 		close(conn.ack)
@@ -697,7 +889,12 @@ func TestTunnelConn_requestTunnel(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			msg := <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.TunnelReq); ok {
@@ -723,7 +920,12 @@ func TestTunnelConn_requestTunnel(t *testing.T) {
 		t.Run("Client", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
+			defer func() {
+				err := client.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			conn := makeTunnelConn(client, DefaultTunnelConfig, channel)
 			conn.ack = ack
@@ -744,7 +946,12 @@ func TestTunnelConn_requestTunnel(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			msg := <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.TunnelReq); ok {
@@ -765,7 +972,12 @@ func TestTunnelConn_requestTunnel(t *testing.T) {
 		t.Run("Client", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
+			defer func() {
+				err := client.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			conn := makeTunnelConn(client, DefaultTunnelConfig, channel)
 			conn.ack = ack
@@ -786,7 +998,12 @@ func TestTunnelConn_requestTunnel(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			msg := <-gateway.Inbound()
 			if req, ok := msg.(*knxnet.TunnelReq); ok {
@@ -807,7 +1024,12 @@ func TestTunnelConn_requestTunnel(t *testing.T) {
 		t.Run("Client", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
+			defer func() {
+				err := client.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			conn := makeTunnelConn(client, DefaultTunnelConfig, channel)
 			conn.ack = ack
@@ -823,8 +1045,18 @@ func TestTunnelConn_requestTunnel(t *testing.T) {
 func TestTunnelConn_handleTunnelReq(t *testing.T) {
 	t.Run("InvalidChannel", func(t *testing.T) {
 		client, gateway := newDummySockets()
-		defer client.Close()
-		defer gateway.Close()
+		defer func() {
+			err := client.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
+		defer func() {
+			err := gateway.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
 		var seqNumber uint8
 
@@ -845,8 +1077,18 @@ func TestTunnelConn_handleTunnelReq(t *testing.T) {
 			sendSeqNumber uint8 = 0
 		)
 
-		defer client.Close()
-		defer gateway.Close()
+		defer func() {
+			err := client.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
+		defer func() {
+			err := gateway.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
 		seqNumber := sendSeqNumber
 
@@ -878,7 +1120,12 @@ func TestTunnelConn_handleTunnelReq(t *testing.T) {
 		t.Run("Gateway", func(t *testing.T) {
 			t.Parallel()
 
-			defer gateway.Close()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			msg := <-gateway.Inbound()
 			if res, ok := msg.(*knxnet.TunnelRes); ok {
@@ -901,7 +1148,12 @@ func TestTunnelConn_handleTunnelReq(t *testing.T) {
 		t.Run("Worker", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
+			defer func() {
+				err := client.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			seqNumber := sendSeqNumber
 
@@ -930,8 +1182,18 @@ func TestTunnelConn_handleTunnelReq(t *testing.T) {
 func TestTunnelConn_handleTunnelRes(t *testing.T) {
 	t.Run("InvalidChannel", func(t *testing.T) {
 		client, gateway := newDummySockets()
-		defer client.Close()
-		defer gateway.Close()
+		defer func() {
+			err := client.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
+		defer func() {
+			err := gateway.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
 		conn := makeTunnelConn(client, DefaultTunnelConfig, 1)
 
@@ -949,8 +1211,18 @@ func TestTunnelConn_handleTunnelRes(t *testing.T) {
 		t.Run("Worker", func(t *testing.T) {
 			t.Parallel()
 
-			defer client.Close()
-			defer gateway.Close()
+			defer func() {
+				err := client.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
+			defer func() {
+				err := gateway.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 
 			conn := makeTunnelConn(client, DefaultTunnelConfig, 1)
 			conn.ack = ack

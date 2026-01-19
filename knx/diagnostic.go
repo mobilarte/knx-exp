@@ -6,6 +6,7 @@
 package knx
 
 import (
+	"log"
 	"net"
 	"time"
 
@@ -29,7 +30,12 @@ func DiagnosticOnInterface(ifi *net.Interface, multicastDiscoveryAddress string,
 	if err != nil {
 		return nil, err
 	}
-	defer socket.Close()
+	defer func() {
+		err := socket.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	req, err := knxnet.NewDiagnosticReq(socket.LocalAddr())
 
