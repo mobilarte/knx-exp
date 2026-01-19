@@ -1,6 +1,6 @@
 module github.com/mobilarte/knx-exp
 
-go 1.25.5
+go 1.25.6
 
 require (
 	golang.org/x/net v0.49.0
