@@ -7,5 +7,6 @@ func abs[T float64 | float32 | ~int64](x T) T {
 	if x < 0.0 {
 		return -x
 	}
+
 	return x
 }

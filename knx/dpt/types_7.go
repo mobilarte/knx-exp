@@ -54,11 +54,13 @@ func (d DPT_7003) Pack() []byte {
 
 func (d *DPT_7003) Unpack(data []byte) error {
 	var buf uint16
+
 	err := unpackU16(data, &buf)
 	if err == nil {
 		*d = (DPT_7003)(float32(buf) * 10)
 		return nil
 	}
+
 	return err
 }
 
@@ -83,11 +85,13 @@ func (d DPT_7004) Pack() []byte {
 
 func (d *DPT_7004) Unpack(data []byte) error {
 	var buf uint16
+
 	err := unpackU16(data, &buf)
 	if err == nil {
 		*d = (DPT_7004)(float32(buf) * 100)
 		return nil
 	}
+
 	return err
 }
 
@@ -217,6 +221,7 @@ func (d DPT_7012) String() string {
 	if d == 0 {
 		return "0"
 	}
+
 	return fmt.Sprintf("%d mA", uint16(d))
 }
 

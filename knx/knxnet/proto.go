@@ -100,6 +100,7 @@ func Pack(buffer []byte, srv ServicePackable) {
 func AllocAndPack(srv ServicePackable) []byte {
 	buffer := make([]byte, Size(srv))
 	Pack(buffer, srv)
+
 	return buffer
 }
 
@@ -157,8 +158,10 @@ func UnpackHeader(data []byte, serviceID *ServiceID, totalLen *uint16) (uint, er
 // 	}
 
 func Unpack(data []byte, srv *Service) (uint, error) {
-	var srvID ServiceID
-	var totalLen uint16
+	var (
+		srvID    ServiceID
+		totalLen uint16
+	)
 
 	n, err := UnpackHeader(data, &srvID, &totalLen)
 	if err != nil {
@@ -226,7 +229,6 @@ func Unpack(data []byte, srv *Service) (uint, error) {
 	}
 
 	m, err := body.Unpack(data[n:])
-
 	if err == nil {
 		*srv = body
 	}

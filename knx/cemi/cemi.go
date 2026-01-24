@@ -193,7 +193,6 @@ func Unpack(data []byte, message *Message) (n uint, err error) {
 
 	// Parse the message.
 	m, err := body.Unpack(data[n:])
-
 	if err == nil {
 		*message = body
 	}

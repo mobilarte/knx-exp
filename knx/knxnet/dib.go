@@ -121,6 +121,7 @@ func (dib *DeviceInformationBlock) Unpack(data []byte) (n uint, err error) {
 	if err != nil {
 		return n, err
 	}
+
 	n += nn
 
 	if length != uint8(dib.Size()) {
@@ -172,12 +173,14 @@ func (sdib *SupportedServicesDIB) Unpack(data []byte) (n uint, err error) {
 
 	for n < uint(length) {
 		f := ServiceFamily{}
+
 		nn, err := f.Unpack(data[n:])
 		if err != nil {
 			return n, errors.New("unable to unpack service family")
 		}
 
 		n += nn
+
 		sdib.Families = append(sdib.Families, f)
 	}
 
@@ -323,11 +326,14 @@ func (knxaddr *KnxAddrDIB) Unpack(data []byte) (n uint, err error) {
 
 	for n < uint(length) {
 		var k cemi.IndividualAddr
+
 		nn, err := util.UnpackSome(data[n:], (*uint16)(&k))
 		if err != nil {
 			return n, errors.New("unable to unpack individual address")
 		}
+
 		n += nn
+
 		knxaddr.KNXAddresses = append(knxaddr.KNXAddresses, k)
 	}
 
@@ -397,8 +403,10 @@ type DescriptionBlock struct {
 // Unpack parses the given service payload in order to initialize the Description Block.
 // It can cope with not in sequence and unknown Device Information Blocks (DIB).
 func (di *DescriptionBlock) Unpack(data []byte) (n uint, err error) {
-	var length uint8
-	var ty DescriptionType
+	var (
+		length uint8
+		ty     DescriptionType
+	)
 
 	n = 0
 	for n < uint(len(data)) {
@@ -414,6 +422,7 @@ func (di *DescriptionBlock) Unpack(data []byte) (n uint, err error) {
 			if err != nil {
 				return 0, err
 			}
+
 			n += uint(length)
 
 		case DescriptionTypeSupportedServiceFamilies:
@@ -421,6 +430,7 @@ func (di *DescriptionBlock) Unpack(data []byte) (n uint, err error) {
 			if err != nil {
 				return 0, err
 			}
+
 			n += uint(length)
 
 		case DescriptionTypeIPConfig:
@@ -428,6 +438,7 @@ func (di *DescriptionBlock) Unpack(data []byte) (n uint, err error) {
 			if err != nil {
 				return 0, err
 			}
+
 			n += uint(length)
 
 		case DescriptionTypeIPCurrentConfig:
@@ -435,6 +446,7 @@ func (di *DescriptionBlock) Unpack(data []byte) (n uint, err error) {
 			if err != nil {
 				return 0, err
 			}
+
 			n += uint(length)
 
 		case DescriptionTypeKNXAddresses:
@@ -442,6 +454,7 @@ func (di *DescriptionBlock) Unpack(data []byte) (n uint, err error) {
 			if err != nil {
 				return 0, err
 			}
+
 			n += uint(length)
 
 		case DescriptionTypeManufacturerData:
@@ -453,13 +466,16 @@ func (di *DescriptionBlock) Unpack(data []byte) (n uint, err error) {
 				if err != nil {
 					return 0, err
 				}
+
 				di.UnknownBlocks = append(di.UnknownBlocks, u)
 				util.Log(di, "DIB not parsed: 0x%02x", ty)
 			}
+
 			n += uint(length)
 
 		default:
 			util.Log(di, "Found unsupported DIB with code: 0x%02x", ty)
+
 			n += uint(length)
 		}
 	}

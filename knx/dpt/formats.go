@@ -52,6 +52,7 @@ func packB2(b1 bool, b0 bool) []byte {
 	if b1 {
 		b |= 0x2
 	}
+
 	if b0 {
 		b |= 0x1
 	}
@@ -80,12 +81,15 @@ func packB4(b3 bool, b2 bool, b1 bool, b0 bool) byte {
 	if b3 {
 		b |= 0x8
 	}
+
 	if b2 {
 		b |= 0x4
 	}
+
 	if b1 {
 		b |= 0x2
 	}
+
 	if b0 {
 		b |= 0x1
 	}
@@ -130,6 +134,7 @@ func unpack3U8(data []byte, u2 *uint8, u1 *uint8, u0 *uint8) error {
 	if len(data) != 4 {
 		return ErrInvalidLength
 	}
+
 	*u2 = uint8(data[1])
 	*u1 = uint8(data[2])
 	*u0 = uint8(data[3])
@@ -284,6 +289,7 @@ func unpackF16[T ~float64](data []byte, f *T) error {
 	}
 
 	m := int(data[1]&0x7)<<8 | int(data[2])
+
 	e := (data[1] >> 3) & 0x0F
 	if data[1]&0x80 == 0x80 {
 		m -= 2048

@@ -16,15 +16,20 @@ func (d DPT_3007) Pack() []byte {
 }
 
 func (d *DPT_3007) Unpack(data []byte) error {
-	var inc bool
-	var val uint8
+	var (
+		inc bool
+		val uint8
+	)
+
 	if err := unpackB1U3(data, &inc, &val); err != nil {
 		return err
 	}
+
 	*d = DPT_3007{
 		C:        inc,
 		StepCode: val,
 	}
+
 	return nil
 }
 
@@ -55,15 +60,20 @@ func (d DPT_3008) Pack() []byte {
 }
 
 func (d *DPT_3008) Unpack(data []byte) error {
-	var inc bool
-	var val uint8
+	var (
+		inc bool
+		val uint8
+	)
+
 	if err := unpackB1U3(data, &inc, &val); err != nil {
 		return err
 	}
+
 	*d = DPT_3008{
 		C:        inc,
 		StepCode: val,
 	}
+
 	return nil
 }
 

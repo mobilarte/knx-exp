@@ -15,6 +15,7 @@ func makeRandInfoSegment() []byte {
 	n := util.Randint64() % 256
 
 	buffer := make([]byte, n+1)
+
 	buffer[0] = byte(n)
 	if _, err := crand.Read(buffer[1:]); err != nil {
 		panic(err)
@@ -29,7 +30,6 @@ func TestInfo_Unpack(t *testing.T) {
 		info := Info{}
 
 		num, err := info.Unpack(data)
-
 		if err != nil {
 			t.Error("Unexpected error:", err, data)
 			continue
@@ -53,8 +53,8 @@ func TestUnpack(t *testing.T) {
 		data := append([]byte{byte(code)}, makeRandLData()...)
 
 		var msg Message
-		num, err := Unpack(data, &msg)
 
+		num, err := Unpack(data, &msg)
 		if err != nil {
 			t.Error("Unexpected error:", err, data)
 			continue

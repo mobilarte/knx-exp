@@ -76,7 +76,9 @@ func TestUnpack(t *testing.T) {
 			length: 10,
 			extractor: func(data []byte) interface{} {
 				var r unpackableTester
+
 				_, _ = r.Unpack(data)
+
 				return r
 			},
 		},
@@ -113,7 +115,6 @@ func TestUnpack(t *testing.T) {
 				}
 
 				num, err := Unpack(buffer, ptr)
-
 				if err != nil {
 					t.Errorf("Unexpected error: %v %v", err, buffer)
 				}
@@ -156,11 +157,13 @@ func TestUnpackSome(t *testing.T) {
 	for range 100 {
 		_, _ = rand.Read(buffer)
 
-		var a uint8
-		var b uint16
-		var c uint32
-		var d uint64
-		var e unpackableTester
+		var (
+			a uint8
+			b uint16
+			c uint32
+			d uint64
+			e unpackableTester
+		)
 
 		num, err := UnpackSome(buffer, &a, &b, &c, &d, &e)
 		if err != nil {
@@ -180,19 +183,24 @@ func TestUnpackString(t *testing.T) {
 		Expected string
 	}{
 		{
-			MaxLen:   30,
-			Data:     []byte{0x41, 0x42, 0x42, 0x20, 0x49, 0x50, 0x53, 0x2f, 0x53, 0x32, 0x2e, 0x31, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
+			MaxLen: 30,
+			Data: []byte{0x41, 0x42, 0x42, 0x20, 0x49, 0x50, 0x53,
+				0x2f, 0x53, 0x32, 0x2e, 0x31, 0x00, 0x00, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00, 0x00},
 			Expected: "ABB IPS/S2.1",
 		},
 	}
 
 	for _, testCase := range testCases {
 		var output string
+
 		n, err := UnpackString(testCase.Data, testCase.MaxLen, &output)
 		if err == nil {
 			if testCase.MaxLen != n {
 				t.Errorf("Consumed bytes not equal")
 			}
+
 			if output != testCase.Expected {
 				t.Errorf("Unpacked string not equal")
 			}

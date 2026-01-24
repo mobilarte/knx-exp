@@ -58,6 +58,7 @@ func Unpack(data []byte, output interface{}) (uint, error) {
 		}
 
 		*output = data[0]
+
 		return 1, nil
 
 	case *int8:
@@ -66,6 +67,7 @@ func Unpack(data []byte, output interface{}) (uint, error) {
 		}
 
 		*output = int8(data[0])
+
 		return 1, nil
 
 	case *uint16:
@@ -73,8 +75,10 @@ func Unpack(data []byte, output interface{}) (uint, error) {
 
 	case *int16:
 		var u uint16
+
 		n, err := unpackUInt16(data, &u)
 		*output = int16(u)
+
 		return n, err
 
 	case *uint32:
@@ -82,8 +86,10 @@ func Unpack(data []byte, output interface{}) (uint, error) {
 
 	case *int32:
 		var u uint32
+
 		n, err := unpackUInt32(data, &u)
 		*output = int32(u)
+
 		return n, err
 
 	case *uint64:
@@ -91,8 +97,10 @@ func Unpack(data []byte, output interface{}) (uint, error) {
 
 	case *int64:
 		var u uint64
+
 		n, err := unpackUInt64(data, &u)
 		*output = int64(u)
+
 		return n, err
 
 	case []byte:
@@ -128,11 +136,13 @@ func UnpackSome(data []byte, outputs ...interface{}) (uint, error) {
 func UnpackString(buffer []byte, len uint, output *string) (uint, error) {
 	buffer = buffer[:len]
 	buffer = bytes.TrimRight(buffer, string(byte(0x0)))
+
 	buffer, err := stringDecoder.Bytes(buffer)
 	if err != nil {
 		return 0, fmt.Errorf("unable to decode string: %s", err)
 	}
 
 	*output = string(buffer)
+
 	return len, nil
 }

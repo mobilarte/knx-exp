@@ -36,8 +36,8 @@ func TestAddress_String(t *testing.T) {
 
 	t.Run("BadLength", func(t *testing.T) {
 		var hi HostInfo
-		_, err := hi.Unpack([]byte{0, 1, 0, 0, 0, 0, 0, 0})
 
+		_, err := hi.Unpack([]byte{0, 1, 0, 0, 0, 0, 0, 0})
 		if err == nil {
 			t.Fatal("Should not succeed")
 		}
@@ -47,6 +47,7 @@ func TestAddress_String(t *testing.T) {
 func makeRandBuffer(size int) []byte {
 	buffer := make([]byte, size)
 	_, _ = crand.Read(buffer)
+
 	return buffer
 }
 
@@ -56,8 +57,8 @@ func TestHostInfo_Unpack(t *testing.T) {
 		data := append([]byte{8, proto}, makeRandBuffer(6)...)
 
 		var hi HostInfo
-		num, err := hi.Unpack(data)
 
+		num, err := hi.Unpack(data)
 		if err != nil {
 			t.Errorf("Error for data %v: %v", data, err)
 			continue
@@ -120,7 +121,6 @@ func TestHostInfoFromAddress(t *testing.T) {
 		}
 
 		info, err := HostInfoFromAddress(&address)
-
 		if err != nil {
 			t.Fatal("Expected error to be nil, but it was '", err, "'")
 		}
@@ -132,8 +132,8 @@ func TestHostInfoFromAddress(t *testing.T) {
 
 	t.Run("invalid UDP address", func(t *testing.T) {
 		address := net.UDPAddr{}
-		_, err := HostInfoFromAddress(&address)
 
+		_, err := HostInfoFromAddress(&address)
 		if err == nil {
 			t.Fatal("Should not succeed")
 		}

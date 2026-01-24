@@ -19,6 +19,7 @@ func TestDPT_12(t *testing.T) {
 		Max       uint32
 		MaxStr    string
 	}
+
 	var types_12 = []DPT12{
 		{new(DPT_12001), 0, "0 counter pulses", 0, "0 counter pulses", 4294967295, "4294967295 counter pulses"},
 		{new(DPT_12100), 0, "0 s", 0, "0 s", 4294967295, "4294967295 s"},
@@ -35,6 +36,7 @@ func TestDPT_12(t *testing.T) {
 		if err != nil {
 			t.Errorf("%v", err)
 		}
+
 		if fmt.Sprintf("%s", e.Dpv) != e.MinStr {
 			t.Errorf("%#v has wrong smallest value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MinStr)
 		}
@@ -43,6 +45,7 @@ func TestDPT_12(t *testing.T) {
 		if err != nil {
 			t.Errorf("%v", err)
 		}
+
 		if fmt.Sprintf("%s", e.Dpv) != e.MaxStr {
 			t.Errorf("%#v has wrong largest value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MaxStr)
 		}

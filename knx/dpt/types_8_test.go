@@ -19,6 +19,7 @@ func TestDPT_8(t *testing.T) {
 		Max       int16
 		MaxStr    string
 	}
+
 	var types_8 = []DPT8{
 		{new(DPT_8001), -32768, "-32768 pulses", 0, "0 pulses", 32767, "32767 pulses"},
 		{new(DPT_8012), -32768, "-32768 m", 0, "0 m", 32767, "32767 m"},
@@ -33,6 +34,7 @@ func TestDPT_8(t *testing.T) {
 		if err != nil {
 			t.Errorf("%v", err)
 		}
+
 		if fmt.Sprintf("%s", e.Dpv) != e.MinStr {
 			t.Errorf("%#v has wrong smallest value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MinStr)
 		}
@@ -41,6 +43,7 @@ func TestDPT_8(t *testing.T) {
 		if err != nil {
 			t.Errorf("%v", err)
 		}
+
 		if fmt.Sprintf("%s", e.Dpv) != e.MaxStr {
 			t.Errorf("%#v has wrong largest value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MaxStr)
 		}

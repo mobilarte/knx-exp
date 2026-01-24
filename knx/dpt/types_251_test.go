@@ -10,8 +10,11 @@ import (
 )
 
 func TestDPT_251600(t *testing.T) {
-	var buf []byte
-	var dst DPT_251600
+	var (
+		buf []byte
+		dst DPT_251600
+	)
+
 	sources := []DPT_251600{
 		{Red: 255, Green: 96, Blue: 0, White: 18, RedValid: true, GreenValid: true, BlueValid: true, WhiteValid: true},
 		{Red: 255, Green: 96, Blue: 0, White: 18, RedValid: false, GreenValid: false, BlueValid: false, WhiteValid: false},

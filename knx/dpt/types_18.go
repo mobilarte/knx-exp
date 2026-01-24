@@ -27,6 +27,7 @@ func (d *DPT_18001) Unpack(data []byte) error {
 	if !d.IsValid() {
 		return ErrOutOfRange
 	}
+
 	return nil
 }
 
@@ -48,5 +49,6 @@ func (d DPT_18001) String() string {
 	} else if d <= 0x3F {
 		return fmt.Sprintf("activate %d", uint8(d)+1)
 	}
+
 	return "invalid payload"
 }

@@ -132,6 +132,7 @@ func (d DPT_5006) String() string {
 	if !d.IsValid() {
 		return "Reserved"
 	}
+
 	return fmt.Sprintf("%d", d)
 }
 

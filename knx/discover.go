@@ -17,7 +17,8 @@ func Discover(multicastDiscoveryAddress string, searchTimeout time.Duration) ([]
 
 // DiscoverOnInterface discovers all KNXnet/IP servers on a specific interface. If the
 // interface is nil, the system-assigned multicast interface is used.
-func DiscoverOnInterface(ifi *net.Interface, multicastDiscoveryAddress string, searchTimeout time.Duration) ([]*knxnet.SearchRes, error) {
+func DiscoverOnInterface(ifi *net.Interface, multicastDiscoveryAddress string,
+	searchTimeout time.Duration) ([]*knxnet.SearchRes, error) {
 	socket, err := knxnet.ListenRouterOnInterface(ifi, multicastDiscoveryAddress, false)
 	if err != nil {
 		return nil, err
@@ -49,6 +50,7 @@ loop:
 			if !ok {
 				continue
 			}
+
 			results = append(results, searchRes)
 
 		case <-timeout:

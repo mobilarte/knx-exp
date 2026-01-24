@@ -15,6 +15,7 @@ func TestDPT_18(t *testing.T) {
 		Value uint8
 		Out   string
 	}
+
 	var types_18 = []DPT18{
 		{new(DPT_18001), 0, "activate 1"},
 		{new(DPT_18001), 63, "activate 64"},
@@ -30,12 +31,16 @@ func TestDPT_18(t *testing.T) {
 			if src.String() != e.Out {
 				t.Errorf("%#v has wrong value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.Out)
 			}
+
 			var dst DPT_18001
+
 			buf := src.Pack()
+
 			err := dst.Unpack(buf)
 			if err != nil {
 				t.Errorf("Error unpacking")
 			}
+
 			if dst.String() != src.String() {
 				t.Errorf("%#v not identical after unpacking [%s]. Should be [%s]", e.Dpv, dst.String(), src.String())
 			}

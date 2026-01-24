@@ -11,8 +11,10 @@ import (
 
 // Test DPT 11.001 (Date)
 func TestDPT_11001(t *testing.T) {
-	var src DPT_11001
-	var dst DPT_11001
+	var (
+		src DPT_11001
+		dst DPT_11001
+	)
 
 	src.Year = 2001
 	src.Month = 2
@@ -39,6 +41,7 @@ func TestDPT_11001(t *testing.T) {
 					buf := src.Pack()
 					_ = dst.Unpack(buf)
 					tm, _ := time.Parse("2006-01-02", dst.String())
+
 					r := tm.Format("2006-01-02")
 					if src.String() != dst.String() || dst.String() != r {
 						t.Errorf("Value [%s] is not a valid date. Original value was [%s].", dst, src)

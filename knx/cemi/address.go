@@ -46,6 +46,7 @@ func NewIndividualAddrString(addr string) (IndividualAddr, error) {
 		if err != nil {
 			return 0, err
 		}
+
 		nums = append(nums, i)
 	}
 
@@ -56,22 +57,27 @@ func NewIndividualAddrString(addr string) (IndividualAddr, error) {
 			nums[2] < 0 || nums[2] > 255 {
 			return 0, fmt.Errorf("invalid area, line or device address in %s", addr)
 		}
+
 		if nums[0] == 0 && nums[1] == 0 && nums[2] == 0 {
 			return 0, errors.New("invalid individual address 0.0.0")
 		}
+
 		return NewIndividualAddr3(uint8(nums[0]), uint8(nums[1]), uint8(nums[2])), nil
 	case 2:
 		if nums[0] < 0 || nums[0] > 255 || nums[1] < 0 || nums[1] > 255 {
 			return 0, fmt.Errorf("invalid subnetwork or device address in %s", addr)
 		}
+
 		if nums[0] == 0 && nums[1] == 0 {
 			return 0, errors.New("invalid individual address 0.0")
 		}
+
 		return NewIndividualAddr2(uint8(nums[0]), uint8(nums[1])), nil
 	case 1:
 		if nums[0] <= 0 || nums[0] > 65535 {
 			return 0, fmt.Errorf("invalid raw individual address in %s", addr)
 		}
+
 		return IndividualAddr(nums[0]), nil
 	}
 
@@ -118,6 +124,7 @@ func NewGroupAddrString(addr string) (GroupAddr, error) {
 		if err != nil {
 			return 0, fmt.Errorf("invalid parsing %s", err)
 		}
+
 		nums = append(nums, i)
 	}
 
@@ -128,23 +135,28 @@ func NewGroupAddrString(addr string) (GroupAddr, error) {
 			nums[2] < 0 || nums[2] > 255 {
 			return 0, fmt.Errorf("invalid main, middle or sub group address in %s", addr)
 		}
+
 		if nums[0] == 0 && nums[1] == 0 && nums[2] == 0 {
 			return 0, errors.New("invalid group address 0/0/0")
 		}
+
 		return NewGroupAddr3(uint8(nums[0]), uint8(nums[1]), uint8(nums[2])), nil
 	case 2:
 		if nums[0] < 0 || nums[0] > 31 ||
 			nums[1] < 0 || nums[1] > 2047 {
 			return 0, fmt.Errorf("invalid main or sub group address in %s", addr)
 		}
+
 		if nums[0] == 0 && nums[1] == 0 {
 			return 0, errors.New("invalid group address 0/0")
 		}
+
 		return NewGroupAddr2(uint8(nums[0]), uint16(nums[1])), nil
 	case 1:
 		if nums[0] <= 0 || nums[0] > 65535 {
 			return 0, fmt.Errorf("invalid raw group address in %s", addr)
 		}
+
 		return GroupAddr(nums[0]), nil
 	}
 

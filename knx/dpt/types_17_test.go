@@ -9,13 +9,16 @@ import (
 
 // Test DPT 17.001 (scene number)
 func TestDPT_17001(t *testing.T) {
-	var buf []byte
-	var src, dst DPT_17001
+	var (
+		buf      []byte
+		src, dst DPT_17001
+	)
 
 	for i := 0; i <= 255; i++ {
 		value := uint8(i)
 		src = DPT_17001(value)
 		buf = src.Pack()
+
 		err := dst.Unpack(buf)
 		if err != nil {
 			t.Errorf("Unpacking error")

@@ -22,7 +22,6 @@ func (d *DPT_232600) Unpack(data []byte) error {
 	}
 
 	err := unpack3U8(data, &d.Red, &d.Green, &d.Blue)
-
 	if err != nil {
 		return ErrInvalidLength
 	}

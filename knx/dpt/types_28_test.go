@@ -29,8 +29,8 @@ func TestDPT_28001(t *testing.T) {
 	// Test with an empty string
 	src = DPT_28001("")
 	buf = src.Pack()
-	err = dst.Unpack(buf)
 
+	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Error unpacking [%x] => [%s]", buf, dst)
 	}
@@ -42,8 +42,8 @@ func TestDPT_28001(t *testing.T) {
 	// Test with a very long string
 	src = DPT_28001(strings.Repeat("|01234567890123456789", 50))
 	buf = src.Pack()
-	err = dst.Unpack(buf)
 
+	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Error unpacking [%x] => [%s]", buf, dst)
 	}
@@ -55,8 +55,8 @@ func TestDPT_28001(t *testing.T) {
 	// Test with Latin1 chars
 	src = DPT_28001("Latin1:çäüöàéè")
 	buf = src.Pack()
-	err = dst.Unpack(buf)
 
+	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Unpacking error [%x] => [%s]", buf, dst)
 	}
@@ -69,8 +69,8 @@ func TestDPT_28001(t *testing.T) {
 	// Length = 17 = 3 * 2 + 5 * 1 + 2 * 3
 	src = DPT_28001("çäühello你好")
 	buf = src.Pack()
-	err = dst.Unpack(buf)
 
+	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Error unpacking [%s] => [%s]", src, dst)
 	}

@@ -34,12 +34,14 @@ func Pack(buffer []byte, input interface{}) uint {
 	case uint16:
 		buffer[1] = uint8(input)
 		buffer[0] = uint8(input >> 8)
+
 		return 2
 
 	case int16:
 		uinput := uint16(input)
 		buffer[1] = uint8(uinput)
 		buffer[0] = uint8(uinput >> 8)
+
 		return 2
 
 	case uint32:
@@ -47,6 +49,7 @@ func Pack(buffer []byte, input interface{}) uint {
 		buffer[2] = uint8(input >> 8)
 		buffer[1] = uint8(input >> 16)
 		buffer[0] = uint8(input >> 24)
+
 		return 4
 
 	case int32:
@@ -55,6 +58,7 @@ func Pack(buffer []byte, input interface{}) uint {
 		buffer[2] = uint8(uinput >> 8)
 		buffer[1] = uint8(uinput >> 16)
 		buffer[0] = uint8(uinput >> 24)
+
 		return 4
 
 	case uint64:
@@ -66,6 +70,7 @@ func Pack(buffer []byte, input interface{}) uint {
 		buffer[2] = uint8(input >> 40)
 		buffer[1] = uint8(input >> 48)
 		buffer[0] = uint8(input >> 56)
+
 		return 8
 
 	case int64:
@@ -78,6 +83,7 @@ func Pack(buffer []byte, input interface{}) uint {
 		buffer[2] = uint8(uinput >> 40)
 		buffer[1] = uint8(uinput >> 48)
 		buffer[0] = uint8(uinput >> 56)
+
 		return 8
 
 	case []byte:
@@ -130,6 +136,7 @@ func PackString(buffer []byte, maxLen uint, input string) (uint, error) {
 	}
 
 	copy(buffer, encoded)
+
 	for i := len(encoded); i < int(maxLen); i++ {
 		buffer[i] = 0x00
 	}

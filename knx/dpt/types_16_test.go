@@ -16,6 +16,7 @@ func TestDPT_16000(t *testing.T) {
 	// Test packing with simple string
 	src := DPT_16000("KNX is OK")
 	buf := src.Pack()
+
 	r := fmt.Sprintf("%x", buf)
 	if r != "004b4e58206973204f4b0000000000" {
 		t.Errorf("Error packing [%s] => [%x]", src, r)
@@ -29,8 +30,8 @@ func TestDPT_16000(t *testing.T) {
 	// Test with a string that will get truncated
 	src = DPT_16000("This is a valid string longer than 14 chars, it will be truncated")
 	buf = src.Pack()
-	err = dst.Unpack(buf)
 
+	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Error unpacking [%s] => [%s]", src, dst)
 	}
@@ -42,8 +43,8 @@ func TestDPT_16000(t *testing.T) {
 	// Test with empty string
 	src = DPT_16000("")
 	buf = src.Pack()
-	err = dst.Unpack(buf)
 
+	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Unpacking error %s [%s] => [%s]", err, src, dst)
 	}
@@ -60,8 +61,8 @@ func TestDPT_16000(t *testing.T) {
 	src = DPT_16000("çäüLatin1:öàéè")
 	t_src := "   Latin1:    "
 	buf = src.Pack()
-	err = dst.Unpack(buf)
 
+	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Unpacking error %s [%s] => [%s]", err, src, dst)
 	}
@@ -79,8 +80,8 @@ func TestDPT_16000(t *testing.T) {
 
 	if !src.IsValid() {
 		buf = src.Pack()
-		err = dst.Unpack(buf)
 
+		err = dst.Unpack(buf)
 		if err != nil {
 			t.Errorf("%s [%s] => [%s]", err, src, dst)
 		}
@@ -94,6 +95,7 @@ func TestDPT_16001(t *testing.T) {
 	// Test with simple string
 	src := DPT_16001("KNX is OK")
 	buf := src.Pack()
+
 	r := fmt.Sprintf("%x", buf)
 	if r != "004b4e58206973204f4b0000000000" {
 		t.Errorf("Error packing [%s] => [%x]", src, r)
@@ -108,8 +110,8 @@ func TestDPT_16001(t *testing.T) {
 	src = DPT_16001("This is a valid string longer than 14 chars, it will be truncated")
 	e_dst := "This is a vali"
 	buf = src.Pack()
-	err = dst.Unpack(buf)
 
+	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Error unpacking [%s] => [%s]", src, dst)
 	}
@@ -121,8 +123,8 @@ func TestDPT_16001(t *testing.T) {
 	// Test with empty string
 	src = DPT_16001("")
 	buf = src.Pack()
-	err = dst.Unpack(buf)
 
+	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Unpacking error %s [%s] => [%s]", err, src, dst)
 	}
@@ -138,8 +140,8 @@ func TestDPT_16001(t *testing.T) {
 	// Test With Latin1 chars
 	src = DPT_16001("çäüLatin1:öàéè")
 	buf = src.Pack()
-	err = dst.Unpack(buf)
 
+	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Unpacking error %s [%s] => [%s]", err, src, dst)
 	}
@@ -157,8 +159,8 @@ func TestDPT_16001(t *testing.T) {
 
 	if !src.IsValid() {
 		buf = src.Pack()
-		err = dst.Unpack(buf)
 
+		err = dst.Unpack(buf)
 		if err != nil {
 			t.Errorf("%s [%s] => [%s]", err, src, dst)
 		}

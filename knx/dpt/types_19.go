@@ -37,6 +37,7 @@ func (d DPT_19001) Pack() []byte {
 		if year < 1900 || year > 2155 {
 			year = 1900
 		}
+
 		buf[1] = uint8(year - 1900)
 
 		month := d.Date.Month()
@@ -49,6 +50,7 @@ func (d DPT_19001) Pack() []byte {
 		if weekday == 0 {
 			weekday = 7
 		}
+
 		d.WD = (weekday <= 5)
 		hour := uint8(d.Date.Hour())
 		buf[4] = (weekday << 5) | hour
@@ -62,6 +64,7 @@ func (d DPT_19001) Pack() []byte {
 	if d.F {
 		buf[7] |= 0x80
 	}
+
 	if d.WD {
 		buf[7] |= 0x40
 	}
@@ -69,15 +72,19 @@ func (d DPT_19001) Pack() []byte {
 	if d.NWD {
 		buf[7] |= 0x20
 	}
+
 	if d.NY {
 		buf[7] |= 0x10
 	}
+
 	if d.ND {
 		buf[7] |= 0x08
 	}
+
 	if d.NDOW {
 		buf[7] |= 0x04
 	}
+
 	if d.NT {
 		buf[7] |= 0x02
 	}
@@ -86,9 +93,11 @@ func (d DPT_19001) Pack() []byte {
 	if d.SUTI {
 		buf[7] |= 0x01
 	}
+
 	if d.CLQ {
 		buf[8] |= 0x80
 	}
+
 	if d.SRC {
 		buf[8] |= 0x40
 	}
@@ -148,11 +157,14 @@ func (d DPT_19001) String() string {
 	if d.SP24 {
 		return "24:00:00"
 	}
+
 	if d.NT {
 		return d.Date.Format("2006/01/02")
 	}
+
 	if d.NY && d.ND && d.NDOW {
 		return d.Date.Format("15:04:05")
 	}
+
 	return d.Date.Format("2006/01/02 15:04:05")
 }

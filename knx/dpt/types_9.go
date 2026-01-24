@@ -35,6 +35,7 @@ func (d *DPT_9001) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9001(value)
+
 	return nil
 }
 
@@ -71,6 +72,7 @@ func (d *DPT_9002) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9002(value)
+
 	return nil
 }
 
@@ -107,6 +109,7 @@ func (d *DPT_9003) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9003(value)
+
 	return nil
 }
 
@@ -143,6 +146,7 @@ func (d *DPT_9004) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9004(value)
+
 	return nil
 }
 
@@ -180,6 +184,7 @@ func (d *DPT_9005) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9005(value)
+
 	return nil
 }
 
@@ -217,6 +222,7 @@ func (d *DPT_9006) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9006(value)
+
 	return nil
 }
 
@@ -254,6 +260,7 @@ func (d *DPT_9007) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9007(value)
+
 	return nil
 }
 
@@ -366,6 +373,7 @@ func (d *DPT_9010) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9010(value)
+
 	return nil
 }
 
@@ -402,6 +410,7 @@ func (d *DPT_9011) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9011(value)
+
 	return nil
 }
 
@@ -438,6 +447,7 @@ func (d *DPT_9020) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9020(value)
+
 	return nil
 }
 
@@ -474,6 +484,7 @@ func (d *DPT_9021) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9021(value)
+
 	return nil
 }
 
@@ -510,6 +521,7 @@ func (d *DPT_9022) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9022(value)
+
 	return nil
 }
 
@@ -546,6 +558,7 @@ func (d *DPT_9023) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9023(value)
+
 	return nil
 }
 
@@ -582,6 +595,7 @@ func (d *DPT_9024) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9024(value)
+
 	return nil
 }
 
@@ -618,6 +632,7 @@ func (d *DPT_9025) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9025(value)
+
 	return nil
 }
 
@@ -654,6 +669,7 @@ func (d *DPT_9026) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9026(value)
+
 	return nil
 }
 
@@ -693,6 +709,7 @@ func (d *DPT_9027) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9027(value)
+
 	return nil
 }
 
@@ -729,6 +746,7 @@ func (d *DPT_9028) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9028(value)
+
 	return nil
 }
 
@@ -765,6 +783,7 @@ func (d *DPT_9029) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9029(value)
+
 	return nil
 }
 
@@ -801,6 +820,7 @@ func (d *DPT_9030) Unpack(data []byte) error {
 	}
 
 	*d = DPT_9030(value)
+
 	return nil
 }
 

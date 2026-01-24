@@ -108,8 +108,10 @@ func (RoutingBusy) Service() ServiceID {
 
 // Unpack parses the given service payload in order to initialize the structure.
 func (rl *RoutingBusy) Unpack(data []byte) (n uint, err error) {
-	var length uint8
-	var waitTime uint16
+	var (
+		length   uint8
+		waitTime uint16
+	)
 
 	if n, err = util.UnpackSome(
 		data, &length, (*uint8)(&rl.Status), &waitTime, &rl.Control,

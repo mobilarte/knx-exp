@@ -111,6 +111,7 @@ func (res *ConnRes) Unpack(data []byte) (n uint, err error) {
 
 	if res.Status == 0 {
 		var m uint
+
 		m, err = res.Control.Unpack(data[2:])
 		n += m
 	}

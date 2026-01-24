@@ -22,6 +22,7 @@ func (d *DPT_21001) Unpack(data []byte) error {
 	if d.IsValid() {
 		return nil
 	}
+
 	return ErrBadReservedBits
 }
 
@@ -59,6 +60,7 @@ func (d *DPT_21002) Unpack(data []byte) error {
 	if d.IsValid() {
 		return nil
 	}
+
 	return ErrBadReservedBits
 }
 

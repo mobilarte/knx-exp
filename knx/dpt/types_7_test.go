@@ -42,6 +42,7 @@ func TestDPT_7(t *testing.T) {
 				t.Errorf("%v", err)
 			}
 		}
+
 		if fmt.Sprintf("%s", e.Dpv) != e.MaxStr {
 			t.Errorf("%#v has wrong true value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MaxStr)
 		}
@@ -71,6 +72,7 @@ func TestDPT_7(t *testing.T) {
 		if err != nil {
 			t.Errorf("%v", err)
 		}
+
 		if fmt.Sprintf("%s", e.Dpv) != e.MaxStr {
 			t.Errorf("%#v has wrong true value \"%v\"! Should be \"%s\".", e.Dpv, e.Dpv, e.MaxStr)
 		}

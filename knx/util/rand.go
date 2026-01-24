@@ -15,5 +15,6 @@ func Randint64() int64 {
 	if err != nil {
 		return 0
 	}
+
 	return val.Int64()
 }

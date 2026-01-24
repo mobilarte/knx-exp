@@ -26,6 +26,7 @@ func (d DPT_24001) Pack() []byte {
 			buffer[i+1] = byte(r[i])
 		}
 	}
+
 	buffer[length+1] = 0x0
 
 	return buffer

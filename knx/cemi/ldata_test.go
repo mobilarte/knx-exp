@@ -15,6 +15,7 @@ func makeRandBuffer(n int) []byte {
 	if _, err := crand.Read(buffer); err != nil {
 		panic(err)
 	}
+
 	return buffer
 }
 

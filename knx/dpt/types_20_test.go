@@ -26,6 +26,7 @@ func TestDPT_20102(t *testing.T) {
 		if err != nil {
 			t.Errorf("%v", err)
 		}
+
 		if fmt.Sprintf("%s", e.Dpv) != e.Val {
 			t.Errorf("%#v has wrong value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.Dpv)
 		}
@@ -70,6 +71,7 @@ func TestDPT_20105(t *testing.T) {
 		if err != nil {
 			t.Errorf("%v", err)
 		}
+
 		if fmt.Sprintf("%s", e.Dpv) != e.Val {
 			t.Errorf("%#v has wrong value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.Dpv)
 		}

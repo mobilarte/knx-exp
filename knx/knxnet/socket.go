@@ -91,6 +91,7 @@ func (sock *TunnelSocket) Send(payload ServicePackable) error {
 
 	// Transmission of the buffer contents.
 	_, err := sock.conn.Write(buffer)
+
 	return err
 }
 
@@ -125,7 +126,8 @@ func ListenRouter(multicastAddress string) (*RouterSocket, error) {
 // ListenRouterOnInterface creates a new Socket which can be used to exchange KNXnet/IP packets with
 // multiple endpoints. The interface is used to send or listen for KNXNet/IP packets. If the
 // interface is nil, the system-assigned multicast interface is used.
-func ListenRouterOnInterface(ifi *net.Interface, multicastAddress string, multicastLoopbackEnabled bool) (*RouterSocket, error) {
+func ListenRouterOnInterface(ifi *net.Interface, multicastAddress string,
+	multicastLoopbackEnabled bool) (*RouterSocket, error) {
 	addr, err := net.ResolveUDPAddr("udp4", multicastAddress)
 	if err != nil {
 		return nil, err
@@ -135,6 +137,7 @@ func ListenRouterOnInterface(ifi *net.Interface, multicastAddress string, multic
 	if err != nil {
 		return nil, err
 	}
+
 	pc := ipv4.NewPacketConn(conn)
 
 	if err := pc.JoinGroup(ifi, addr); err != nil {
@@ -172,6 +175,7 @@ func (sock *RouterSocket) Send(payload ServicePackable) error {
 
 	// Transmission of the buffer contents
 	_, err := sock.conn.WriteToUDP(buffer, sock.addr)
+
 	return err
 }
 
@@ -220,6 +224,7 @@ func serveUDPSocket(conn *net.UDPConn, addr *net.UDPAddr, inbound chan<- Service
 		}
 
 		var payload Service
+
 		_, err = Unpack(buffer[:len], &payload)
 		if err != nil {
 			util.Log(conn, "Error during Unpack: %v", err)
@@ -231,7 +236,7 @@ func serveUDPSocket(conn *net.UDPConn, addr *net.UDPAddr, inbound chan<- Service
 }
 
 // serveTCPSocket is the receiver worker for a TCP socket.
-func serveTCPSocket(conn *net.TCPConn, addr *net.TCPAddr, inbound chan<- Service) {
+func serveTCPSocket(conn *net.TCPConn, _ *net.TCPAddr, inbound chan<- Service) {
 	util.Log(conn, "Started worker")
 	defer util.Log(conn, "Worker exited")
 
@@ -247,8 +252,10 @@ func serveTCPSocket(conn *net.TCPConn, addr *net.TCPAddr, inbound chan<- Service
 			return
 		}
 
-		var serviceID ServiceID
-		var totalLen uint16
+		var (
+			serviceID ServiceID
+			totalLen  uint16
+		)
 
 		_, err = UnpackHeader(header, &serviceID, &totalLen)
 		if err != nil {
@@ -257,6 +264,7 @@ func serveTCPSocket(conn *net.TCPConn, addr *net.TCPAddr, inbound chan<- Service
 		}
 
 		buffer := make([]byte, totalLen)
+
 		len, err := io.ReadFull(connBuffer, buffer)
 		if err != nil {
 			util.Log(conn, "Error during ReadFull: %v", err)
@@ -270,6 +278,7 @@ func serveTCPSocket(conn *net.TCPConn, addr *net.TCPAddr, inbound chan<- Service
 		}
 
 		var payload Service
+
 		_, err = Unpack(buffer[:len], &payload)
 		if err != nil {
 			util.Log(conn, "Error during Unpack: %v", err)

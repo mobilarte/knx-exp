@@ -300,6 +300,7 @@ func TestTunnelConn_requestConn(t *testing.T) {
 					log.Fatal(err)
 				}
 			}()
+
 			conn := Tunnel{
 				sock: client,
 				config: TunnelConfig{
@@ -518,6 +519,7 @@ func TestTunnelConn_requestState(t *testing.T) {
 		client, gateway := newDummySockets()
 
 		const channel uint8 = 1
+
 		heartbeat := make(chan knxnet.ErrCode)
 
 		t.Run("Gateway", func(t *testing.T) {
@@ -564,7 +566,6 @@ func TestTunnelConn_requestState(t *testing.T) {
 			conn := makeTunnelConn(client, config, channel)
 
 			state, err := conn.requestConnState(heartbeat)
-
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -605,6 +606,7 @@ func TestTunnelConn_requestState(t *testing.T) {
 		client, gateway := newDummySockets()
 
 		const channel uint8 = 1
+
 		heartbeat := make(chan knxnet.ErrCode)
 
 		t.Run("Gateway", func(t *testing.T) {
@@ -646,7 +648,6 @@ func TestTunnelConn_requestState(t *testing.T) {
 			conn := makeTunnelConn(client, DefaultTunnelConfig, channel)
 
 			state, err := conn.requestConnState(heartbeat)
-
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -661,6 +662,7 @@ func TestTunnelConn_requestState(t *testing.T) {
 		client, gateway := newDummySockets()
 
 		const channel uint8 = 1
+
 		heartbeat := make(chan knxnet.ErrCode)
 
 		t.Run("Gateway", func(t *testing.T) {
@@ -702,7 +704,6 @@ func TestTunnelConn_requestState(t *testing.T) {
 			conn := makeTunnelConn(client, DefaultTunnelConfig, channel)
 
 			state, err := conn.requestConnState(heartbeat)
-
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -911,6 +912,7 @@ func TestTunnelConn_requestTunnel(t *testing.T) {
 					SeqNumber: req.SeqNumber + 10,
 					Status:    0,
 				}
+
 				close(ack)
 			} else {
 				t.Fatalf("Unexpected type %T", msg)
@@ -1198,6 +1200,7 @@ func TestTunnelConn_handleTunnelRes(t *testing.T) {
 		conn := makeTunnelConn(client, DefaultTunnelConfig, 1)
 
 		res := &knxnet.TunnelRes{Channel: 2, SeqNumber: 0, Status: 0}
+
 		err := conn.handleTunnelRes(res)
 		if err == nil {
 			t.Fatal("Should not succeed")

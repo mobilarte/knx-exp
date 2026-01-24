@@ -369,6 +369,7 @@ func (conn *Tunnel) pushInbound(msg cemi.Message) {
 					log.Fatal(r)
 				}
 			}()
+
 			conn.inbound <- msg
 		}()
 	}
@@ -578,7 +579,6 @@ func (conn *Tunnel) serve() {
 
 	for {
 		err := conn.process()
-
 		if err != nil {
 			util.Log(conn, "Server terminated with error: %v", err)
 		}
@@ -588,7 +588,6 @@ func (conn *Tunnel) serve() {
 			util.Log(conn, "Attempting reconnect")
 
 			reconnErr := conn.requestConn()
-
 			if reconnErr == nil {
 				util.Log(conn, "Reconnect succeeded")
 				continue
@@ -635,6 +634,7 @@ func NewTunnel(gatewayAddr string, layer knxnet.TunnelLayer, config TunnelConfig
 	}
 
 	client.wait.Add(1)
+
 	go client.serve()
 
 	return client, nil
@@ -673,7 +673,6 @@ type GroupTunnel struct {
 // NewGroupTunnel creates a new Tunnel for group communication.
 func NewGroupTunnel(gatewayAddr string, config TunnelConfig) (gt GroupTunnel, err error) {
 	gt.Tunnel, err = NewTunnel(gatewayAddr, knxnet.TunnelLayerData, config)
-
 	if err == nil {
 		gt.inbound = make(chan GroupEvent)
 		go serveGroupInbound(gt.Tunnel.Inbound(), gt.inbound)

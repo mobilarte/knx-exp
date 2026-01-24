@@ -60,16 +60,6 @@ type Router struct {
 	postSendPause time.Duration
 }
 
-// sendMultiple sends each message from the slice. Doesn't matter if one fails, all will be tried.
-func (router *Router) sendMultiple(messages []cemi.Message) {
-	for _, message := range messages {
-		err := router.Send(message)
-		if err != nil {
-			util.Log(router, "Error sendMultiple: %v", err)
-		}
-	}
-}
-
 // resendLost resends the last count messages.
 func (router *Router) resendLost(count uint16) {
 	router.sendMu.Lock()
@@ -107,8 +97,19 @@ func (router *Router) pushInbound(msg cemi.Message) {
 					log.Fatal(r)
 				}
 			}()
+
 			router.inbound <- msg
 		}()
+	}
+}
+
+// sendMultiple sends each message from the slice. Doesn't matter if one fails, all will be tried.
+func (router *Router) sendMultiple(messages []cemi.Message) {
+	for _, message := range messages {
+		err := router.Send(message)
+		if err != nil {
+			util.Log(router, "Error sendMultiple: %v", err)
+		}
 	}
 }
 
@@ -194,7 +195,6 @@ func (router *Router) Send(data cemi.Message) (err error) {
 	}()
 
 	err = router.sock.Send(&knxnet.RoutingInd{Payload: data})
-
 	if err == nil {
 		// Store this for potential resending.
 		// TODO: Ensure that the retained value is independent from the parameter, i.e. not modified
@@ -233,7 +233,6 @@ type GroupRouter struct {
 // NewGroupRouter creates a new Router for group communication.
 func NewGroupRouter(multicastAddress string, config RouterConfig) (gr GroupRouter, err error) {
 	gr.Router, err = NewRouter(multicastAddress, config)
-
 	if err == nil {
 		gr.inbound = make(chan GroupEvent)
 		go serveGroupInbound(gr.Router.Inbound(), gr.inbound)

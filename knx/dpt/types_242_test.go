@@ -7,8 +7,11 @@ import (
 )
 
 func TestDPT_242600(t *testing.T) {
-	var buf []byte
-	var dst DPT_242600
+	var (
+		buf []byte
+		dst DPT_242600
+	)
+
 	sources := []DPT_242600{
 		{X: 0, Y: 0, YBrightness: 1, ColorValid: true, BrightnessValid: true},
 		{X: 65535, Y: 1, YBrightness: 255, ColorValid: true, BrightnessValid: true},
@@ -18,8 +21,8 @@ func TestDPT_242600(t *testing.T) {
 
 	for _, src := range sources {
 		buf = src.Pack()
-		err := dst.Unpack(buf)
 
+		err := dst.Unpack(buf)
 		if err != nil {
 			t.Error(err)
 		}

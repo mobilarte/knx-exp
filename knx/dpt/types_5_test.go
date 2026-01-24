@@ -38,6 +38,7 @@ func TestDPT_5(t *testing.T) {
 		if err != nil {
 			t.Errorf("Error unpacking %v: %s", e, err)
 		}
+
 		if fmt.Sprintf("%s", e.Dpv) != e.MaxStr {
 			t.Errorf("%#v has wrong max value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MaxStr)
 		}
@@ -61,13 +62,17 @@ func TestDPT_5(t *testing.T) {
 		if math.IsNaN(float64(dst)) {
 			t.Errorf("Value [%s] is not a valid number. Original value was [%v].", dst, i)
 		}
+
 		if abs(float32(dst)-value) >= Q {
-			t.Errorf("Value [%s] after pack/unpack above quantization noise! Original value was [%v], noise is [%f].", dst, value, Q)
+			t.Errorf("Value [%s] after pack/unpack above quantization noise! Original value was [%v], noise is [%f].",
+				dst, value, Q)
 		}
 	}
 
 	src := DPT_5003(320)
+
 	var dst DPT_5003
+
 	err := dst.Unpack(src.Pack())
 	if err != nil {
 		t.Errorf("Unpacking error")

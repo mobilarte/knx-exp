@@ -23,8 +23,10 @@ func TestDPT_14(t *testing.T) {
 		Max       float32
 		MaxStr    string
 	}
+
 	var types_14 = []DPT14{
-		{new(DPT_14000), math.SmallestNonzeroFloat32, "0.00 m/s²", 0, "0.00 m/s²", math.MaxFloat32, "340282346638528859811704183484516925440.00 m/s²"},
+		{new(DPT_14000), math.SmallestNonzeroFloat32, "0.00 m/s²", 0,
+			"0.00 m/s²", math.MaxFloat32, "340282346638528859811704183484516925440.00 m/s²"},
 	}
 	for _, e := range types_14 {
 		src := e.Dpv
@@ -36,6 +38,7 @@ func TestDPT_14(t *testing.T) {
 		if err != nil {
 			t.Errorf("%v", err)
 		}
+
 		if fmt.Sprintf("%s", e.Dpv) != e.MinStr {
 			t.Errorf("%#v has wrong smallest value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MinStr)
 		}
@@ -44,6 +47,7 @@ func TestDPT_14(t *testing.T) {
 		if err != nil {
 			t.Errorf("%v", err)
 		}
+
 		if fmt.Sprintf("%s", e.Dpv) != e.MaxStr {
 			t.Errorf("%#v has wrong largest value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MaxStr)
 		}

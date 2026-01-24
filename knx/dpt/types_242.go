@@ -32,7 +32,6 @@ func (d *DPT_242600) Unpack(data []byte) error {
 	var colorValid, brightnessValid bool
 
 	err := unpackB2([]byte{data[6]}, &colorValid, &brightnessValid)
-
 	if err != nil {
 		return ErrInvalidData
 	}
@@ -43,7 +42,6 @@ func (d *DPT_242600) Unpack(data []byte) error {
 	xData = append(xData, data[1], data[2])
 
 	err = unpackU16(xData, &x)
-
 	if err != nil {
 		return ErrInvalidData
 	}
@@ -52,7 +50,6 @@ func (d *DPT_242600) Unpack(data []byte) error {
 	yData = append(yData, data[3], data[4])
 
 	err = unpackU16(yData, &y)
-
 	if err != nil {
 		return ErrInvalidData
 	}
@@ -73,5 +70,6 @@ func (d DPT_242600) Unit() string {
 }
 
 func (d DPT_242600) String() string {
-	return fmt.Sprintf("x: %d y: %d Y: %d ColorValid: %t, BrightnessValid: %t", d.X, d.Y, d.YBrightness, d.ColorValid, d.BrightnessValid)
+	return fmt.Sprintf("x: %d y: %d Y: %d ColorValid: %t, BrightnessValid: %t",
+		d.X, d.Y, d.YBrightness, d.ColorValid, d.BrightnessValid)
 }

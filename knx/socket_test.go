@@ -44,6 +44,7 @@ func (sock *dummySocket) serveOne() bool {
 func (sock *dummySocket) serveAll() {
 	for sock.serveOne() {
 	}
+
 	close(sock.inbound)
 }
 

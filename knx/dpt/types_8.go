@@ -170,6 +170,7 @@ type DPT_8010 float64
 
 func (d DPT_8010) Pack() []byte {
 	var approx int16
+
 	b := float64(d) * 100
 	if b < -32768 {
 		approx = -32768
@@ -178,16 +179,20 @@ func (d DPT_8010) Pack() []byte {
 	} else {
 		approx = int16(b)
 	}
+
 	return packV16(approx)
 }
 
 func (d *DPT_8010) Unpack(data []byte) error {
 	var b int16
+
 	err := unpackV16(data, &b)
 	if err != nil {
 		return err
 	}
+
 	*d = DPT_8010(float64(b) / 100)
+
 	return nil
 }
 

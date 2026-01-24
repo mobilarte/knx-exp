@@ -22,6 +22,7 @@ func NewSearchReq(addr net.Addr) (*SearchReq, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	req.HostInfo = hostinfo
 
 	return req, nil

@@ -31,7 +31,6 @@ func (d *DPT_251600) Unpack(data []byte) error {
 	var redValid, greenValid, blueValid, whiteValid bool
 
 	err := unpackB4(data[6], &redValid, &greenValid, &blueValid, &whiteValid)
-
 	if err != nil {
 		return ErrInvalidLength
 	}
@@ -46,6 +45,7 @@ func (d *DPT_251600) Unpack(data []byte) error {
 		BlueValid:  blueValid,
 		WhiteValid: whiteValid,
 	}
+
 	return nil
 }
 
@@ -58,14 +58,18 @@ func (d DPT_251600) String() string {
 	if d.RedValid {
 		valid |= 0x8
 	}
+
 	if d.GreenValid {
 		valid |= 0x4
 	}
+
 	if d.BlueValid {
 		valid |= 0x2
 	}
+
 	if d.WhiteValid {
 		valid |= 0x1
 	}
+
 	return fmt.Sprintf("%d %d %d %d | %04b", d.Red, d.Green, d.Blue, d.White, valid)
 }

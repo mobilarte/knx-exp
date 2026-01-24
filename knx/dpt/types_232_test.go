@@ -7,8 +7,11 @@ import (
 )
 
 func TestDPT_232600(t *testing.T) {
-	var buf []byte
-	var dst DPT_232600
+	var (
+		buf []byte
+		dst DPT_232600
+	)
+
 	sources := []DPT_232600{
 		{Red: 255, Green: 96, Blue: 0},
 		{Red: 0, Green: 128, Blue: 128},

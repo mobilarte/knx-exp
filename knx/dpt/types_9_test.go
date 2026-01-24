@@ -19,6 +19,7 @@ func TestDPT_9001(t *testing.T) {
 		Max       float64
 		MaxStr    string
 	}
+
 	var types_9 = []DPT9{
 		{new(DPT_9001), 20.48, "20.48 °C", 0, "0.00 °C", 670433.28, "670433.28 °C"},
 		{new(DPT_9001), -273, "-273.00 °C", 0, "0.00 °C", 670433.28, "670433.28 °C"},
@@ -55,6 +56,7 @@ func TestDPT_9001(t *testing.T) {
 		if err != nil {
 			t.Errorf("%v", err)
 		}
+
 		if fmt.Sprintf("%s", e.Dpv) != e.MinStr {
 			t.Errorf("%#v has wrong smallest value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MinStr)
 		}
@@ -63,6 +65,7 @@ func TestDPT_9001(t *testing.T) {
 		if err != nil {
 			t.Errorf("%v", err)
 		}
+
 		if fmt.Sprintf("%s", e.Dpv) != e.MaxStr {
 			t.Errorf("%#v has wrong largest value [%v]. Should be [%s].", e.Dpv, e.Dpv, e.MaxStr)
 		}

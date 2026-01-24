@@ -14,6 +14,7 @@ func TestDPT_19001(t *testing.T) {
 	// Default, simply fill in time
 	src.Date = time.Now()
 	buf := src.Pack()
+
 	err := dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Unpacking error")
@@ -26,6 +27,7 @@ func TestDPT_19001(t *testing.T) {
 	// A non-existent date, which golang will fix!
 	src.Date = time.Date(2022, 2, 30, 24, 0, 1, 0, time.UTC)
 	buf = src.Pack()
+
 	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Unpacking error")
@@ -34,6 +36,7 @@ func TestDPT_19001(t *testing.T) {
 	// Date with hour=24, but with non-zero minutes/seconds (byte 6, 7)!
 	// 2022/06/07 24:01:01
 	buf = []byte{0x00, 0x7a, 0x06, 0x08, 0x78, 0x01, 0x01, 0x40, 0x00}
+
 	err = dst.Unpack(buf)
 	if err == nil {
 		t.Errorf("Unpacking error, when hour = 24, minutes = seconds = 0!")
@@ -43,14 +46,16 @@ func TestDPT_19001(t *testing.T) {
 	src.Date = time.Now()
 	src.SRC = true
 	buf = src.Pack()
-	err = dst.Unpack(buf)
 
+	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Unpacking error")
 	}
+
 	if !dst.SRC {
 		t.Errorf("Unpack SRC attribute error")
 	}
+
 	if src.Date.IsDST() != dst.SUTI {
 		t.Errorf("Summertime setting wrong")
 	}
@@ -61,10 +66,12 @@ func TestDPT_19001(t *testing.T) {
 	src.ND = true
 	src.NDOW = true
 	buf = src.Pack()
+
 	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Unpacking error")
 	}
+
 	if src.Date.Format("15:04:05") != dst.String() {
 		t.Errorf("Error in time only")
 	}
@@ -74,10 +81,12 @@ func TestDPT_19001(t *testing.T) {
 	src.Date = time.Now()
 	src.NT = true
 	buf = src.Pack()
+
 	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Unpacking error")
 	}
+
 	if src.Date.Format("2006/01/02") != dst.String() {
 		t.Errorf("Error in date only")
 	}
@@ -88,6 +97,7 @@ func TestDPT_19001(t *testing.T) {
 	src.Date = time.Now()
 	src.SP24 = true
 	buf = src.Pack()
+
 	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Unpacking error")
@@ -104,6 +114,7 @@ func TestDPT_19001(t *testing.T) {
 	src.ND = true
 	src.NDOW = true
 	buf = src.Pack()
+
 	err = dst.Unpack(buf)
 	if err != nil {
 		t.Errorf("Unpacking error")
