@@ -24,9 +24,9 @@ func (u *unpackableTester) Unpack(data []byte) (uint, error) {
 }
 
 type unpackType struct {
-	typ       interface{}
+	typ       any
 	length    uint
-	extractor func(data []byte) interface{}
+	extractor func(data []byte) any
 }
 
 func TestUnpack(t *testing.T) {
@@ -34,47 +34,47 @@ func TestUnpack(t *testing.T) {
 		{
 			typ:       uint8(0),
 			length:    1,
-			extractor: func(data []byte) interface{} { return data[0] },
+			extractor: func(data []byte) any { return data[0] },
 		},
 		{
 			typ:       int8(0),
 			length:    1,
-			extractor: func(data []byte) interface{} { return int8(data[0]) },
+			extractor: func(data []byte) any { return int8(data[0]) },
 		},
 		{
 			typ:       uint16(0),
 			length:    2,
-			extractor: func(data []byte) interface{} { return binary.BigEndian.Uint16(data) },
+			extractor: func(data []byte) any { return binary.BigEndian.Uint16(data) },
 		},
 		{
 			typ:       uint32(0),
 			length:    4,
-			extractor: func(data []byte) interface{} { return binary.BigEndian.Uint32(data) },
+			extractor: func(data []byte) any { return binary.BigEndian.Uint32(data) },
 		},
 		{
 			typ:       uint64(0),
 			length:    8,
-			extractor: func(data []byte) interface{} { return binary.BigEndian.Uint64(data) },
+			extractor: func(data []byte) any { return binary.BigEndian.Uint64(data) },
 		},
 		{
 			typ:       int16(0),
 			length:    2,
-			extractor: func(data []byte) interface{} { return int16(binary.BigEndian.Uint16(data)) },
+			extractor: func(data []byte) any { return int16(binary.BigEndian.Uint16(data)) },
 		},
 		{
 			typ:       int32(0),
 			length:    4,
-			extractor: func(data []byte) interface{} { return int32(binary.BigEndian.Uint32(data)) },
+			extractor: func(data []byte) any { return int32(binary.BigEndian.Uint32(data)) },
 		},
 		{
 			typ:       int64(0),
 			length:    8,
-			extractor: func(data []byte) interface{} { return int64(binary.BigEndian.Uint64(data)) },
+			extractor: func(data []byte) any { return int64(binary.BigEndian.Uint64(data)) },
 		},
 		{
 			typ:    unpackableTester{},
 			length: 10,
-			extractor: func(data []byte) interface{} {
+			extractor: func(data []byte) any {
 				var r unpackableTester
 
 				_, _ = r.Unpack(data)

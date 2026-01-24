@@ -39,9 +39,9 @@ func NewIndividualAddr2(a, b uint8) IndividualAddr {
 func NewIndividualAddrString(addr string) (IndividualAddr, error) {
 	var nums []int
 
-	numstrings := strings.Split(addr, ".")
+	numstrings := strings.SplitSeq(addr, ".")
 
-	for _, s := range numstrings {
+	for s := range numstrings {
 		i, err := strconv.Atoi(s)
 		if err != nil {
 			return 0, err
@@ -117,9 +117,9 @@ func NewGroupAddr2(a uint8, b uint16) GroupAddr {
 func NewGroupAddrString(addr string) (GroupAddr, error) {
 	var nums []int
 
-	numstrings := strings.Split(addr, "/")
+	numstrings := strings.SplitSeq(addr, "/")
 
-	for _, s := range numstrings {
+	for s := range numstrings {
 		i, err := strconv.Atoi(s)
 		if err != nil {
 			return 0, fmt.Errorf("invalid parsing %s", err)

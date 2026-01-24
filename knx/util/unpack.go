@@ -50,7 +50,7 @@ func unpackUInt64(data []byte, output *uint64) (uint, error) {
 }
 
 // Unpack the byte slice to the given value.
-func Unpack(data []byte, output interface{}) (uint, error) {
+func Unpack(data []byte, output any) (uint, error) {
 	switch output := output.(type) {
 	case *uint8:
 		if len(data) < 1 {
@@ -118,7 +118,7 @@ func Unpack(data []byte, output interface{}) (uint, error) {
 }
 
 // UnpackSome unpacks multiple values.
-func UnpackSome(data []byte, outputs ...interface{}) (uint, error) {
+func UnpackSome(data []byte, outputs ...any) (uint, error) {
 	var n uint
 	for _, output := range outputs {
 		m, err := Unpack(data[n:], output)

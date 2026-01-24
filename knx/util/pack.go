@@ -21,7 +21,7 @@ type Packable interface {
 }
 
 // Pack a value into the buffer.
-func Pack(buffer []byte, input interface{}) uint {
+func Pack(buffer []byte, input any) uint {
 	switch input := input.(type) {
 	case uint8:
 		buffer[0] = input
@@ -98,7 +98,7 @@ func Pack(buffer []byte, input interface{}) uint {
 }
 
 // PackSome packs multiple values.
-func PackSome(buffer []byte, inputs ...interface{}) {
+func PackSome(buffer []byte, inputs ...any) {
 	var offset uint
 	for _, output := range inputs {
 		offset += Pack(buffer[offset:], output)

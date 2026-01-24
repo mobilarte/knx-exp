@@ -19,7 +19,7 @@ func (d DPT_24001) Pack() []byte {
 
 	var buffer = make([]byte, length+2)
 
-	for i := 0; i < length; i++ {
+	for i := range length {
 		if r[i] > unicode.MaxLatin1 {
 			buffer[i+1] = 0x20
 		} else {

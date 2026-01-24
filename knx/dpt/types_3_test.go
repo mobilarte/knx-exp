@@ -15,7 +15,7 @@ func TestDPT_3007(t *testing.T) {
 	)
 
 	for _, c := range []bool{true, false} {
-		for v := 0; v < 8; v++ {
+		for v := range 8 {
 			src = DPT_3007{C: c, StepCode: uint8(v)}
 			buf = src.Pack()
 

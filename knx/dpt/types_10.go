@@ -25,7 +25,7 @@ func (d DPT_10001) Pack() []byte {
 		buf[2] = d.Minutes
 		buf[3] = d.Seconds
 	}
-	
+
 	return []byte(buf)
 }
 

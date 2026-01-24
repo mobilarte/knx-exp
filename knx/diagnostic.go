@@ -28,7 +28,6 @@ func DiagnosticInProgMode(multicastDiscoveryAddress string,
 func DiagnosticOnInterface(ifi *net.Interface, multicastDiscoveryAddress string,
 	macAddr net.HardwareAddr, progMode bool, searchTimeout time.Duration) ([]*knxnet.DiagnosticRes, error) {
 	socket, err := knxnet.ListenRouterOnInterface(ifi, multicastDiscoveryAddress, false)
-
 	if err != nil {
 		return nil, err
 	}
