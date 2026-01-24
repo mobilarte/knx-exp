@@ -142,7 +142,7 @@ func TestUnpackTransportUnit(t *testing.T) {
 
 	t.Run("App", func(t *testing.T) {
 		for range 100 {
-			data := make([]byte, 3+util.Randint64()%256)
+			data := make([]byte, 3+util.Randint64()%255)
 			if _, err := crand.Read(data[1:]); err != nil {
 				panic(err)
 			}
