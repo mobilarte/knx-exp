@@ -2,7 +2,7 @@
 
 **Do not rely on this repository! It may suddenly disappear.**
 
-This repository is **experimental**.
+This repository is **experimental** and it works only with go version 1.25.0 and up.
 
 It is based on the excellent work by [Ole Krüger](https://github.com/vapourismo/knx-go). Check his `knx-go` package if you need to access a KNXnet/IP device from Go.
 

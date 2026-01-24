@@ -25,6 +25,8 @@ This log file describes briefly the changes made to code as of 2022-07-01 in chr
     * Reworking RoutingBusy by adding random timer and memory to WaitTime.
     * Diagnostics
 
+    * Linting with golangci, mainly formatting and modernizing code.
+
 * Major changes [To be added shortly]
 
     *  Investigate how Go handles multicast, some strange behaviour like multicast is forwarded to all interfaces on Windows
