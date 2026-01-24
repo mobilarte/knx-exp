@@ -5,14 +5,16 @@ package cemi
 
 import (
 	"bytes"
-	"crypto/rand"
+	crand "crypto/rand"
 	"encoding/binary"
 	"testing"
 )
 
 func makeRandBuffer(n int) []byte {
 	buffer := make([]byte, n)
-	_, _ = rand.Read(buffer)
+	if _, err := crand.Read(buffer); err != nil {
+		panic(err)
+	}
 	return buffer
 }
 

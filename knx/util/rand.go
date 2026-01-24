@@ -4,13 +4,14 @@
 package util
 
 import (
-	"crypto/rand"
+	crand "crypto/rand"
 	"math"
 	"math/big"
 )
 
+// Randint64 returns a random int64.
 func Randint64() int64 {
-	val, err := rand.Int(rand.Reader, big.NewInt(int64(math.MaxInt64)))
+	val, err := crand.Int(crand.Reader, big.NewInt(int64(math.MaxInt64)))
 	if err != nil {
 		return 0
 	}

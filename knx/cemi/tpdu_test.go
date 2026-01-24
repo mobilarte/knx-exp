@@ -5,7 +5,7 @@ package cemi
 
 import (
 	"bytes"
-	"crypto/rand"
+	crand "crypto/rand"
 	"testing"
 
 	"github.com/mobilarte/knx-exp/knx/util"
@@ -31,10 +31,7 @@ func TestAppData_Pack(t *testing.T) {
 			continue
 		}
 
-		dataLength := len(app.Data)
-		if dataLength > 255 {
-			dataLength = 255
-		}
+		dataLength := min(len(app.Data), 255)
 
 		if len(app.Data) > 0 && int(data[0]) != dataLength {
 			t.Error("Unexpected unit length:", data[0], app)
@@ -145,8 +142,10 @@ func TestUnpackTransportUnit(t *testing.T) {
 
 	t.Run("App", func(t *testing.T) {
 		for range 100 {
-			data := make([]byte, 3+util.Randint64()%255)
-			_, _ = rand.Read(data[1:])
+			data := make([]byte, 3+util.Randint64()%256)
+			if _, err := crand.Read(data[1:]); err != nil {
+				panic(err)
+			}
 
 			data[0] = byte(len(data) - 2)
 			data[1] &= ^(byte(1) << 7)

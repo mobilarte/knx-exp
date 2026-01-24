@@ -5,7 +5,7 @@ package cemi
 
 import (
 	"bytes"
-	"crypto/rand"
+	crand "crypto/rand"
 	"testing"
 
 	"github.com/mobilarte/knx-exp/knx/util"
@@ -16,7 +16,9 @@ func makeRandInfoSegment() []byte {
 
 	buffer := make([]byte, n+1)
 	buffer[0] = byte(n)
-	_, _ = rand.Read(buffer[1:])
+	if _, err := crand.Read(buffer[1:]); err != nil {
+		panic(err)
+	}
 
 	return buffer
 }
