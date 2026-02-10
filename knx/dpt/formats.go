@@ -128,14 +128,15 @@ func pack3U8[T ~uint8](u2 T, u1 T, u0 T) []byte {
 	return []byte{0, uint8(u2), uint8(u1), uint8(u0)}
 }
 
-func unpack3U8(data []byte, u2 *uint8, u1 *uint8, u0 *uint8) error {
+func unpack3U8[T ~uint8](data []byte, u2 *T, u1 *T, u0 *T) error {
+
 	if len(data) != 4 {
 		return ErrInvalidLength
 	}
 
-	*u2 = uint8(data[1])
-	*u1 = uint8(data[2])
-	*u0 = uint8(data[3])
+	*u2 = T(data[1])
+	*u1 = T(data[2])
+	*u0 = T(data[3])
 
 	return nil
 }
