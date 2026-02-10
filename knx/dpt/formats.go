@@ -46,7 +46,7 @@ func unpackB1U3(data []byte, c *bool, v *uint8) error {
 	return nil
 }
 
-func packB2(b1 bool, b0 bool) []byte {
+func packB2[T ~bool](b1 T, b0 T) []byte {
 	var b byte
 
 	if b1 {
@@ -60,7 +60,7 @@ func packB2(b1 bool, b0 bool) []byte {
 	return []byte{b}
 }
 
-func unpackB2(data []byte, b1 *bool, b0 *bool) error {
+func unpackB2[T ~bool](data []byte, b1 *T, b0 *T) error {
 	if len(data) != 1 {
 		return ErrInvalidLength
 	}
@@ -75,7 +75,7 @@ func unpackB2(data []byte, b1 *bool, b0 *bool) error {
 	return nil
 }
 
-func packB4(b3 bool, b2 bool, b1 bool, b0 bool) byte {
+func packB4[T ~bool](b3 T, b2 T, b1 T, b0 T) byte {
 	var b byte
 
 	if b3 {
@@ -97,7 +97,7 @@ func packB4(b3 bool, b2 bool, b1 bool, b0 bool) byte {
 	return byte(b)
 }
 
-func unpackB4(data byte, b3 *bool, b2 *bool, b1 *bool, b0 *bool) error {
+func unpackB4[T ~bool](data byte, b3 *T, b2 *T, b1 *T, b0 *T) error {
 	if uint8(data) > 15 {
 		return ErrBadReservedBits
 	}

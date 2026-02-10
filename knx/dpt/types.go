@@ -39,6 +39,7 @@ var (
 	ErrInvalidData = errors.New("application data is noted as invalid")
 	// ErrOutOfRange is returned when the unpacked value is out of range.
 	ErrOutOfRange = errors.New("application data is out of range")
-	// ErrBadReservedBits is returned when reserved bits are populated. E.g. if bit number 5 of a r4B4 field is populated.
+	// ErrBadReservedBits is returned when reserved bits are populated.
+	// E.g. when bit number 5 of an r4B4 field is populated.
 	ErrBadReservedBits = errors.New("reserved bits in the application data have been populated")
 )
