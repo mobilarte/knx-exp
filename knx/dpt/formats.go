@@ -129,7 +129,6 @@ func pack3U8[T ~uint8](u2 T, u1 T, u0 T) []byte {
 }
 
 func unpack3U8[T ~uint8](data []byte, u2 *T, u1 *T, u0 *T) error {
-
 	if len(data) != 4 {
 		return ErrInvalidLength
 	}
