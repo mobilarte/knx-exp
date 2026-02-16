@@ -1,62 +1,104 @@
 name: Check
+
 on:
-  push: {}
+  push:
+    branches:
+      - "**"
   pull_request:
     branches:
       - main
   schedule:
     - cron: "15 6 1,15 * *"
+
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.ref_name != 'main' }}
+
+env:
+  GO_VERSION: stable
+  GOFLAGS: -mod=readonly
+
 jobs:
-  Build:
+  quality:
+    name: Quality (fmt, vet, lint)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          check-latest: true
+          cache: true
+
+      - name: Verify formatting
+        run: |
+          set -euo pipefail
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "The following files need formatting:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: Go vet
+        run: go vet ./...
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v9.2.0
+        with:
+          args: --timeout=5m
+          skip-cache: false
+
+  build:
+    name: Build & Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-        go:
-          - stable
-        may-fail:
-          - false
-    runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.may-fail }}
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
         with:
-          go-version: "${{ matrix.go }}"
+          go-version: ${{ env.GO_VERSION }}
           check-latest: true
-      - run: go version
-      - run: go build -v ./...
-      - run: go test -race -parallel 4 -timeout 30s -v ./...
-  Format:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
+          cache: true
+
+      - name: Print Go version
+        run: go version
+
+      - name: Download modules
+        run: go mod download
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test (race + coverage)
+        run: |
+          go test \
+            -race \
+            -parallel 4 \
+            -timeout 5m \
+            -covermode=atomic \
+            -coverprofile=coverage.out \
+            -v ./...
+
+      - name: Upload coverage artifact (linux only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
         with:
-          go-version: stable
-      - run: |
-          unformatted=$(gofmt -l .)
-          if [[ ! -z "$unformatted" ]]; then
-            echo "Files need formatting!"
-            gofmt -w .
-            git diff
-            exit 1
-          fi
-  Lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 1
-      - uses: golangci/golangci-lint-action@v9.2.0
-  Vet:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
-        with:
-          go-version: stable
-      - run: go vet ./...
+          name: coverage
+          path: coverage.out
+          if-no-files-found: error
