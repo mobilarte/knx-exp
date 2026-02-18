@@ -1,6 +1,6 @@
 # knx-exp
 
-[![Check](https://github.com/mobilarte/knx-exp/actions/workflows/check.yaml/badge.svg?branch=master)](https://github.com/mobilarte/knx-exp/actions/workflows/check.yaml)
+[![Check](https://github.com/mobilarte/knx-exp/actions/workflows/check.yaml/badge.svg?branch=main)](https://github.com/mobilarte/knx-exp/actions/workflows/check.yaml)
 [![GoDoc](https://godoc.org/github.com/mobilarte/knx-exp?status.svg)](https://godoc.org/github.com/mobilarte/knx-exp)
 
 This repository is **experimental** and it is only tested with the latest stable version.
