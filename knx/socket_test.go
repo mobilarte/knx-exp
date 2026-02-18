@@ -19,6 +19,51 @@ type dummySocket struct {
 	inbound chan knxnet.Service
 }
 
+func (sock *dummySocket) Send(payload knxnet.ServicePackable) error {
+	return sock.sendAny(payload)
+}
+
+func (sock *dummySocket) Inbound() <-chan knxnet.Service {
+	return sock.inbound
+}
+
+func (sock *dummySocket) Close() error {
+	sock.cond.L.Lock()
+	defer sock.cond.L.Unlock()
+
+	sock.in = nil
+	sock.out = nil
+
+	sock.cond.Broadcast()
+
+	return nil
+}
+
+func (sock *dummySocket) LocalAddr() net.Addr {
+	return &net.UDPAddr{
+		IP:   net.IPv4(192, 168, 1, 82),
+		Port: 4321,
+	}
+}
+
+func (sock *dummySocket) closeIn() {
+	sock.cond.L.Lock()
+	defer sock.cond.L.Unlock()
+
+	sock.in = nil
+
+	sock.cond.Broadcast()
+}
+
+func (sock *dummySocket) closeOut() {
+	sock.cond.L.Lock()
+	defer sock.cond.L.Unlock()
+
+	sock.out = nil
+
+	sock.cond.Broadcast()
+}
+
 func (sock *dummySocket) serveOne() bool {
 	sock.cond.L.Lock()
 
@@ -60,51 +105,6 @@ func (sock *dummySocket) sendAny(payload knxnet.Service) error {
 	sock.cond.Broadcast()
 
 	return nil
-}
-
-func (sock *dummySocket) Send(payload knxnet.ServicePackable) error {
-	return sock.sendAny(payload)
-}
-
-func (sock *dummySocket) Inbound() <-chan knxnet.Service {
-	return sock.inbound
-}
-
-func (sock *dummySocket) closeIn() {
-	sock.cond.L.Lock()
-	defer sock.cond.L.Unlock()
-
-	sock.in = nil
-
-	sock.cond.Broadcast()
-}
-
-func (sock *dummySocket) closeOut() {
-	sock.cond.L.Lock()
-	defer sock.cond.L.Unlock()
-
-	sock.out = nil
-
-	sock.cond.Broadcast()
-}
-
-func (sock *dummySocket) Close() error {
-	sock.cond.L.Lock()
-	defer sock.cond.L.Unlock()
-
-	sock.in = nil
-	sock.out = nil
-
-	sock.cond.Broadcast()
-
-	return nil
-}
-
-func (sock *dummySocket) LocalAddr() net.Addr {
-	return &net.UDPAddr{
-		IP:   net.IPv4(192, 168, 1, 82),
-		Port: 4321,
-	}
 }
 
 func newDummySockets() (*dummySocket, *dummySocket) {

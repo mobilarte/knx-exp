@@ -60,96 +60,7 @@ type Router struct {
 	postSendPause time.Duration
 }
 
-// resendLost resends the last count messages.
-func (router *Router) resendLost(count uint16) {
-	router.sendMu.Lock()
-	defer router.sendMu.Unlock()
-
-	// Make sure not to overflow our retainer list.
-	if int(count) > router.retainer.Len() {
-		count = uint16(router.retainer.Len())
-	}
-
-	messages := make([]cemi.Message, count)
-
-	// Retrieve the messages in reverse. This enables us to resend them in the order in which the
-	// have been sent initially.
-	for i := len(messages) - 1; i >= 0; i-- {
-		messages[i] = router.retainer.Remove(router.retainer.Back()).(cemi.Message)
-	}
-
-	go router.sendMultiple(messages)
-}
-
-// pushInbound sends the message through the inbound channel. If the sending blocks, it will launch
-// a goroutine which will do the sending.
-func (router *Router) pushInbound(msg cemi.Message) {
-	select {
-	case router.inbound <- msg:
-
-	default:
-		go func() {
-			// Since this goroutine decouples from the server goroutine, it might try to send when
-			// the server closed the inbound channel. Sending to a closed channel will panic. But we
-			// don't care, because cool guys don't look at explosions.
-			defer func() {
-				if r := recover(); r != nil {
-					log.Fatal(r)
-				}
-			}()
-
-			router.inbound <- msg
-		}()
-	}
-}
-
-// sendMultiple sends each message from the slice. Doesn't matter if one fails, all will be tried.
-func (router *Router) sendMultiple(messages []cemi.Message) {
-	for _, message := range messages {
-		err := router.Send(message)
-		if err != nil {
-			util.Log(router, "Error sendMultiple: %v", err)
-		}
-	}
-}
-
 const maxWaitTime = 50 * time.Millisecond
-
-// serve listens for incoming routing-related packets.
-func (router *Router) serve() {
-	util.Log(router, "Started worker")
-	defer util.Log(router, "Worker exited")
-
-	defer close(router.inbound)
-
-	for msg := range router.sock.Inbound() {
-		switch msg := msg.(type) {
-		case *knxnet.RoutingInd:
-			// Try to push it to the client without blocking this goroutine too long.
-			router.pushInbound(msg.Payload)
-
-		case *knxnet.RoutingBusy:
-			var trandom time.Duration
-			// If Control is 0, we should add a specified random amount of time
-			// to the WaitTime. Otherwise, it is not specified, we just wait WaitTime.
-			if msg.Control == 0 {
-				trandom = time.Duration(rand.Float64()*50) * time.Millisecond
-			}
-
-			// Inhibit sending for the given time.
-			router.sendMu.Lock()
-
-			// Cap wait time.
-			waitTime := min(msg.WaitTime+trandom, maxWaitTime)
-
-			time.AfterFunc(waitTime, router.sendMu.Unlock)
-
-		case *knxnet.RoutingLost:
-			// Resend the last msg.Count messages.
-			router.resendLost(msg.Count)
-		}
-	}
-}
 
 // NewRouter creates a new Router that joins the given multicast group. You may pass a
 // zero-initialized value as parameter config, the default values will be set up.
@@ -221,6 +132,95 @@ func (router *Router) Close() {
 	err := router.sock.Close()
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+// pushInbound sends the message through the inbound channel. If the sending blocks, it will launch
+// a goroutine which will do the sending.
+func (router *Router) pushInbound(msg cemi.Message) {
+	select {
+	case router.inbound <- msg:
+
+	default:
+		go func() {
+			// Since this goroutine decouples from the server goroutine, it might try to send when
+			// the server closed the inbound channel. Sending to a closed channel will panic. But we
+			// don't care, because cool guys don't look at explosions.
+			defer func() {
+				if r := recover(); r != nil {
+					log.Fatal(r)
+				}
+			}()
+
+			router.inbound <- msg
+		}()
+	}
+}
+
+// resendLost resends the last count messages.
+func (router *Router) resendLost(count uint16) {
+	router.sendMu.Lock()
+	defer router.sendMu.Unlock()
+
+	// Make sure not to overflow our retainer list.
+	if int(count) > router.retainer.Len() {
+		count = uint16(router.retainer.Len())
+	}
+
+	messages := make([]cemi.Message, count)
+
+	// Retrieve the messages in reverse. This enables us to resend them in the order in which the
+	// have been sent initially.
+	for i := len(messages) - 1; i >= 0; i-- {
+		messages[i] = router.retainer.Remove(router.retainer.Back()).(cemi.Message)
+	}
+
+	go router.sendMultiple(messages)
+}
+
+// serve listens for incoming routing-related packets.
+func (router *Router) serve() {
+	util.Log(router, "Started worker")
+	defer util.Log(router, "Worker exited")
+
+	defer close(router.inbound)
+
+	for msg := range router.sock.Inbound() {
+		switch msg := msg.(type) {
+		case *knxnet.RoutingInd:
+			// Try to push it to the client without blocking this goroutine too long.
+			router.pushInbound(msg.Payload)
+
+		case *knxnet.RoutingBusy:
+			var trandom time.Duration
+			// If Control is 0, we should add a specified random amount of time
+			// to the WaitTime. Otherwise, it is not specified, we just wait WaitTime.
+			if msg.Control == 0 {
+				trandom = time.Duration(rand.Float64()*50) * time.Millisecond
+			}
+
+			// Inhibit sending for the given time.
+			router.sendMu.Lock()
+
+			// Cap wait time.
+			waitTime := min(msg.WaitTime+trandom, maxWaitTime)
+
+			time.AfterFunc(waitTime, router.sendMu.Unlock)
+
+		case *knxnet.RoutingLost:
+			// Resend the last msg.Count messages.
+			router.resendLost(msg.Count)
+		}
+	}
+}
+
+// sendMultiple sends each message from the slice. Doesn't matter if one fails, all will be tried.
+func (router *Router) sendMultiple(messages []cemi.Message) {
+	for _, message := range messages {
+		err := router.Send(message)
+		if err != nil {
+			util.Log(router, "Error sendMultiple: %v", err)
+		}
 	}
 }
 

@@ -42,27 +42,6 @@ var DefaultTunnelConfig = TunnelConfig{
 	UseTCP:            false,
 }
 
-// checkTunnelConfig makes sure that the configuration is actually usable.
-func checkTunnelConfig(config TunnelConfig) TunnelConfig {
-	if config.ResendInterval <= 0 {
-		config.ResendInterval = DefaultTunnelConfig.ResendInterval
-	}
-
-	if config.HeartbeatInterval <= 0 {
-		config.HeartbeatInterval = DefaultTunnelConfig.HeartbeatInterval
-	}
-
-	if config.ResponseTimeout <= 0 {
-		config.ResponseTimeout = DefaultTunnelConfig.ResponseTimeout
-	}
-
-	return config
-}
-
-var (
-	errResponseTimeout = errors.New("response timeout reached")
-)
-
 // A Tunnel provides methods to communicate with a KNXnet/IP gateway.
 type Tunnel struct {
 	// Communication methods
@@ -87,6 +66,118 @@ type Tunnel struct {
 	once sync.Once
 	wait sync.WaitGroup
 }
+
+// NewTunnel establishes a connection to a gateway. You can pass a zero initialized ClientConfig;
+// the function will take care of filling in the default values.
+func NewTunnel(gatewayAddr string, layer knxnet.TunnelLayer, config TunnelConfig) (tunnel *Tunnel, err error) {
+	var sock knxnet.Socket
+
+	// Create socket which will be used for communication.
+	if config.UseTCP {
+		sock, err = knxnet.DialTunnelTCP(gatewayAddr)
+	} else {
+		sock, err = knxnet.DialTunnelUDP(gatewayAddr)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	// Initialize the Client structure.
+	client := &Tunnel{
+		sock:    sock,
+		config:  checkTunnelConfig(config),
+		layer:   layer,
+		ack:     make(chan *knxnet.TunnelRes),
+		inbound: make(chan cemi.Message),
+		done:    make(chan struct{}),
+	}
+
+	// Connect to the gateway.
+	err = client.requestConn()
+	if err != nil {
+		_ = sock.Close()
+		return nil, err
+	}
+
+	client.wait.Add(1)
+
+	go client.serve()
+
+	return client, nil
+}
+
+// Close will terminate the connection and wait for the server routine to exit. Although a
+// disconnect request is sent, it does not wait for a disconnect response.
+func (conn *Tunnel) Close() {
+	conn.once.Do(func() {
+		_ = conn.requestDisc()
+
+		close(conn.done)
+		conn.wait.Wait()
+
+		_ = conn.sock.Close()
+	})
+}
+
+// Inbound retrieves the channel which transmits incoming data. The channel is closed when the
+// underlying Socket closes its inbound channel or when the connection is terminated.
+func (conn *Tunnel) Inbound() <-chan cemi.Message {
+	return conn.inbound
+}
+
+// Send relays a tunnel request to the gateway with the given contents.
+func (conn *Tunnel) Send(data cemi.Message) error {
+	return conn.requestTunnel(data)
+}
+
+// GroupTunnel is a Tunnel that provides only a group communication interface.
+type GroupTunnel struct {
+	*Tunnel
+	inbound chan GroupEvent
+}
+
+// NewGroupTunnel creates a new Tunnel for group communication.
+func NewGroupTunnel(gatewayAddr string, config TunnelConfig) (gt GroupTunnel, err error) {
+	gt.Tunnel, err = NewTunnel(gatewayAddr, knxnet.TunnelLayerData, config)
+	if err == nil {
+		gt.inbound = make(chan GroupEvent)
+		go serveGroupInbound(gt.Tunnel.Inbound(), gt.inbound)
+	}
+
+	return
+}
+
+// Send a group communication.
+func (gt *GroupTunnel) Send(event GroupEvent) error {
+	return gt.Tunnel.Send(&cemi.LDataReq{LData: buildGroupOutbound(event)})
+}
+
+// Inbound returns the channel on which group communication can be received.
+func (gt *GroupTunnel) Inbound() <-chan GroupEvent {
+	return gt.inbound
+}
+
+// checkTunnelConfig makes sure that the configuration is actually usable.
+func checkTunnelConfig(config TunnelConfig) TunnelConfig {
+	if config.ResendInterval <= 0 {
+		config.ResendInterval = DefaultTunnelConfig.ResendInterval
+	}
+
+	if config.HeartbeatInterval <= 0 {
+		config.HeartbeatInterval = DefaultTunnelConfig.HeartbeatInterval
+	}
+
+	if config.ResponseTimeout <= 0 {
+		config.ResponseTimeout = DefaultTunnelConfig.ResponseTimeout
+	}
+
+	return config
+}
+
+var (
+	errResponseTimeout = errors.New("response timeout reached")
+)
 
 func (conn *Tunnel) hostInfo() (knxnet.HostInfo, error) {
 	addr := conn.sock.LocalAddr()
@@ -598,95 +689,4 @@ func (conn *Tunnel) serve() {
 
 		return
 	}
-}
-
-// NewTunnel establishes a connection to a gateway. You can pass a zero initialized ClientConfig;
-// the function will take care of filling in the default values.
-func NewTunnel(gatewayAddr string, layer knxnet.TunnelLayer, config TunnelConfig) (tunnel *Tunnel, err error) {
-	var sock knxnet.Socket
-
-	// Create socket which will be used for communication.
-	if config.UseTCP {
-		sock, err = knxnet.DialTunnelTCP(gatewayAddr)
-	} else {
-		sock, err = knxnet.DialTunnelUDP(gatewayAddr)
-	}
-
-	if err != nil {
-		return nil, err
-	}
-
-	// Initialize the Client structure.
-	client := &Tunnel{
-		sock:    sock,
-		config:  checkTunnelConfig(config),
-		layer:   layer,
-		ack:     make(chan *knxnet.TunnelRes),
-		inbound: make(chan cemi.Message),
-		done:    make(chan struct{}),
-	}
-
-	// Connect to the gateway.
-	err = client.requestConn()
-	if err != nil {
-		_ = sock.Close()
-		return nil, err
-	}
-
-	client.wait.Add(1)
-
-	go client.serve()
-
-	return client, nil
-}
-
-// Close will terminate the connection and wait for the server routine to exit. Although a
-// disconnect request is sent, it does not wait for a disconnect response.
-func (conn *Tunnel) Close() {
-	conn.once.Do(func() {
-		_ = conn.requestDisc()
-
-		close(conn.done)
-		conn.wait.Wait()
-
-		_ = conn.sock.Close()
-	})
-}
-
-// Inbound retrieves the channel which transmits incoming data. The channel is closed when the
-// underlying Socket closes its inbound channel or when the connection is terminated.
-func (conn *Tunnel) Inbound() <-chan cemi.Message {
-	return conn.inbound
-}
-
-// Send relays a tunnel request to the gateway with the given contents.
-func (conn *Tunnel) Send(data cemi.Message) error {
-	return conn.requestTunnel(data)
-}
-
-// GroupTunnel is a Tunnel that provides only a group communication interface.
-type GroupTunnel struct {
-	*Tunnel
-	inbound chan GroupEvent
-}
-
-// NewGroupTunnel creates a new Tunnel for group communication.
-func NewGroupTunnel(gatewayAddr string, config TunnelConfig) (gt GroupTunnel, err error) {
-	gt.Tunnel, err = NewTunnel(gatewayAddr, knxnet.TunnelLayerData, config)
-	if err == nil {
-		gt.inbound = make(chan GroupEvent)
-		go serveGroupInbound(gt.Tunnel.Inbound(), gt.inbound)
-	}
-
-	return
-}
-
-// Send a group communication.
-func (gt *GroupTunnel) Send(event GroupEvent) error {
-	return gt.Tunnel.Send(&cemi.LDataReq{LData: buildGroupOutbound(event)})
-}
-
-// Inbound returns the channel on which group communication can be received.
-func (gt *GroupTunnel) Inbound() <-chan GroupEvent {
-	return gt.inbound
 }
