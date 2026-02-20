@@ -140,23 +140,22 @@ func UnpackHeader(data []byte, serviceID *ServiceID, totalLen *uint16) (uint, er
 // On success, the variable pointed to by srv will contain a pointer to a service type.
 // You can cast it to the matching against service type, like so:
 //
-// 	var srv Service
+//	var srv Service
 //
-// 	_, err := Unpack(r, &srv)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+//	_, err := Unpack(r, &srv)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
 //
-// 	switch srv := srv.(type) {
-// 		case *ConnRes:
-// 			// ...
+//	switch srv := srv.(type) {
+//		case *ConnRes:
+//			// ...
 //
-// 		case *TunnelReq:
-// 			// ...
+//		case *TunnelReq:
+//			// ...
 //
-// 		// ...
-// 	}
-
+//		// ...
+//	}
 func Unpack(data []byte, srv *Service) (uint, error) {
 	var (
 		srvID    ServiceID

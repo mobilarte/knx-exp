@@ -3,6 +3,7 @@ package dpt
 // DPT_20102 represents DPT 20.102 (HVAC) / DPT_HVACMode.
 type DPT_20102 uint8
 
+// HVACMode_.. defines the possible states.
 const (
 	HVACMode_Auto               DPT_20102 = 0
 	HVACMode_Comfort            DPT_20102 = 1
@@ -47,6 +48,7 @@ func (d DPT_20102) String() string {
 // DPT_20105 represents DPT 20.105 (HVAC) / DPT_HVACContrMode.
 type DPT_20105 uint8
 
+// HVACContrMode_... defines the possible states.
 const (
 	HVACContrMode_Auto                    DPT_20105 = 0
 	HVACContrMode_Heat                    DPT_20105 = 1
