@@ -49,6 +49,7 @@ type Tunnel struct {
 	config TunnelConfig
 
 	// Connection information
+	connMu  sync.Mutex
 	layer   knxnet.TunnelLayer
 	channel uint8
 	control knxnet.HostInfo
@@ -204,7 +205,9 @@ func (conn *Tunnel) requestConn() (err error) {
 		return err
 	}
 
+	conn.connMu.Lock()
 	conn.control = hostInfo
+	conn.connMu.Unlock()
 
 	req := &knxnet.ConnReq{
 		Layer:   conn.layer,
@@ -250,7 +253,9 @@ func (conn *Tunnel) requestConn() (err error) {
 				switch res.Status {
 				// Connection has been established.
 				case knxnet.NoError:
+					conn.connMu.Lock()
 					conn.channel = res.Channel
+					conn.connMu.Unlock()
 
 					conn.seqMu.Lock()
 					conn.seqNumber = 0
@@ -276,7 +281,12 @@ func (conn *Tunnel) requestConn() (err error) {
 func (conn *Tunnel) requestConnState(
 	heartbeat <-chan knxnet.ErrCode,
 ) (knxnet.ErrCode, error) {
-	req := &knxnet.ConnStateReq{Channel: conn.channel, Status: 0, Control: conn.control}
+	conn.connMu.Lock()
+	channel := conn.channel
+	control := conn.control
+	conn.connMu.Unlock()
+
+	req := &knxnet.ConnStateReq{Channel: channel, Status: 0, Control: control}
 
 	// Send first connection state request
 	err := conn.sock.Send(req)
@@ -317,10 +327,15 @@ func (conn *Tunnel) requestConnState(
 
 // requestDisc sends a disconnect request to the gateway.
 func (conn *Tunnel) requestDisc() error {
+	conn.connMu.Lock()
+	channel := conn.channel
+	control := conn.control
+	conn.connMu.Unlock()
+
 	return conn.sock.Send(&knxnet.DiscReq{
-		Channel: conn.channel,
+		Channel: channel,
 		Status:  0,
-		Control: conn.control,
+		Control: control,
 	})
 }
 
@@ -330,6 +345,10 @@ func (conn *Tunnel) requestTunnel(data cemi.Message) error {
 	conn.seqMu.Lock()
 	defer conn.seqMu.Unlock()
 
+	conn.connMu.Lock()
+	channel := conn.channel
+	conn.connMu.Unlock()
+
 	var seqNumber uint8
 
 	if !conn.config.UseTCP {
@@ -338,7 +357,7 @@ func (conn *Tunnel) requestTunnel(data cemi.Message) error {
 	}
 
 	req := &knxnet.TunnelReq{
-		Channel:   conn.channel,
+		Channel:   channel,
 		SeqNumber: seqNumber,
 		Payload:   data,
 	}
@@ -423,8 +442,12 @@ func (conn *Tunnel) performHeartbeat(
 
 // handleDiscReq validates the request.
 func (conn *Tunnel) handleDiscReq(req *knxnet.DiscReq) error {
+	conn.connMu.Lock()
+	channel := conn.channel
+	conn.connMu.Unlock()
+
 	// Validate the request channel.
-	if req.Channel != conn.channel {
+	if req.Channel != channel {
 		return errors.New("invalid communication channel in disconnect request")
 	}
 
@@ -436,8 +459,12 @@ func (conn *Tunnel) handleDiscReq(req *knxnet.DiscReq) error {
 
 // handleDiscRes validates the response.
 func (conn *Tunnel) handleDiscRes(res *knxnet.DiscRes) error {
+	conn.connMu.Lock()
+	channel := conn.channel
+	conn.connMu.Unlock()
+
 	// Validate the response channel.
-	if res.Channel != conn.channel {
+	if res.Channel != channel {
 		return errors.New("invalid communication channel in disconnect response")
 	}
 
@@ -471,8 +498,12 @@ func (conn *Tunnel) pushInbound(msg cemi.Message) {
 // 03_08_04 Tunnelling v01.05.03 AS.pdf
 // 2.6 Frame confirmation
 func (conn *Tunnel) handleTunnelReq(req *knxnet.TunnelReq, seqNumber *uint8) error {
+	conn.connMu.Lock()
+	channel := conn.channel
+	conn.connMu.Unlock()
+
 	// Validate the request channel.
-	if req.Channel != conn.channel {
+	if req.Channel != channel {
 		return errors.New("invalid communication channel in tunnel request")
 	}
 
@@ -485,18 +516,6 @@ func (conn *Tunnel) handleTunnelReq(req *knxnet.TunnelReq, seqNumber *uint8) err
 		return nil
 	}
 
-	/* because of wrap-around, this should be better
-	seqnumber := 255
-	expected := 0
-
-	if seqnumber == expected {
-		fmt.Println("everything is fine! ack and process")
-	} else if (seqnumber+1)%256 == expected {
-		fmt.Println("lost ack! ack")
-	} else {
-		fmt.Println("seq number of out range! discard")
-	}
-	*/
 	expected := *seqNumber
 
 	// Is the sequence number what we expected?
@@ -521,8 +540,12 @@ func (conn *Tunnel) handleTunnelReq(req *knxnet.TunnelReq, seqNumber *uint8) err
 // handleTunnelRes validates the response and relays it to a sender that is awaiting an
 // acknowledgement.
 func (conn *Tunnel) handleTunnelRes(res *knxnet.TunnelRes) error {
+	conn.connMu.Lock()
+	channel := conn.channel
+	conn.connMu.Unlock()
+
 	// Validate the request channel.
-	if res.Channel != conn.channel {
+	if res.Channel != channel {
 		return errors.New("invalid communication channel in connection state response")
 	}
 
@@ -552,8 +575,12 @@ func (conn *Tunnel) handleConnStateRes(
 	res *knxnet.ConnStateRes,
 	heartbeat chan<- knxnet.ErrCode,
 ) error {
+	conn.connMu.Lock()
+	channel := conn.channel
+	conn.connMu.Unlock()
+
 	// Validate the request channel.
-	if res.Channel != conn.channel {
+	if res.Channel != channel {
 		return errors.New("invalid communication channel in connection state response")
 	}
 
