@@ -11,7 +11,8 @@ import (
 	"strings"
 )
 
-// IndividualAddr is an individual address for a KNX device. Its format is defined in
+// IndividualAddr is an individual address for a KNX device. 
+// Its format is defined in
 // 03_03_02 Data Link Layer General v01.02.02 AS.pdf
 // 1.4.2 Individual Address
 // Individual address zero (0.0.0) is not allowed.

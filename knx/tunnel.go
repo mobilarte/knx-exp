@@ -288,7 +288,7 @@ func (conn *Tunnel) requestConnState(
 
 	req := &knxnet.ConnStateReq{Channel: channel, Status: 0, Control: control}
 
-	// Send first connection state request
+	// Send first connection state request.
 	err := conn.sock.Send(req)
 	if err != nil {
 		return knxnet.ErrConnectionID, err
