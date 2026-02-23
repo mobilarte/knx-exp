@@ -3,11 +3,12 @@ package dpt
 // DPT_20002 represents DPT 20.002 (G) / DPT_BuildingMode.
 type DPT_20002 uint8
 
+// Building Mode
 const (
 	BuildingMode_BuildingInUse      DPT_20002 = 0
 	BuildingMode_BuildingNotUsed    DPT_20002 = 1
 	BuildingMode_BuildingProtection DPT_20002 = 2
-	// 3..255: reserverd, shall not be used
+	// 3..255: reserved, shall not be used
 )
 
 func (d DPT_20002) Pack() []byte {
@@ -42,11 +43,12 @@ func (d DPT_20002) String() string {
 // DPT_20003 represents DPT 20.003 (G) / DPT_OccMode.
 type DPT_20003 uint8
 
+// Occupancy Mode
 const (
 	OccMode_occupied     DPT_20003 = 0
 	OccMode_standby      DPT_20003 = 1
 	OccMode_not_occupied DPT_20003 = 2
-	// 3..255: not used, reserverd
+	// 3..255: not used, reserved
 )
 
 func (d DPT_20003) Pack() []byte {
@@ -96,7 +98,7 @@ const (
 	WindForceScale_WholeGale      DPT_20014 = 10
 	WindForceScale_ViolentStorm   DPT_20014 = 11
 	WindForceScale_Hurricane      DPT_20014 = 12
-	// 13..255: reserverd, shall not be used
+	// 13..255: reserved, shall not be used
 )
 
 func (d DPT_20014) Pack() []byte {
