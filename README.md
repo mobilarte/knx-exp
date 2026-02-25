@@ -2,6 +2,7 @@
 
 [![Check](https://github.com/mobilarte/knx-exp/actions/workflows/check.yaml/badge.svg?branch=main)](https://github.com/mobilarte/knx-exp/actions/workflows/check.yaml)
 [![GoDoc](https://godoc.org/github.com/mobilarte/knx-exp?status.svg)](https://godoc.org/github.com/mobilarte/knx-exp)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mobilarte/knx-exp)](https://goreportcard.com/report/github.com/mobilarte/knx-exp)
 
 This repository is **experimental** and it is only tested against the 
 latest stable version of Go.
@@ -21,5 +22,5 @@ The package structure is the same as in the original repository.
  **knx/dpt**       | Datapoint types
  **knx/cemi**      | cEMI-encoded frames
 
-Because **Type Parameters** are used in `dpt\formats.go`, it will not run
+Because **Type Parameters** are used in `knx/dpt/formats.go`, it will not run
 with a version prior to Go 1.18.0.
