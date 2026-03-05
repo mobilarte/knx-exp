@@ -13,11 +13,13 @@ import (
 	"github.com/mobilarte/knx-exp/knx/knxnet"
 )
 
+// DiagnosticWithMAC runs a diagnostic with MAC address.
 func DiagnosticWithMAC(multicastDiscoveryAddress string, macAddr net.HardwareAddr,
 	searchTimeout time.Duration) ([]*knxnet.DiagnosticRes, error) {
 	return DiagnosticOnInterface(nil, multicastDiscoveryAddress, macAddr, false, searchTimeout)
 }
 
+// DiagnosticInProgMode runs a diagnostic on devices in Programming Mode.
 func DiagnosticInProgMode(multicastDiscoveryAddress string,
 	searchTimeout time.Duration) ([]*knxnet.DiagnosticRes, error) {
 	return DiagnosticOnInterface(nil, multicastDiscoveryAddress, nil, true, searchTimeout)

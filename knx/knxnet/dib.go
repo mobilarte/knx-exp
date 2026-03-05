@@ -191,7 +191,10 @@ func (sdib *SupportedServicesDIB) Unpack(data []byte) (n uint, err error) {
 	return
 }
 
+// IpAssignment is the IP assignment method, p. 12.
 type IpAssignment uint8
+
+// IpCapabilities is i.e. DHCP, p. 12.
 type IpCapabilities uint8
 
 // IpConfigDIB contains information about the IP configuration.

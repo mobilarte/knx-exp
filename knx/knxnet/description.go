@@ -1,5 +1,6 @@
 // Copyright 2025 Martin Müller
 // Licensed under the MIT license which can be found in the LICENSE file.
+// Described in 03_08_07 KNXnetIP Remote Configuration and Diagnosis v01.01.02 AS.pdf
 
 package knxnet
 

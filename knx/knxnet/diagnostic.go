@@ -1,5 +1,6 @@
 // Copyright 2025 Martin Müller.
 // Licensed under the MIT license which can be found in the LICENSE file.
+// Described in 03_08_07 KNXnetIP Remote Configuration and Diagnosis v01.01.02 AS.pdf
 
 package knxnet
 
@@ -9,15 +10,17 @@ import (
 	"github.com/mobilarte/knx-exp/knx/util"
 )
 
+// DiagnosticSelector allows for selecting specific devices, p. 9.
 type DiagnosticSelector uint8
 
 const (
-	// Programming mode selects the devices that are in Programming Mode.
+	// PrgModeSelector selects the devices that are in Programming Mode.
 	PrgModeSelector DiagnosticSelector = 0x01
-	// MAC selects a device via its MAC address.
+	// MACSelector selects a device via MAC address.
 	MACSelector DiagnosticSelector = 0x02
 )
 
+// Selector is the MAC Selector header p. 9.
 type Selector struct {
 	Length       uint8
 	SelectorType DiagnosticSelector
@@ -127,12 +130,15 @@ func (res *DiagnosticRes) Unpack(data []byte) (n uint, err error) {
 	return (*DescriptionBlock)(&res.DescriptionBlock).Unpack(data)
 }
 
+// BasicConfigurationReq shall be transmitted via multicast or optionally
+// via broadcast, p. 5, 9.
 type BasicConfigurationReq struct {
 	HostInfo
 	Selector
 	IPConfig IpConfigDIB
 }
 
+// NewBasicConfigReq creates a new BasciConfigurationReq.
 func NewBasicConfigReq(addr net.Addr) (*BasicConfigurationReq, error) {
 	req := &BasicConfigurationReq{}
 	req.IPConfig.DefaultGateway = Address{192, 168, 1, 2}
