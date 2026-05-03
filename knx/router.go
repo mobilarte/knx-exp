@@ -157,23 +157,39 @@ func (router *Router) pushInbound(msg cemi.Message) {
 	}
 }
 
+// getLastMessages returns the last count messages from the retainer in FIFO order.
+func (router *Router) getLastMessages(count uint16) []cemi.Message {
+	if int(count) > router.retainer.Len() {
+		count = uint16(router.retainer.Len())
+	}
+	messages := make([]cemi.Message, 0, count)
+	// Start from the front if we need all messages, or skip to the (len-count)th element.
+	start := router.retainer.Len() - int(count)
+	i := 0
+	for elem := router.retainer.Front(); elem != nil; elem = elem.Next() {
+		if i >= start {
+			messages = append(messages, elem.Value.(cemi.Message))
+		}
+		i++
+		elem := router.retainer.Back()
+		for i := len(messages) - 1; i >= 0 && elem != nil; i-- {
+			if msg, ok := elem.Value.(cemi.Message); ok {
+				messages[i] = msg
+			} else {
+				util.Log(router, "Warning: retainer contains non-cemi.Message type")
+			}
+			elem = elem.Prev()
+		}
+	}
+	return messages
+}
+
 // resendLost resends the last count messages.
 func (router *Router) resendLost(count uint16) {
 	router.sendMu.Lock()
 	defer router.sendMu.Unlock()
 
-	// Make sure not to overflow our retainer list.
-	if int(count) > router.retainer.Len() {
-		count = uint16(router.retainer.Len())
-	}
-
-	messages := make([]cemi.Message, count)
-
-	// Retrieve the messages in reverse. This enables us to resend them in the order in which the
-	// have been sent initially.
-	for i := len(messages) - 1; i >= 0; i-- {
-		messages[i] = router.retainer.Remove(router.retainer.Back()).(cemi.Message)
-	}
+	messages := router.getLastMessages(count)
 
 	go router.sendMultiple(messages)
 }
