@@ -5,12 +5,14 @@ import (
 	"crypto/cipher"
 	"crypto/hmac"
 	"crypto/sha256"
-	"fmt"
+
+	"golang.org/x/crypto/pbkdf2"
 )
 
 // CalculateMessageAuthenticationCodeCBC calculates the message authentication code using AES-CBC.
 // This implements the CBC-MAC as per KNX Data Secure specification.
-func CalculateMessageAuthenticationCodeCBC(key []byte, additionalData []byte, payload []byte, block0 []byte) ([]byte, error) {
+func CalculateMessageAuthenticationCodeCBC(key []byte,
+	additionalData []byte, payload []byte, block0 []byte) ([]byte, error) {
 	if len(key) != 16 {
 		return nil, NewDataSecureError("key must be 16 bytes (AES-128)")
 	}
@@ -29,7 +31,7 @@ func CalculateMessageAuthenticationCodeCBC(key []byte, additionalData []byte, pa
 	}
 
 	iv := make([]byte, aes.BlockSize)
-	encryptor := cipher.NewCBCEncryptor(block, iv)
+	encryptor := cipher.NewCBCEncrypter(block, iv)
 
 	result := make([]byte, len(blocks))
 	encryptor.CryptBlocks(result, blocks)
@@ -97,7 +99,7 @@ func DeriveDeviceAuthenticationPassword(password string) ([]byte, error) {
 	salt := []byte("device-authentication-code.1.secure.ip.knx.org")
 
 	// Use crypto/sha256 for PBKDF2
-	derived := pbkdf2([]byte(password), salt, iterations, 16, sha256.New)
+	derived := pbkdf2.Key([]byte(password), salt, iterations, 16, sha256.New)
 	return derived, nil
 }
 
@@ -107,7 +109,7 @@ func DeriveUserPassword(password string) ([]byte, error) {
 	const iterations = 65536
 	salt := []byte("user-password.1.secure.ip.knx.org")
 
-	derived := pbkdf2([]byte(password), salt, iterations, 16, sha256.New)
+	derived := pbkdf2.Key([]byte(password), salt, iterations, 16, sha256.New)
 	return derived, nil
 }
 
@@ -117,13 +119,13 @@ func DeriveKeyringPassword(password string) ([]byte, error) {
 	const iterations = 65536
 	salt := []byte("1.keyring.ets.knx.org")
 
-	derived := pbkdf2([]byte(password), salt, iterations, 16, sha256.New)
+	derived := pbkdf2.Key([]byte(password), salt, iterations, 16, sha256.New)
 	return derived, nil
 }
 
 // pbkdf2 is a simple PBKDF2 implementation using HMAC-SHA256.
 // This is a helper function for key derivation.
-func pbkdf2(password, salt []byte, iterations, keyLen int, hashFunc func() cipher.Block) []byte {
+/*func pbkdf2(password, salt []byte, iterations, keyLen int, hashFunc func() hash.Hash) []byte {
 	// Note: In production, use golang.org/x/crypto/pbkdf2 instead
 	// This is a simplified implementation for demonstration
 
@@ -143,6 +145,7 @@ func pbkdf2(password, salt []byte, iterations, keyLen int, hashFunc func() ciphe
 	copy(padded, result)
 	return padded
 }
+*/
 
 // VerifyHMAC verifies an HMAC-SHA256 signature.
 func VerifyHMAC(key []byte, data []byte, signature []byte) bool {

@@ -78,9 +78,9 @@ func (scf *SecurityControlField) String() string {
 
 // SecureData represents a KNX Data Secure ASDU for S-A-Data service
 type SecureData struct {
-	SequenceNumberBytes           []byte // 6 bytes
-	SecuredAPDU                   []byte // Variable length
-	MessageAuthenticationCode     []byte // 4 bytes
+	SequenceNumberBytes       []byte // 6 bytes
+	SecuredAPDU               []byte // Variable length
+	MessageAuthenticationCode []byte // 4 bytes
 }
 
 // Block0 constructs Block 0 for KNX Data Secure as per specification
@@ -117,7 +117,7 @@ func Counter0(sequenceNumber []byte, addressFieldsRaw []byte) []byte {
 	return result
 }
 
-// NewSecureData creates a new SecureData instance from plain APDU
+// NewSecureData creates a new SecureData instance from plain APDU.
 func NewSecureData(
 	key []byte,
 	apdu []byte,
@@ -133,9 +133,9 @@ func NewSecureData(
 
 	var mac []byte
 	var securedAPDU []byte
-	var err error
 
-	if scf.Algorithm == CCMAuthentication {
+	switch scf.Algorithm {
+	case CCMAuthentication:
 		// Calculate MAC for authentication only
 		macFull, err := CalculateMessageAuthenticationCodeCBC(
 			key,
@@ -149,7 +149,7 @@ func NewSecureData(
 		mac = macFull[:4]
 		securedAPDU = apdu
 
-	} else if scf.Algorithm == CCMEncryption {
+	case CCMEncryption:
 		// Calculate MAC for encryption
 		macCBCFull, err := CalculateMessageAuthenticationCodeCBC(
 			key,
@@ -172,7 +172,7 @@ func NewSecureData(
 		if err != nil {
 			return nil, err
 		}
-	} else {
+	default:
 		return nil, NewDataSecureError(fmt.Sprintf("unknown security algorithm: %d", scf.Algorithm))
 	}
 
@@ -218,7 +218,8 @@ func (sd *SecureData) GetPlainAPDU(
 	frameFlags byte,
 	tpciInt int,
 ) ([]byte, error) {
-	if scf.Algorithm == CCMEncryption {
+	switch scf.Algorithm {
+	case CCMEncryption:
 		// Decrypt the payload
 		decPayload, macTR, err := DecryptCTR(
 			key,
@@ -248,7 +249,7 @@ func (sd *SecureData) GetPlainAPDU(
 
 		return decPayload, nil
 
-	} else if scf.Algorithm == CCMAuthentication {
+	case CCMAuthentication:
 		// Verify MAC only
 		macFull, err := CalculateMessageAuthenticationCodeCBC(
 			key,
@@ -266,9 +267,9 @@ func (sd *SecureData) GetPlainAPDU(
 		}
 
 		return sd.SecuredAPDU, nil
+	default:
+		return nil, NewDataSecureError(fmt.Sprintf("unknown security algorithm: %d", scf.Algorithm))
 	}
-
-	return nil, NewDataSecureError(fmt.Sprintf("unknown security algorithm: %d", scf.Algorithm))
 }
 
 // bytesEqual compares two byte slices in constant time

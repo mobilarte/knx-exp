@@ -1,6 +1,7 @@
 package secure
 
 import (
+	"encoding/binary"
 	"fmt"
 	"sync"
 	"time"
@@ -8,10 +9,10 @@ import (
 
 // DataSecure manages KNX Data Secure operations for a connection
 type DataSecure struct {
-	mu                         sync.RWMutex
-	groupKeyTable              map[string][]byte // Group Address -> Key
-	individualAddressTable     map[string]uint64 // Individual Address -> Last Sequence Number
-	sequenceNumberSending      uint64            // Current sequence number for outgoing frames
+	mu                     sync.RWMutex
+	groupKeyTable          map[string][]byte // Group Address -> Key
+	individualAddressTable map[string]uint64 // Individual Address -> Last Sequence Number
+	sequenceNumberSending  uint64            // Current sequence number for outgoing frames
 }
 
 // InitialSequenceNumber calculates the initial sequence number based on the time
@@ -240,6 +241,3 @@ func (ds *DataSecure) AddSender(individualAddress string, initialSequenceNumber 
 	ds.individualAddressTable[individualAddress] = initialSequenceNumber
 	return nil
 }
-
-// Export imports internal binary encoding (needed for import statement)
-import "encoding/binary"
