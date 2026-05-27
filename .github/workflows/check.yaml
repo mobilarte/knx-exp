@@ -35,7 +35,7 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
           check-latest: true
-          cache: true
+          cache: false # golangci-lint manages its own cache
 
       - name: Verify formatting
         run: |
@@ -51,7 +51,7 @@ jobs:
         run: go vet ./...
 
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v9.2.0
+        uses: golangci/golangci-lint-action@v6
         with:
           args: --timeout=5m
           skip-cache: false
