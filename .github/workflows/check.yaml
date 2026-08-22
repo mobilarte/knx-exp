@@ -51,10 +51,10 @@ jobs:
         run: go vet ./...
 
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v7
+        uses: golangci/golangci-lint-action@v9
         with:
           args: --timeout=5m
-          version: v2.12.2
+          version: v2.13
           skip-cache: false
 
   build:
