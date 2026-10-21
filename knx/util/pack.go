@@ -5,6 +5,7 @@ package util
 
 import (
 	"fmt"
+	"io"
 
 	"golang.org/x/text/encoding/charmap"
 )
@@ -130,16 +131,21 @@ func PackString(buffer []byte, maxLen uint, input string) (uint, error) {
 		return 0, fmt.Errorf("unable to encode string: %s", err)
 	}
 
-	if len(encoded) >= int(maxLen) {
-		encoded = encoded[:maxLen]
-		encoded[maxLen] = 0x00
+	if maxLen == 0 {
+		return 0, nil
 	}
 
-	copy(buffer, encoded)
-
-	for i := len(encoded); i < int(maxLen); i++ {
-		buffer[i] = 0x00
+	if uint(len(buffer)) < maxLen {
+		return 0, io.ErrShortBuffer
 	}
+
+	field := buffer[:maxLen]
+	clear(field)
+	copyLen := len(encoded)
+	if copyLen >= len(field) {
+		copyLen = len(field) - 1
+	}
+	copy(field, encoded[:copyLen])
 
 	return maxLen, nil
 }

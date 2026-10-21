@@ -4,6 +4,8 @@
 package util
 
 import (
+	"bytes"
+	"io"
 	"testing"
 )
 
@@ -59,5 +61,38 @@ func TestPackString(t *testing.T) {
 				assert.Equal(t, testCase.Expected, buffer, "Packed buffer not equal")
 			}
 		*/
+	}
+}
+
+func TestPackStringBoundaries(t *testing.T) {
+	testCases := []struct {
+		name     string
+		maxLen   uint
+		input    string
+		want     []byte
+	}{
+		{name: "exact capacity", maxLen: 4, input: "1234", want: []byte{'1', '2', '3', 0}},
+		{name: "over capacity", maxLen: 4, input: "12345", want: []byte{'1', '2', '3', 0}},
+		{name: "zero capacity", maxLen: 0, input: "", want: nil},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			buffer := bytes.Repeat([]byte{0xFF}, int(testCase.maxLen))
+			n, err := PackString(buffer, testCase.maxLen, testCase.input)
+			if err != nil {
+				t.Fatalf("PackString() error = %v", err)
+			}
+			if n != testCase.maxLen {
+				t.Fatalf("PackString() wrote %d bytes, want %d", n, testCase.maxLen)
+			}
+			if !bytes.Equal(buffer, testCase.want) {
+				t.Fatalf("PackString() = %v, want %v", buffer, testCase.want)
+			}
+		})
+	}
+
+	if _, err := PackString(make([]byte, 3), 4, "x"); err != io.ErrShortBuffer {
+		t.Fatalf("PackString() short buffer error = %v, want %v", err, io.ErrShortBuffer)
 	}
 }

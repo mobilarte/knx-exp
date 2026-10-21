@@ -133,8 +133,12 @@ func UnpackSome(data []byte, outputs ...any) (uint, error) {
 }
 
 // UnpackString unpacks a string
-func UnpackString(buffer []byte, len uint, output *string) (uint, error) {
-	buffer = buffer[:len]
+func UnpackString(buffer []byte, length uint, output *string) (uint, error) {
+	if uint(len(buffer)) < length {
+		return 0, io.ErrUnexpectedEOF
+	}
+
+	buffer = buffer[:length]
 	buffer = bytes.TrimRight(buffer, string(byte(0x0)))
 
 	buffer, err := stringDecoder.Bytes(buffer)
@@ -144,5 +148,5 @@ func UnpackString(buffer []byte, len uint, output *string) (uint, error) {
 
 	*output = string(buffer)
 
-	return len, nil
+	return length, nil
 }

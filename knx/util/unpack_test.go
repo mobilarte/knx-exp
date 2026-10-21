@@ -207,3 +207,13 @@ func TestUnpackString(t *testing.T) {
 		}
 	}
 }
+
+func TestUnpackStringTruncated(t *testing.T) {
+	output := "unchanged"
+	if _, err := UnpackString([]byte{'x'}, 2, &output); err != io.ErrUnexpectedEOF {
+		t.Fatalf("UnpackString() error = %v, want %v", err, io.ErrUnexpectedEOF)
+	}
+	if output != "unchanged" {
+		t.Fatalf("UnpackString() modified output on error: %q", output)
+	}
+}
