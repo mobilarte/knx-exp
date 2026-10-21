@@ -80,7 +80,7 @@ var dptTypes = map[string]Datapoint{
 	"8.006": new(DPT_8006),
 	"8.007": new(DPT_8007),
 	"8.010": new(DPT_8010),
-	"8.011": new(DPT_8010),
+	"8.011": new(DPT_8011),
 	"8.012": new(DPT_8012),
 
 	// 9.xxx
