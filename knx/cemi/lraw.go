@@ -57,5 +57,5 @@ type LRawInd struct {
 
 // MessageCode returns the message code for L_Raw.ind.
 func (LRawInd) MessageCode() MessageCode {
-	return LRawConCode
+	return LRawIndCode
 }

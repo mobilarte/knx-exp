@@ -45,6 +45,28 @@ func TestInfo_Unpack(t *testing.T) {
 	}
 }
 
+func TestInfo_UnpackTruncated(t *testing.T) {
+	var info Info
+	if _, err := info.Unpack([]byte{2, 0xAA}); err == nil {
+		t.Fatal("expected an error for truncated info data")
+	}
+}
+
+func TestControl2Hops(t *testing.T) {
+	for hops := uint8(0); hops <= 7; hops++ {
+		control := Control2Hops(hops) | Control2GroupAddr
+		if got := control.Hops(); got != hops {
+			t.Errorf("Hops() = %d, want %d", got, hops)
+		}
+	}
+}
+
+func TestLRawIndMessageCode(t *testing.T) {
+	if got := (LRawInd{}).MessageCode(); got != LRawIndCode {
+		t.Fatalf("MessageCode() = %v, want %v", got, LRawIndCode)
+	}
+}
+
 func TestUnpack(t *testing.T) {
 	ldataCodes := []MessageCode{LDataReqCode, LDataConCode, LDataIndCode}
 

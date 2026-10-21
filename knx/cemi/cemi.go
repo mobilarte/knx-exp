@@ -102,7 +102,11 @@ func (info *Info) Unpack(data []byte) (n uint, err error) {
 
 	if length > 0 {
 		buf := make([]byte, length)
-		n += uint(copy(buf, data[n:n+uint(length)]))
+		m, unpackErr := util.Unpack(data[n:], buf)
+		n += m
+		if unpackErr != nil {
+			return n, unpackErr
+		}
 		*info = Info(buf)
 	} else {
 		*info = nil

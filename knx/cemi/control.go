@@ -58,7 +58,7 @@ func (ctrl2 ControlField2) IsGroupAddr() bool {
 
 // Hops retrieves the number of hops.
 func (ctrl2 ControlField2) Hops() uint8 {
-	return uint8(ctrl2>>7) & 7
+	return uint8(ctrl2>>4) & 7
 }
 
 const (
