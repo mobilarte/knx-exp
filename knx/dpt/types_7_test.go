@@ -95,7 +95,7 @@ func TestDPT_7003And7004RoundTrip(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			packed := test.value.Pack()
-			if fmt.Sprint(packed) != fmt.Sprint(test.want) {
+			if fmt.Sprint(string(packed)) != fmt.Sprint(string(test.want)) {
 				t.Fatalf("Pack() = %v, want %v", packed, test.want)
 			}
 
