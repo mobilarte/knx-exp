@@ -4,6 +4,7 @@
 package cemi
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/mobilarte/knx-exp/knx/util"
@@ -69,6 +70,8 @@ func (app *AppData) Pack(buffer []byte) {
 	}
 
 	buffer[0] = byte(dataLength)
+	buffer[1] = 0
+	buffer[2] = 0
 
 	if app.Numbered {
 		buffer[1] |= 1<<6 | (app.SeqNumber&15)<<2
@@ -130,8 +133,17 @@ func unpackTransportUnit(data []byte, unit *TransportUnit) (uint, error) {
 
 	dataLength := int(data[0])
 
-	if len(data) < 3 || dataLength+2 < len(data) {
+	if len(data) < 3 {
 		return 0, io.ErrUnexpectedEOF
+	}
+	if dataLength == 0 {
+		return 0, fmt.Errorf("application data has invalid length")
+	}
+	if len(data) < dataLength+2 {
+		return 0, io.ErrUnexpectedEOF
+	}
+	if len(data) > dataLength+2 {
+		return 0, fmt.Errorf("application data has invalid length")
 	}
 
 	app := &AppData{

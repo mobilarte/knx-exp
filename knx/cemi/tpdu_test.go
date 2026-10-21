@@ -64,6 +64,17 @@ func TestAppData_Pack(t *testing.T) {
 	}
 }
 
+func TestAppData_PackClearsReusedBuffer(t *testing.T) {
+	app := AppData{Command: GroupValueWrite}
+	buffer := []byte{0xFF, 0xFF, 0xFF}
+	app.Pack(buffer)
+
+	want := []byte{1, 0, 0x80}
+	if !bytes.Equal(buffer, want) {
+		t.Fatalf("Pack() = %v, want %v", buffer, want)
+	}
+}
+
 func TestControlData_Pack(t *testing.T) {
 	for range 100 {
 		control := ControlData{
@@ -102,6 +113,15 @@ func TestControlData_Pack(t *testing.T) {
 }
 
 func TestUnpackTransportUnit(t *testing.T) {
+	t.Run("rejects invalid application lengths", func(t *testing.T) {
+		for _, data := range [][]byte{{0, 0, 0}, {2, 0, 0}, {1, 0, 0, 0}} {
+			var unit TransportUnit
+			if _, err := unpackTransportUnit(data, &unit); err == nil {
+				t.Errorf("expected an error for %v", data)
+			}
+		}
+	})
+
 	t.Run("Control", func(t *testing.T) {
 		for range 100 {
 			data := []byte{0, byte(util.Randint64())}
