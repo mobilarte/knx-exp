@@ -66,10 +66,10 @@ func TestPackString(t *testing.T) {
 
 func TestPackStringBoundaries(t *testing.T) {
 	testCases := []struct {
-		name     string
-		maxLen   uint
-		input    string
-		want     []byte
+		name   string
+		maxLen uint
+		input  string
+		want   []byte
 	}{
 		{name: "exact capacity", maxLen: 4, input: "1234", want: []byte{'1', '2', '3', 0}},
 		{name: "over capacity", maxLen: 4, input: "12345", want: []byte{'1', '2', '3', 0}},
