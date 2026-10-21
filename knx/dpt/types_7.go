@@ -49,7 +49,7 @@ func (d DPT_7002) String() string {
 type DPT_7003 float32
 
 func (d DPT_7003) Pack() []byte {
-	return packU16(uint16(d * 100))
+	return packU16(uint16(d / 10))
 }
 
 func (d *DPT_7003) Unpack(data []byte) error {
@@ -73,14 +73,14 @@ func (d DPT_7003) String() string {
 }
 
 func (d DPT_7003) IsValid() bool {
-	return d >= 0 && d <= 655.35
+	return d >= 0 && d <= 655350
 }
 
 // DPT_7004 represents DPT 7.004 (G) / DPT_TimePeriod100MSec.
 type DPT_7004 float32
 
 func (d DPT_7004) Pack() []byte {
-	return packU16(uint16(d * 100))
+	return packU16(uint16(d / 100))
 }
 
 func (d *DPT_7004) Unpack(data []byte) error {
@@ -104,7 +104,7 @@ func (d DPT_7004) String() string {
 }
 
 func (d DPT_7004) IsValid() bool {
-	return d >= 0 && d <= 6553.5
+	return d >= 0 && d <= 6553500
 }
 
 // DPT_7005 represents DPT 7.005 (G) / DPT_TimePeriodSec.

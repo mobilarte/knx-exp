@@ -99,3 +99,12 @@ more recently with desktop publishing software like Aldus PageMaker including ve
 		t.Errorf("Should not be valid [%s]", src)
 	}
 }
+
+func TestDPT_24001UnpackRejectsTruncatedData(t *testing.T) {
+	for _, data := range [][]byte{nil, {0}} {
+		var value DPT_24001
+		if err := value.Unpack(data); err != ErrInvalidLength {
+			t.Errorf("Unpack(%v) error = %v, want %v", data, err, ErrInvalidLength)
+		}
+	}
+}

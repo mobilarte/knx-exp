@@ -83,3 +83,12 @@ func TestDPT_28001(t *testing.T) {
 		t.Errorf("Lost or gained something [%s] => [%s]", src, dst)
 	}
 }
+
+func TestDPT_28001UnpackRejectsTruncatedData(t *testing.T) {
+	for _, data := range [][]byte{nil, {0}} {
+		var value DPT_28001
+		if err := value.Unpack(data); err != ErrInvalidLength {
+			t.Errorf("Unpack(%v) error = %v, want %v", data, err, ErrInvalidLength)
+		}
+	}
+}

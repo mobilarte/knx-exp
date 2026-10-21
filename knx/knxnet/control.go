@@ -108,6 +108,9 @@ func (res *ConnRes) Pack(buffer []byte) {
 // Unpack parses the given service payload in order to initialize the structure.
 func (res *ConnRes) Unpack(data []byte) (n uint, err error) {
 	n, err = util.UnpackSome(data, &res.Channel, (*uint8)(&res.Status))
+	if err != nil {
+		return n, err
+	}
 
 	if res.Status == 0 {
 		var m uint

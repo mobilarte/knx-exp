@@ -6,7 +6,6 @@ package knx
 import (
 	"errors"
 	"fmt"
-	"log"
 	"sync"
 	"time"
 
@@ -90,7 +89,7 @@ func NewTunnel(gatewayAddr string, layer knxnet.TunnelLayer, config TunnelConfig
 		config:  checkTunnelConfig(config),
 		layer:   layer,
 		ack:     make(chan *knxnet.TunnelRes),
-		inbound: make(chan cemi.Message),
+		inbound: make(chan cemi.Message, inboundBufferSize),
 		done:    make(chan struct{}),
 	}
 
@@ -142,7 +141,7 @@ type GroupTunnel struct {
 func NewGroupTunnel(gatewayAddr string, config TunnelConfig) (gt GroupTunnel, err error) {
 	gt.Tunnel, err = NewTunnel(gatewayAddr, knxnet.TunnelLayerData, config)
 	if err == nil {
-		gt.inbound = make(chan GroupEvent)
+		gt.inbound = make(chan GroupEvent, inboundBufferSize)
 		go serveGroupInbound(gt.Tunnel.Inbound(), gt.inbound)
 	}
 
@@ -471,25 +470,12 @@ func (conn *Tunnel) handleDiscRes(res *knxnet.DiscRes) error {
 	return nil
 }
 
-// pushInbound sends the message through the inbound channel. If the sending blocks, it will launch
-// a goroutine which will do the sending.
+// pushInbound queues the message without blocking packet processing indefinitely.
 func (conn *Tunnel) pushInbound(msg cemi.Message) {
 	select {
 	case conn.inbound <- msg:
-
 	default:
-		go func() {
-			// Since this goroutine decouples from the server goroutine, it might try to send when
-			// the server closed the inbound channel. Sending to a closed channel will panic. But we
-			// don't care, because cool guys don't look at explosions.
-			defer func() {
-				if r := recover(); r != nil {
-					log.Fatal(r)
-				}
-			}()
-
-			conn.inbound <- msg
-		}()
+		util.Log(conn, "Inbound queue is full; dropping tunnel indication")
 	}
 }
 
@@ -555,7 +541,7 @@ func (conn *Tunnel) handleTunnelRes(res *knxnet.TunnelRes) error {
 		// writing to a closed channel here, and be done with it.
 		defer func() {
 			if r := recover(); r != nil {
-				log.Fatal(r)
+				util.Log(conn, "Unable to deliver tunnel acknowledgement: %v", r)
 			}
 		}()
 
@@ -590,7 +576,7 @@ func (conn *Tunnel) handleConnStateRes(
 		// when writing to a closed channel here, and be done with it.
 		defer func() {
 			if r := recover(); r != nil {
-				log.Fatal(r)
+				util.Log(conn, "Unable to deliver heartbeat response: %v", r)
 			}
 		}()
 

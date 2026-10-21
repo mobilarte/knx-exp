@@ -8,6 +8,8 @@ import (
 	"github.com/mobilarte/knx-exp/knx/util"
 )
 
+const inboundBufferSize = 64
+
 // GroupCommand determines the meaning of a group event.
 type GroupCommand uint8
 
@@ -62,11 +64,16 @@ func serveGroupInbound(inbound <-chan cemi.Message, outbound chan<- GroupEvent) 
 			}
 
 			if app, ok := ind.Data.(*cemi.AppData); ok && app.Command.IsGroupCommand() {
-				outbound <- GroupEvent{
+				event := GroupEvent{
 					Command:     GroupCommand(app.Command),
 					Source:      ind.Source,
 					Destination: cemi.GroupAddr(ind.Destination),
 					Data:        app.Data,
+				}
+				select {
+				case outbound <- event:
+				default:
+					util.Log(outbound, "Inbound group queue is full; dropping event")
 				}
 			} else {
 				util.Log(inbound, "Received L_Data.ind frame does not contain application data")

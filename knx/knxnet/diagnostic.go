@@ -5,6 +5,7 @@
 package knxnet
 
 import (
+	"fmt"
 	"net"
 
 	"github.com/mobilarte/knx-exp/knx/util"
@@ -31,13 +32,45 @@ func (sel *Selector) Set(progMode bool, macAddr net.HardwareAddr) {
 	if progMode {
 		sel.Length = 2
 		sel.SelectorType = PrgModeSelector
+		sel.MACAddress = nil
 	} else if macAddr != nil {
 		sel.Length = 8
 		sel.SelectorType = MACSelector
 		sel.MACAddress = macAddr
 	} else {
 		sel.Length = 2
+		sel.SelectorType = 0
+		sel.MACAddress = nil
 	}
+}
+
+func (sel *Selector) Unpack(data []byte) (n uint, err error) {
+	if n, err = util.UnpackSome(data, &sel.Length, (*uint8)(&sel.SelectorType)); err != nil {
+		return n, err
+	}
+	if sel.Length < uint8(n) || int(sel.Length) > len(data) {
+		return n, fmt.Errorf("invalid selector length %d", sel.Length)
+	}
+
+	switch sel.SelectorType {
+	case 0, PrgModeSelector:
+		if sel.Length != 2 {
+			return n, fmt.Errorf("invalid selector length %d", sel.Length)
+		}
+		sel.MACAddress = nil
+	case MACSelector:
+		if sel.Length != 8 {
+			return n, fmt.Errorf("invalid MAC selector length %d", sel.Length)
+		}
+		sel.MACAddress = make([]byte, 6)
+		if _, err = util.Unpack(data[n:sel.Length], sel.MACAddress); err != nil {
+			return n, err
+		}
+	default:
+		return n, fmt.Errorf("unsupported selector type %#x", sel.SelectorType)
+	}
+
+	return uint(sel.Length), nil
 }
 
 // DiagnosticReq describes a diagnostic request from a particular
@@ -65,6 +98,10 @@ func NewDiagnosticReq(addr net.Addr) (*DiagnosticReq, error) {
 // Service returns the service identifier for a Diagnostic Request.
 func (DiagnosticReq) Service() ServiceID {
 	return DiagnosticReqService
+}
+
+func (req *DiagnosticReq) Unpack(data []byte) (uint, error) {
+	return util.UnpackSome(data, &req.HostInfo, &req.Selector)
 }
 
 func (req *DiagnosticReq) SetSelector(progMode bool, macAddr net.HardwareAddr) {
@@ -157,6 +194,10 @@ func (BasicConfigurationReq) Service() ServiceID {
 	return BasicConfReqService
 }
 
+func (req BasicConfigurationReq) Size() uint {
+	return req.HostInfo.Size() + uint(req.Length)
+}
+
 func (req *BasicConfigurationReq) SetSelector(progMode bool, macAddr net.HardwareAddr) {
 	req.Set(progMode, macAddr)
 }
@@ -166,6 +207,5 @@ func (req *BasicConfigurationReq) Pack(buffer []byte) {
 }
 
 func (req *BasicConfigurationReq) Unpack(data []byte) (n uint, err error) {
-	//return (*DescriptionBlock)(&res.DescriptionBlock).Unpack(data)
-	return
+	return util.UnpackSome(data, &req.HostInfo, &req.Selector)
 }

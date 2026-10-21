@@ -108,6 +108,7 @@ func AllocAndPack(srv ServicePackable) []byte {
 var (
 	ErrHeaderLength  = errors.New("header length is not 0x6")
 	ErrHeaderVersion = errors.New("protocol version is not 0x10")
+	ErrPacketLength  = errors.New("packet length does not match header")
 )
 
 type serviceUnpackable interface {
@@ -165,6 +166,9 @@ func Unpack(data []byte, srv *Service) (uint, error) {
 	n, err := UnpackHeader(data, &srvID, &totalLen)
 	if err != nil {
 		return n, err
+	}
+	if int(totalLen) != len(data) {
+		return n, ErrPacketLength
 	}
 
 	var body serviceUnpackable

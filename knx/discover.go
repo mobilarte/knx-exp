@@ -3,7 +3,6 @@
 package knx
 
 import (
-	"log"
 	"net"
 	"time"
 
@@ -18,15 +17,14 @@ func Discover(multicastDiscoveryAddress string, searchTimeout time.Duration) ([]
 // DiscoverOnInterface discovers all KNXnet/IP servers on a specific interface. If the
 // interface is nil, the system-assigned multicast interface is used.
 func DiscoverOnInterface(ifi *net.Interface, multicastDiscoveryAddress string,
-	searchTimeout time.Duration) ([]*knxnet.SearchRes, error) {
+	searchTimeout time.Duration) (results []*knxnet.SearchRes, retErr error) {
 	socket, err := knxnet.ListenRouterOnInterface(ifi, multicastDiscoveryAddress, false)
 	if err != nil {
 		return nil, err
 	}
 	defer func() {
-		err := socket.Close()
-		if err != nil {
-			log.Fatal()
+		if err := socket.Close(); retErr == nil {
+			retErr = err
 		}
 	}()
 
@@ -39,7 +37,7 @@ func DiscoverOnInterface(ifi *net.Interface, multicastDiscoveryAddress string,
 		return nil, err
 	}
 
-	results := []*knxnet.SearchRes{}
+	results = []*knxnet.SearchRes{}
 	timeout := time.After(searchTimeout)
 
 loop:

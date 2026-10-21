@@ -4,22 +4,20 @@
 package knx
 
 import (
-	"log"
 	"time"
 
 	"github.com/mobilarte/knx-exp/knx/knxnet"
 )
 
 // DescribeTunnel describes a single KNXnet/IP server. Uses unicast UDP, address format is "ip:port".
-func DescribeTunnel(address string, searchTimeout time.Duration) (*knxnet.DescriptionRes, error) {
+func DescribeTunnel(address string, searchTimeout time.Duration) (description *knxnet.DescriptionRes, retErr error) {
 	socket, err := knxnet.DialTunnelUDP(address)
 	if err != nil {
 		return nil, err
 	}
 	defer func() {
-		err := socket.Close()
-		if err != nil {
-			log.Fatal(err)
+		if err := socket.Close(); retErr == nil {
+			retErr = err
 		}
 	}()
 

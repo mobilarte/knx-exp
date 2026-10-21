@@ -78,3 +78,37 @@ func TestDPT_7(t *testing.T) {
 		}
 	}
 }
+
+func TestDPT_7003And7004RoundTrip(t *testing.T) {
+	tests := []struct {
+		name     string
+		typeName string
+		value    interface{ Pack() []byte }
+		want     []byte
+	}{
+		{name: "10 ms", typeName: "7.003", value: DPT_7003(10), want: []byte{0, 0, 1}},
+		{name: "100 ms", typeName: "7.004", value: DPT_7004(100), want: []byte{0, 0, 1}},
+		{name: "DPT 7.003 maximum", typeName: "7.003", value: DPT_7003(655350), want: []byte{0, 0xff, 0xff}},
+		{name: "DPT 7.004 maximum", typeName: "7.004", value: DPT_7004(6553500), want: []byte{0, 0xff, 0xff}},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			packed := test.value.Pack()
+			if fmt.Sprint(packed) != fmt.Sprint(test.want) {
+				t.Fatalf("Pack() = %v, want %v", packed, test.want)
+			}
+
+			unpacked, ok := Produce(test.typeName)
+			if !ok {
+				t.Fatal("failed to produce datapoint")
+			}
+			if err := unpacked.Unpack(packed); err != nil {
+				t.Fatalf("Unpack() error = %v", err)
+			}
+			if fmt.Sprint(unpacked) != fmt.Sprint(test.value) {
+				t.Fatalf("round trip = %v, want %v", unpacked, test.value)
+			}
+		})
+	}
+}

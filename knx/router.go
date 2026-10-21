@@ -6,7 +6,6 @@ package knx
 import (
 	"container/list"
 	"errors"
-	"log"
 	"math/rand"
 	"net"
 	"sync"
@@ -75,7 +74,7 @@ func NewRouter(multicastAddress string, config RouterConfig) (*Router, error) {
 	r := &Router{
 		sock:          sock,
 		config:        config,
-		inbound:       make(chan cemi.Message),
+		inbound:       make(chan cemi.Message, inboundBufferSize),
 		retainer:      list.New(),
 		postSendPause: config.PostSendPauseDuration,
 	}
@@ -131,29 +130,16 @@ func (router *Router) Inbound() <-chan cemi.Message {
 func (router *Router) Close() {
 	err := router.sock.Close()
 	if err != nil {
-		log.Fatal(err)
+		util.Log(router, "Error closing socket: %v", err)
 	}
 }
 
-// pushInbound sends the message through the inbound channel. If the sending blocks, it will launch
-// a goroutine which will do the sending.
+// pushInbound queues the message without blocking packet processing indefinitely.
 func (router *Router) pushInbound(msg cemi.Message) {
 	select {
 	case router.inbound <- msg:
-
 	default:
-		go func() {
-			// Since this goroutine decouples from the server goroutine, it might try to send when
-			// the server closed the inbound channel. Sending to a closed channel will panic. But we
-			// don't care, because cool guys don't look at explosions.
-			defer func() {
-				if r := recover(); r != nil {
-					log.Fatal(r)
-				}
-			}()
-
-			router.inbound <- msg
-		}()
+		util.Log(router, "Inbound queue is full; dropping routing indication")
 	}
 }
 

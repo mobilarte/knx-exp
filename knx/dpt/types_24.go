@@ -33,6 +33,10 @@ func (d DPT_24001) Pack() []byte {
 }
 
 func (d *DPT_24001) Unpack(data []byte) error {
+	if len(data) < 2 {
+		return ErrInvalidLength
+	}
+
 	buffer := make([]rune, len(data[1:len(data)-1]))
 
 	for i, c := range data[1 : len(data)-1] {

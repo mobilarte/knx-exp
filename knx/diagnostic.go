@@ -6,7 +6,6 @@
 package knx
 
 import (
-	"log"
 	"net"
 	"time"
 
@@ -28,15 +27,14 @@ func DiagnosticInProgMode(multicastDiscoveryAddress string,
 // DiagnosticOnInterface sends the diagnostic request on a specified interface. If the
 // interface is nil, the system-assigned multicast interface is used.
 func DiagnosticOnInterface(ifi *net.Interface, multicastDiscoveryAddress string,
-	macAddr net.HardwareAddr, progMode bool, searchTimeout time.Duration) ([]*knxnet.DiagnosticRes, error) {
+	macAddr net.HardwareAddr, progMode bool, searchTimeout time.Duration) (results []*knxnet.DiagnosticRes, retErr error) {
 	socket, err := knxnet.ListenRouterOnInterface(ifi, multicastDiscoveryAddress, false)
 	if err != nil {
 		return nil, err
 	}
 	defer func() {
-		err := socket.Close()
-		if err != nil {
-			log.Fatal(err)
+		if err := socket.Close(); retErr == nil {
+			retErr = err
 		}
 	}()
 
@@ -51,7 +49,7 @@ func DiagnosticOnInterface(ifi *net.Interface, multicastDiscoveryAddress string,
 		return nil, err
 	}
 
-	results := []*knxnet.DiagnosticRes{}
+	results = []*knxnet.DiagnosticRes{}
 	timeout := time.After(searchTimeout)
 
 loop:

@@ -18,6 +18,10 @@ func (d DPT_28001) Pack() []byte {
 }
 
 func (d *DPT_28001) Unpack(data []byte) error {
+	if len(data) < 2 {
+		return ErrInvalidLength
+	}
+
 	var buf = data[1 : len(data)-1]
 
 	*d = DPT_28001(buf)

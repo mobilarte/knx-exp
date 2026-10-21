@@ -413,10 +413,18 @@ func (di *DescriptionBlock) Unpack(data []byte) (n uint, err error) {
 
 	n = 0
 	for n < uint(len(data)) {
+		remaining := uint(len(data)) - n
+		if remaining < 2 {
+			return n, fmt.Errorf("truncated DIB header")
+		}
+
 		// DIBs should always have a length and a type.
 		_, err := util.UnpackSome(data[n:], &length, (*uint8)(&ty))
 		if err != nil {
-			return 0, err
+			return n, err
+		}
+		if length < 2 || uint(length) > remaining {
+			return n, fmt.Errorf("invalid DIB length %d", length)
 		}
 
 		switch ty {
