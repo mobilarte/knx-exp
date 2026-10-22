@@ -141,7 +141,13 @@ func ListenRouterOnInterface(ifi *net.Interface, multicastAddress string,
 	pc := ipv4.NewPacketConn(conn)
 
 	if err := pc.JoinGroup(ifi, addr); err != nil {
+		_ = conn.Close()
 		return nil, err
+	}
+	if ifi != nil {
+		if err := pc.SetMulticastInterface(ifi); err != nil {
+			util.Log(conn, "SetMulticastInterface error: %v", err)
+		}
 	}
 
 	// Just for logging purposes.
